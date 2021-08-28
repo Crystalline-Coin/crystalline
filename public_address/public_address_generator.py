@@ -1,30 +1,65 @@
 from ecpy.curves import Curve, Point
 from hashlib import sha256, sha3_224
+import codecs
+
 
 '''Using ECPy for elliptic curve. 
-More information on: 
+More information on: https://ec-python.readthedocs.io/en/latest/
 '''
+
+ENCODING = 'utf-8'
+VERSION_BYTE = "00"
+CURVE_NAME = 'Ed448'
 
 
 class PublicAddressGenerator:
 
-    def __init__(self, _private_key):
-        curve_name = 'Ed448'
-        self.private_key = _private_key
-        self.curve = Curve.get_curve(curve_name)
+    def __init__(self, private_key):
+        self._private_key = private_key
+        self._curve = Curve.get_curve(CURVE_NAME)
         self.create_public_key()
         self.create_public_address()
 
     @staticmethod
-    def hash(input):
-        return sha3_224(sha256(input).digest()).digest()
+    def main_hash(input):
+        raw_value = sha3_224(sha256(input).digest()).digest()
+        return str(codecs.encode(raw_value, 'hex'))
+        
+    @staticmethod
+    def get_checksum(input):
+        raw_value = sha3_224(sha3_224(input).digest()).digest()
+        return str(codecs.encode(raw_value, 'hex'))[:6]
+
+    @staticmethod
+    def base_represent(input):
+        ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+        BASE = 58
+        represent = ''
+        leading_ones = (len(input) - len(input.lstrip('0'))) // 2 
+        address = int(input, 16)
+        while address > 0:
+            represent = ALPHABET[address % BASE] + represent
+            address //= BASE
+        return ''.join('1' for i in range(leading_ones)) \
+                + represent
 
     def create_public_key(self):
-        generator = self.curve.generator
-        self.publicKey = self.privateKey * generator
+        generator = self._curve.generator
+        self._public_key = self._private_key * generator
 
     def create_public_address(self):
-        encoding = 'utf-8'
-        x, y = self.publicKey.x, self.publicKey.y
+        x, y = self._public_key.x, self._public_key.y
         concatenation = str(x) + str(y)
-        hashValue = self.hash(concatenation.encode(encoding))
+        hash_value = self.main_hash(concatenation.encode(ENCODING))
+        address = VERSION_BYTE + hash_value
+        address += self.get_checksum(codecs.decode(address, 'hex')) 
+        self._public_address = self.base_represent(address)
+
+    @property
+    def public_key(self):
+        return self.public_key
+    
+
+    @property
+    def public_address(self):
+        return self._public_address

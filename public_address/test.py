@@ -1,4 +1,5 @@
-import hashlib
-a = bytearray(b'\0')
-a.extend(hashlib.sha3_224("salam".encode()).digest()[:6])
-print(int(a, 16))
+from public_address_generator import PublicAddressGenerator
+
+if __name__ == '__main__':
+    generator = PublicAddressGenerator(1)
+    print(generator.public_address)
