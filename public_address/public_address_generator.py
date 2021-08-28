@@ -23,12 +23,14 @@ class PublicAddressGenerator:
     @staticmethod
     def main_hash(input):
         raw_value = sha3_224(sha256(input).digest()).digest()
-        return str(codecs.encode(raw_value, 'hex'))
+        return codecs.encode(raw_value, 'hex')\
+                .decode(ENCODING)
         
     @staticmethod
     def get_checksum(input):
         raw_value = sha3_224(sha3_224(input).digest()).digest()
-        return str(codecs.encode(raw_value, 'hex'))[:6]
+        return codecs.encode(raw_value, 'hex')[:6]\
+                .decode(ENCODING)
 
     @staticmethod
     def base_represent(input):
@@ -57,7 +59,7 @@ class PublicAddressGenerator:
 
     @property
     def public_key(self):
-        return self.public_key
+        return self._public_key
     
 
     @property
