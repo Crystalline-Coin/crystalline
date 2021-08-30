@@ -15,7 +15,7 @@ class Block:
     def to_dict(self):
         return {
             'version': self.version,
-            'prevt_hash': self.prev_hash,
+            'prev_hash': self.prev_hash,
             'difficulty_target': self.difficulty_target,
             'nonce': self.nonce
         }
