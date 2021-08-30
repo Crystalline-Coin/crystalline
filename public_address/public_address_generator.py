@@ -31,7 +31,7 @@ class PublicAddressGenerator:
     @staticmethod
     def get_checksum(input):
         raw_value = sha3_224(sha3_224(input).digest()).digest()
-        return raw_value.hex()
+        return raw_value[:6].hex()
 
     @staticmethod
     def base_represent(input):
