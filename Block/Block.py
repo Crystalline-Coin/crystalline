@@ -1,5 +1,5 @@
 import time
-from crystaline.Block.helper import gen_hash
+from crystaline.Block.helper import gen_hash_encoded
 import time
 
 
@@ -15,15 +15,15 @@ class Block:
     def to_dict(self):
         return {
             'version': self.version,
-            'prev_hash': self.prev_hash,
+            'prevt_hash': self.prev_hash,
             'difficulty_target': self.difficulty_target,
             'nonce': self.nonce
         }
 
-    def generate_block_has(self):
+    def generate_block_hash(self):
         arr = bytearray(self.version)
         arr.extend(self.prev_hash)
         arr.extend([self.difficulty_target])
         arr.extend([self.nonce])
         arr.extend([self.timestamp])
-        return gen_hash(arr)
+        return gen_hash_encoded(arr)
