@@ -19,7 +19,7 @@ class Block:
             'difficulty_target': self.difficulty_target,
             'nonce': self.nonce
         }
-
+    
     def generate_block_hash(self):
         arr = bytearray(self.version)
         arr.extend(self.prev_hash)
@@ -27,3 +27,10 @@ class Block:
         arr.extend([self.nonce])
         arr.extend([self.timestamp])
         return gen_hash_encoded(arr)
+    
+    def is_valid(self):
+        if(self.version == None or self.prev_hash == None or self.difficulty_target == None or self.nonce == None or self.timestamp == None):
+            return False
+        else:
+            return True
+        
