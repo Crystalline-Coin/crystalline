@@ -2,6 +2,8 @@ import time
 import hashlib
 from crystaline.Block.Block import Block
 
+GENESIS BLOCK DIFFICULTY = 0
+
 class Blockchain:
     
     def __init__(self):
@@ -22,7 +24,7 @@ class Blockchain:
             current_block = self.chain[i]
             if (previous_block.generate_block_hash() != current_block.prev_hash):
                 return False
-            if ((current_block.version != previous_block.version + 1) or (previous_block.timestamp > current_block.timestamp)):
+            if (previous_block.timestamp > current_block.timestamp):
                 return False
         return True
     
