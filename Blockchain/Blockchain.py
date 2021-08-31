@@ -14,7 +14,7 @@ class Blockchain:
         if(len(self.chain)):
             new_block = Block(len(self.chain), self.last_block.generate_block_hash(), difficulty_target, 0, time.time())
         else:
-            new_block = Block(len(self.chain), 0, difficulty_target, 0, time.time())
+            new_block = Block(len(self.chain), GENESIS BLOCK DIFFICULTY , difficulty_target, GENESIS BLOCK DIFFICULTY , time.time())
         self.chain.append(new_block)
         return new_block
 
