@@ -19,9 +19,13 @@ class Blockchain:
         return new_block
 
     def validate(self):
+        if (self.chain[0].is_valid() == False):                                            #use this line here because first block doesn't be checked in next loop
+            return False
         for i in range(1, len(self.chain)):
             previous_block = self.chain[i-1]
             current_block = self.chain[i]
+            if (current_block.is_valid() == False):
+                return False
             if (previous_block.generate_block_hash() != current_block.prev_hash):
                 return False
             if (previous_block.timestamp > current_block.timestamp):
