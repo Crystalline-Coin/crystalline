@@ -29,7 +29,7 @@ class Block:
         return gen_hash_encoded(arr)
     
     def is_valid(self):
-        if(self.version == None or self.prev_hash == None or self.difficulty_target == None or self.nonce == None or self.timestamp == None):
+        if(not self.version or not self.prev_hash or not self.difficulty_target or not self.nonce or not self.timestamp):
             return False
         else:
             return True
