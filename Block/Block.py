@@ -1,7 +1,7 @@
 import time
-from crystaline.Block.helper import gen_hash_encoded
-import time
-
+from types import new_class
+from helper import gen_hash_encoded
+from pathlib import Path
 
 class Block:
     def __init__(self, version: str, prev_hash: str, difficulty_target: int, nonce: int,
@@ -11,7 +11,8 @@ class Block:
         self.difficulty_target = difficulty_target
         self.nonce = nonce
         self.timestamp = timestamp
-
+        self.files = []
+    
     def to_dict(self):
         return {
             'version': self.version,
@@ -27,3 +28,14 @@ class Block:
         arr.extend([self.nonce])
         arr.extend([self.timestamp])
         return gen_hash_encoded(arr)
+
+    def upload_file(self, file_path):
+        path = Path(file_path)
+        with open(file_path, mode='rb') as new_file:
+            self.files.append((new_file.read(), path.suffix))
+
+    def download_file(self, file_name, file_path, file_index):
+        file, extension = self.files[file_index]
+        new_path = file_path + '/' + file_name + extension
+        with open(new_path, mode='wb') as new_file:
+            new_file.write(file)
