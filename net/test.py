@@ -21,7 +21,7 @@ def test_hand_shake():
       
             if (requests.post(MEDIUM+LOCAL_HOST+":"+DEFAULT_PORT+REQUEST_HANDSHAKE,data={"port":DEFAULT_PORT}).status_code==400):
          
-                print("Handshake refused because of succession ")
+                print("Handshake refused  ")
                 break
 
 
