@@ -1,108 +1,115 @@
-import sys, _thread
-from flask import request, Flask
+import sys,_thread
+from flask import request,Flask
 import flask
 from flask.typing import ResponseValue
 import requests
-from peer import peer
+from peer import Peer
+import time
+#consts
+MEDIUM="http://"
 
-# consts
-MEDIUM = "http://"
+DEFAULT_PORT="5000"
 
-DEFAULT_PORT = "5000"
+FILE_NAME="code.txt"
 
-FILE_NAME = "code.txt"
+HANDSHAKE_RESPONSE="/respond_handshake"
 
-HANDSHAKE_RESPONSE = "/respond_handshake"
+REQUEST_HANDSHAKE="/hand_shake"
 
-REQUEST_HANDSHAKE = "/hand_shake"
+RECEIVE_DATA="/receive_data"
 
-RECEIVE_DATA = "/receive_data"
-
-MY_IP_ADDRESS = ""  # ENTER 0.0.0.0 for public IP showing up  here
-
-
-# consts
+MY_IP_ADDRESS="" #ENTER 0.0.0.0 for public IP showing up  here
+#consts
 
 class Node:
-    def __init__(self, ip_address, host_port=DEFAULT_PORT):
-
-        self.ip_address = ip_address
-
-        self.app = Flask(__name__)
-
-        self.host_port = host_port
-
-        self.peers = []
-
-        @self.app.route(REQUEST_HANDSHAKE, methods=['POST'])
+    def __init__(self,ip_address,host_port=DEFAULT_PORT):
+        
+        self.ip_address=ip_address
+        
+        self.app=Flask(__name__)
+        
+        self.host_port=host_port
+        
+        self.peers=[]
+        
+        @self.app.route(REQUEST_HANDSHAKE,methods=['POST'])
+        
         def request_handshake():
+            
+            ip_address=request.remote_addr
 
-            ip_address = request.remote_addr
+            handshake_data={'port':self.host_port}#fill this for future handshake implementations
+                                                  #for now it's filled with sender open port
 
-            handshake_data = {'port': self.host_port}  # fill this for future handshake implementations
-            # for now it's filled with sender open port
-            new_peer = Peer(request.form['port'], ip_address)  # get the port and the ip address of the
-
+            new_peer=Peer(request.form['port'],ip_address) #get the port and the ip address of the incoming node
+            
             if (self.check_node_health(new_peer)):
 
-                self.peers.append(new_peer)
-
+                self.peers.append(new_peer) 
+            
             else:
 
-                return "Handshake Refused"  # working on returning code based response ( Like 404 or 500 series errors)
+                return "Handshake Refused" ,400 #working on returning code based response ( Like 404 or 500 series errors)
+            
+            self.send_async_data(new_peer,HANDSHAKE_RESPONSE,handshake_data)
 
-            _thread.start_new_thread(self.send_async_data, (ip_address, HANDSHAKE_RESPONSE, request.form['port'],
-                                                            handshake_data))  #send handshake data in another thread
+            return "Handshake handling response returned" ,200
 
-            return "Handshake handling response returned"
-
-        @self.app.route(HANDSHAKE_RESPONSE, methods=['POST'])
+        @self.app.route(HANDSHAKE_RESPONSE,methods=['POST'])
+        
         def respond_handshake():
 
-            return "Handshake done"
+                return "Handshake done" ,200
 
-        @self.app.route(RECEIVE_DATA, methods=['POST'])
-        def receive_data():
+        @self.app.route(RECEIVE_DATA,methods=['POST'])
+        
+        def recieve_data():
 
-            print(request.form[
-                      'data'])  # deriving the data from post request , arbitrary function for testing data receival ()
-            # when you want to send me data you send it to this route and have a function tend to the data
+                print(request.form['data'])#deriving the data from post request , arbitrary function for testing data recievial ()
+                                           #when you want to send me data you send it to this route and have a function tend to the data
 
-            return "Data received"  # This won't show on the terminal ps just for fun( response code 200)
-
-    def check_node_health(self, Peer):
-
-        # Add other quality measurements here( Ping and stuff for Peers)
-
-        # Just checks previous handshakes for now
-
+                return  "Data received"# This won't show on the terminal ps just for fun( response code 200)
+    def check_node_health(self,Peer):
+        
+        #Add other quality measurements here( Ping and stuff for Peers)
+        #Just checks previous handshakes for now
+     
         for peer in self.peers:
-
-            if (peer.ip == Peer.ip):
+     
+            if (peer.ip ==Peer.ip):
+     
                 return False
-
+     
         return True
 
-    def send_async_data(self, ip_address, route, port, payload):
-        # we use this method to send our data, we specify the
-        # payload toinclude in the http payload and determine
-        # the  receiving end point host_port while providing the IP address and
-        # the receiving route (There are multiple ) receiving routes (/hand shake /receieve file )
-        # payload should be a dictionary in python format
-        # keep in mind  running this function inside the main server thread, throttles and slows the app maybe even killing it
-        # you should initiate it inside a new thread
-        address = MEDIUM + ip_address + ":" + port + route  # Forge the address
+    def transmit(self,address_target,payload):              
+        
+        with self.app.app_context():
+            requests.post(url=address_target,data=payload)           
 
-        try:
-            with self.app.app_context():
+    def send_async_data(self,peer,route,payload):
 
-                requests.post(address, data=payload)
+            #we use this method to send our data, we specify the 
+            #payload toinclude in the http payload and determine 
+            #the  receiving end point host_port while providing the IP address and 
+            #the recieving route (There are multiple ) receiving routes (/hand shake /receieve file )                                         
+            #payload should be a dictionary in python format
+            #keep in mind  running this function inside the main server thread, throttles and slows the app maybe even killing it 
+            #you should initiate it inside a new thread 
 
-        except:
+            address=MEDIUM+peer.ip+":"+peer.port+route #Forge the address
 
-            print("Request was not sent succesfully ")
+            try:
 
-        return "Data was  sent successfully"
+                _thread.start_new_thread(self.transmit,(address,payload))
+
+            except:
+
+                return "Data transmission failed",400
+
+            return "Data was  sent successfully",200
 
     def run_server(self):
-        self.app.run(host=self.ip_address, port=int(DEFAULT_PORT))
+
+            self.app.run(host=self.ip_address,port=DEFAULT_PORT)
+
