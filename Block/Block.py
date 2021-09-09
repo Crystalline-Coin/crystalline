@@ -32,10 +32,10 @@ class Block:
     def upload_file(self, file_path):
         path = Path(file_path)
         with open(file_path, mode='rb') as new_file:
-            self.files.append((new_file.read(), path.suffix))
+            self.files.append((new_file.read(), path.name))
 
-    def download_file(self, file_name, file_path, file_index):
-        file, extension = self.files[file_index]
-        new_path = file_path + '/' + file_name + extension
+    def download_file(self, file_path, file_index):
+        file, name = self.files[file_index]
+        new_path = file_path + '/' + name
         with open(new_path, mode='wb') as new_file:
             new_file.write(file)
