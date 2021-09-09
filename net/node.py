@@ -52,7 +52,7 @@ class Node:
                 return "Handshake Refused"  # working on returning code based response ( Like 404 or 500 series errors)
 
             _thread.start_new_thread(self.send_async_data, (ip_address, HANDSHAKE_RESPONSE, request.form['port'],
-                                                            handshake_data))  # Send the data of our host_port to the other Peer
+                                                            handshake_data))  #send handshake data in another thread
 
             return "Handshake handling response returned"
 
