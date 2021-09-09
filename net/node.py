@@ -65,7 +65,7 @@ class Node:
         def receive_data():
 
             print(request.form[
-                      'data'])  # deriving the data from post request , arbitrary function for testing data recievial ()
+                      'data'])  # deriving the data from post request , arbitrary function for testing data receival ()
             # when you want to send me data you send it to this route and have a function tend to the data
 
             return "Data received"  # This won't show on the terminal ps just for fun( response code 200)
@@ -87,7 +87,7 @@ class Node:
         # we use this method to send our data, we specify the
         # payload toinclude in the http payload and determine
         # the  receiving end point host_port while providing the IP address and
-        # the recieving route (There are multiple ) receiving routes (/hand shake /receieve file )
+        # the receiving route (There are multiple ) receiving routes (/hand shake /receieve file )
         # payload should be a dictionary in python format
         # keep in mind  running this function inside the main server thread, throttles and slows the app maybe even killing it
         # you should initiate it inside a new thread
