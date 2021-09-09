@@ -62,7 +62,7 @@ class Node:
             return "Handshake done"
 
         @self.app.route(RECEIVE_DATA, methods=['POST'])
-        def recieve_data():
+        def receive_data():
 
             print(request.form[
                       'data'])  # deriving the data from post request , arbitrary function for testing data recievial ()
