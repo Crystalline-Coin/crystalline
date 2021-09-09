@@ -6,7 +6,6 @@ class Transaction:
         self.output_address = _output_address
         self.value = _value
         self.signature = _signature
-        return True
 
     def to_json(self):
         transactions_json = {
