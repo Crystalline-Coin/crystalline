@@ -3,15 +3,7 @@ from flask import request,Flask
 import flask
 from flask.typing import ResponseValue
 import requests
-class Peer:
-
-    def __init__(self, port, ip):
-        self.port = port
-
-        self.ip = ip
-
-    def __str__(self):
-        return "IP" + self.ip + " PORT:" + self.port
+from peer import Peer
 import time
 #consts
 MEDIUM="http://"
