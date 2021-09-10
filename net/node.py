@@ -87,7 +87,6 @@ class Node:
                 return " <h1> Data transmission failed </h1>", 400
 
             return " <h1> Data was  sent successfully </h1>" , 200
-
     def run_server(self):
 
             self.app.run(host=self.ip_address, port=DEFAULT_PORT)
