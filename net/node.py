@@ -3,7 +3,15 @@ from flask import request,Flask
 import flask
 from flask.typing import ResponseValue
 import requests
-from peer import Peer
+class Peer:
+
+    def __init__(self, port, ip):
+        self.port = port
+
+        self.ip = ip
+
+    def __str__(self):
+        return "IP" + self.ip + " PORT:" + self.port
 import time
 #consts
 MEDIUM="http://"
@@ -11,8 +19,6 @@ MEDIUM="http://"
 DEFAULT_PORT="5000"
 
 FILE_NAME="code.txt"
-
-HANDSHAKE_RESPONSE="/respond_handshake"
 
 REQUEST_HANDSHAKE="/hand_shake"
 
@@ -34,10 +40,7 @@ class Node:
         @self.app.route(REQUEST_HANDSHAKE, methods=['POST'])
         def request_handshake():  
             ip_address=request.remote_addr
-
-            handshake_data={'port':self.host_port}#fill this for future handshake implementations
-                                                  #for now it's filled with sender open port
-
+            
             new_peer=Peer(request.form['port'], ip_address) #get the port and the ip address of the incoming node
             
             if (self.check_node_health(new_peer)):
@@ -45,16 +48,11 @@ class Node:
                 self.peers.append(new_peer) 
             
             else:
-
-                return "Handshake Refused" , 400 #working on returning code based response ( Like 404 or 500 series errors)
+                
+                return "<h1> Handshake Refused</h1> " , 400 
             
-            self.send_async_data(new_peer, HANDSHAKE_RESPONSE, handshake_data)
 
-            return "Handshake handling response returned" , 200
-        @self.app.route(HANDSHAKE_RESPONSE, methods=['POST'])
-        def respond_handshake():
-
-                return "Handshake done" , 200
+            return "<h1> Handshake response returned </h1>" , 200
         @self.app.route(RECEIVE_DATA, methods=['POST'])
         def recieve_data():
 
@@ -94,11 +92,12 @@ class Node:
 
             except:
 
-                return "Data transmission failed", 400
+                return " <h1> Data transmission failed </h1>", 400
 
-            return "Data was  sent successfully", 200
+            return " <h1> Data was  sent successfully </h1>" , 200
 
     def run_server(self):
 
             self.app.run(host=self.ip_address, port=DEFAULT_PORT)
-
+node=Node("0.0.0.0","5000")
+node.run_server()
