@@ -91,5 +91,3 @@ class Node:
     def run_server(self):
 
             self.app.run(host=self.ip_address, port=DEFAULT_PORT)
-node=Node("0.0.0.0","5000")
-node.run_server()
