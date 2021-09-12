@@ -1,4 +1,5 @@
 import json
+from os import name, sendfile
 
 class File:
 
@@ -16,20 +17,19 @@ class File:
     def content(self):
         return self._content
 
+    @property
+    def creator(self):
+        return self._creator
+
+    @property
+    def creation_transaction(self):
+        return self._creation_transaction
+
     def to_json(self):
-        file = {
-            'content' : self._content,
-            'name' : self._name,
-            'creator' : self._creator,
-            'creation_transaction' : self._creation_transaction
-        }
-        return json.dumps(file)
+        return json.dumps(self.__dict__)
 
     @staticmethod
-    def from_json(self, file_json):
-        file = json.loads(file_json)
-        return File(file['content'],
-                    file['name'],
-                    file['creator'],
-                    file['creation_transaction'])
-
+    def from_json(file_json):
+        return json.loads(file_json, object_hook = lambda obj: 
+                                    File(obj['_content'], obj['_name'],
+                                    obj['_creator'], obj['_creation_transaction']))
