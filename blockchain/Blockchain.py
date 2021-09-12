@@ -1,9 +1,10 @@
 import time
 import hashlib
-from crystaline.Block.Block import Block
+from crystaline.block.Block import Block
 
 GENESIS_FIRST_BLOCK_DIFFICULTY = 0
 GENESIS_BLOCK_DIFFICULTY = 0
+
 class Blockchain:
     
     def __init__(self):
