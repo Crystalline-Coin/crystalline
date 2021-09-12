@@ -1,8 +1,8 @@
 import time
-from types import new_class
 from helper import gen_hash_encoded
 from pathlib import Path
 from ..file.file import File
+
 class Block:
     def __init__(self, version: str, prev_hash: str, difficulty_target: int, nonce: int,
                  timestamp: time = int(time.time())):
@@ -12,7 +12,7 @@ class Block:
         self.nonce = nonce
         self.timestamp = timestamp
         self.files = []
-    
+
     def to_dict(self):
         return {
             'version': self.version,
