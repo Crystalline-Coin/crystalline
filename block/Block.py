@@ -2,16 +2,19 @@ import time
 from helper import gen_hash_encoded
 from pathlib import Path
 from ..file.file import File
+import json
 
+FILE_NAME_PREFIX = 'cry_'
+FILE_EXTENSION = '.blk'
 class Block:
     def __init__(self, version: str, prev_hash: str, difficulty_target: int, nonce: int,
-                 timestamp: time = int(time.time())):
+                 timestamp: time = int(time.time()), files = []):
         self.version = version
         self.prev_hash = prev_hash
         self.difficulty_target = difficulty_target
         self.nonce = nonce
         self.timestamp = timestamp
-        self.files = []
+        self.files = files
 
     def to_dict(self):
         return {
@@ -40,3 +43,29 @@ class Block:
         new_path = file_path + '/' + file.name
         with open(new_path, mode='wb') as new_file:
             new_file.write(file.content)
+    
+    def save(self, file_path):
+        first_part_dict = self.to_dict()
+        files_dict = {
+            'files' : []
+        }
+        for file in self.files:
+            files_dict['files'].append(file.to_dict())
+        path = file_path + '/' + FILE_NAME_PREFIX \
+                + str(self.timestamp) + FILE_EXTENSION
+        json_string = json.dumps(first_part_dict.update(files_dict))
+        with open(path, mode='w') as file:
+            file.write(json_string)
+
+    @staticmethod
+    def load(file_path):
+        with open(file_path, mode='r') as new_file:
+            block_dict = json.loads(new_file.read())
+        block_files = []
+        for file in block_dict['files']:
+            block_files.append(File.from_dict(file))
+        name = Path(file_path).name
+        timestamp = int(name[4:-4])
+        return Block(block_dict['version'], block_dict['prev_hash'],
+                    block_dict['difficulty_target'], block_dict['nonce'],
+                    timestamp, block_files)    
