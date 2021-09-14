@@ -19,8 +19,8 @@ def calculate_fee(time_period , uploaded_file_size , uploader_address):
         if(times_diffrence > time_period):
             break
         else:
-            for i in range(0 , len(Blockchain.chain[i].files)):                      
-                if Blockchain.chain[i].files == uploader_address:
+            for j in range(0 , len(Blockchain.chain[i].files)):                      
+                if Blockchain.chain[i].files[j] == uploader_address:
                     G_x *= G_x_calculator(times_diffrence , uploaded_file_size)
     fee = F_x * G_x
     return fee
