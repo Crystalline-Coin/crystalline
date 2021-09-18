@@ -6,6 +6,10 @@ import json
 
 FILE_NAME_PREFIX = 'cry_'
 FILE_EXTENSION = '.blk'
+BYTE=8
+BLOCK_FILE_SIZE = 3*1024*1024
+BLOCK_TRANSACTION_SIZE = 1*1024*1024
+
 class Block:
     def __init__(self, version: str, prev_hash: str, difficulty_target: int, nonce: int,
                  timestamp: time = int(time.time()), files = None):
@@ -47,6 +51,12 @@ class Block:
         with open(new_path, mode='wb') as new_file:
             new_file.write(file.content)
     
+    def is_block_size_valid(self, block_size):
+        if(block_size <= BLOCK_TRANSACTION_SIZE + BLOCK_FILE_SIZE):
+            return False
+        else:
+            return True  
+
     def save(self, file_path):
         first_part_dict = self.to_dict()
         files_dict = {
@@ -73,4 +83,4 @@ class Block:
         timestamp = int(name[STARTING_INDEX:ENDING_INDEX])
         return Block(block_dict['version'], block_dict['prev_hash'],
                     block_dict['difficulty_target'], block_dict['nonce'],
-                    timestamp, block_files)    
+                    timestamp, block_files)
