@@ -31,3 +31,13 @@ class File:
     def from_dict(dict):
         return File(dict['_content'], dict['_name'],
                     dict['_creator'], dict['_creation_transaction'])
+
+    def to_json(self):
+        return json.dumps(self.__dict__)
+
+    @staticmethod
+    def from_json(file_json):
+        return json.loads(file_json, object_hook = lambda obj: 
+                                    File(obj['_content'], obj['_name'],
+                                    obj['_creator'], obj['_creation_transaction']))
+                                    

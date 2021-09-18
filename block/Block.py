@@ -8,13 +8,16 @@ FILE_NAME_PREFIX = 'cry_'
 FILE_EXTENSION = '.blk'
 class Block:
     def __init__(self, version: str, prev_hash: str, difficulty_target: int, nonce: int,
-                 timestamp: time = int(time.time()), files = []):
+                 timestamp: time = int(time.time()), files = None):
         self.version = version
         self.prev_hash = prev_hash
         self.difficulty_target = difficulty_target
         self.nonce = nonce
         self.timestamp = timestamp
-        self.files = files
+        if files is None:
+            self.files = []
+        else:
+            self.files = list(files)
 
     def to_dict(self):
         return {
@@ -59,13 +62,15 @@ class Block:
 
     @staticmethod
     def load(file_path):
+        STARTING_INDEX = len(FILE_NAME_PREFIX)
+        ENDING_INDEX = -len(FILE_EXTENSION)
         with open(file_path, mode='r') as new_file:
             block_dict = json.loads(new_file.read())
         block_files = []
         for file in block_dict['files']:
             block_files.append(File.from_dict(file))
         name = Path(file_path).name
-        timestamp = int(name[4:-4])
+        timestamp = int(name[STARTING_INDEX:ENDING_INDEX])
         return Block(block_dict['version'], block_dict['prev_hash'],
                     block_dict['difficulty_target'], block_dict['nonce'],
                     timestamp, block_files)    
