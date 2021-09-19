@@ -1,7 +1,7 @@
 import time
 from crystaline.block.helper import gen_hash_encoded
 from pathlib import Path
-from ..file.file import File
+from crystaline.file.file import File
 import json
 
 FILE_NAME_PREFIX = 'cry_'
@@ -24,12 +24,16 @@ class Block:
             self.files = list(files)
 
     def to_dict(self):
-        return {
+        block_dict = {
             'version': self.version,
             'prev_hash': self.prev_hash,
             'difficulty_target': self.difficulty_target,
             'nonce': self.nonce
         }
+        block_dict['files'] = []
+        for file in self.files:
+            block_dict['files'].append(file.to_dict())
+        return block_dict
 
     def generate_block_hash(self):
         arr = bytearray(self.version)
@@ -58,15 +62,10 @@ class Block:
             return True  
 
     def save(self, file_path):
-        first_part_dict = self.to_dict()
-        files_dict = {
-            'files' : []
-        }
-        for file in self.files:
-            files_dict['files'].append(file.to_dict())
+        block_dict = self.to_dict()
         path = file_path + '/' + FILE_NAME_PREFIX \
                 + str(self.timestamp) + FILE_EXTENSION
-        json_string = json.dumps(first_part_dict.update(files_dict))
+        json_string = json.dumps(block_dict)
         with open(path, mode='w') as file:
             file.write(json_string)
 

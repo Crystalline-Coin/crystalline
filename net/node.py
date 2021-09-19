@@ -10,11 +10,14 @@ DEFAULT_PORT = 5000
 URI_GET_NODES = "/get_nodes"
 URI_ADD_NODE = "/add_node"
 URI_GET_STATUS = "/get_status"
+URI_GET_BLOCK = "/get_block" 
 
 STATUS_RUNNING = 'UP'
 STATUS_NOT_RESPONDING = 'DOWN'
 
-
+IP_PARAM = "dst_ip"
+PORT_PARAM = "dst_port"
+BLOCK_INDEX_PARAM = 'n'
 class Node:
     def __init__(self, ip_address: str, host_port: int = DEFAULT_PORT):
         self.ip_address = ip_address
@@ -42,11 +45,25 @@ class Node:
 
         @self.app.route(URI_ADD_NODE, methods=['GET'])
         def add_node_async():
-            node_ip = request.args.get('ip_addr')
-            node_port = request.args.get('port')
+            node_ip = request.args.get(IP_PARAM)
+            node_port = request.args.get(PORT_PARAM)
 
             _thread.start_new_thread(add_node, (node_ip, node_port))
             return 'Successfully added.', 200
+
+        @self.app.route(URI_GET_BLOCK, methods=['GET'])
+        def get_block():
+            status_code = 200
+            json_string = ''
+            index = request.args.get(BLOCK_INDEX_PARAM)
+            try:
+                block = self.blockchain.get_block(int(index))
+                json_string = json.dumps(block.to_dict())
+            except:
+                print("Invalid block index")
+                status_code = 500
+            return json_string, status_code, {'ContentType': 'application/json'}
+               
 
     def get_peer_status(self, url):
         response = requests.get(url=url)
