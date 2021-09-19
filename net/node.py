@@ -1,92 +1,77 @@
-import sys,_thread
-from flask import request,Flask
-import flask
-from flask.typing import ResponseValue
+import sys, _thread
+from flask import Flask
+from flask import request
 import requests
-from peer import Peer
-import time
-#consts
-MEDIUM="http://"
+import json
+from crystaline.blockchain.Blockchain import Blockchain
 
-DEFAULT_PORT="5000"
+PROT = "http"
+DEFAULT_PORT = 5000
+URI_GET_NODES = "/get_nodes"
+URI_ADD_NODE = "/add_node"
+URI_GET_STATUS = "/get_status"
 
-FILE_NAME="code.txt"
+STATUS_RUNNING = 'UP'
+STATUS_NOT_RESPONDING = 'DOWN'
 
-REQUEST_HANDSHAKE="/hand_shake"
-
-RECEIVE_DATA="/receive_data"
-
-MY_IP_ADDRESS="" #ENTER 0.0.0.0 for public IP showing up  here
-#consts
 
 class Node:
-    def __init__(self, ip_address, host_port=DEFAULT_PORT):
-        self.ip_address=ip_address
-        
-        self.app=Flask(__name__)
-        
-        self.host_port=host_port
-        
-        self.peers=[]
-        
-        @self.app.route(REQUEST_HANDSHAKE, methods=['POST'])
-        def request_handshake():  
-            ip_address=request.remote_addr
-            
-            new_peer=Peer(request.form['port'], ip_address) #get the port and the ip address of the incoming node
-            
-            if (self.check_node_health(new_peer)):
+    def __init__(self, ip_address: str, host_port: int = DEFAULT_PORT):
+        self.ip_address = ip_address
+        self.app = Flask(__name__)
+        self.host_port = host_port
+        self.peers = []
+        self.nodes_list = {}
+        self.blockchain = Blockchain()
 
-                self.peers.append(new_peer) 
-            
-            else:
-                
-                return "<h1> Handshake Refused</h1> " , 400 
-            
+        def add_node(node_ip, node_port):
+            url = PROT + '://' + node_ip + ':' + node_port + URI_GET_STATUS
 
-            return "<h1> Handshake response returned </h1>" , 200
-        @self.app.route(RECEIVE_DATA, methods=['POST'])
-        def recieve_data():
+            node_status = self.get_peer_status(url)
 
-                print(request.form['data'])#deriving the data from post request , arbitrary function for testing data recievial ()
-                                           #when you want to send me data you send it to this route and have a function tend to the data
-                return  "Data received"# This won't show on the terminal ps just for fun( response code 200)
-    def check_node_health(self, Peer):
-        
-        #Add other quality measurements here( Ping and stuff for Peers)
-        #Just checks previous handshakes for now
-     
-        for peer in self.peers:
-     
-            if (peer.ip ==Peer.ip):
-     
-                return False
-     
-        return True
-    def transmit(self, address_target, payload):              
-        
+            self.nodes_list[node_ip] = {'status': STATUS_RUNNING, 'port': node_port}
+            pass
+
+        @self.app.route(URI_GET_STATUS, methods=['GET'])
+        def get_curr_status():
+            return json.dumps({'UP': True}), 200, {'ContentType': 'application/json'}
+
+        @self.app.route(URI_GET_NODES, methods=['GET'])
+        def get_nodes():
+            return json.dumps(self.nodes_list)
+
+        @self.app.route(URI_ADD_NODE, methods=['GET'])
+        def add_node_async():
+            node_ip = request.args.get('ip_addr')
+            node_port = request.args.get('port')
+
+            _thread.start_new_thread(add_node, (node_ip, node_port))
+            return 'Successfully added.', 200
+
+    def get_peer_status(self, url):
+        response = requests.get(url=url)
+        return STATUS_RUNNING if response.status_code == 200 else STATUS_NOT_RESPONDING
+
+    def transmit_data(self, url, data):
         with self.app.app_context():
-            requests.post(url=address_target,data=payload)           
-    def send_async_data(self, peer, route ,payload):
-            #we use this method to send our data, we specify the 
-            #payload toinclude in the http payload and determine 
-            #the  receiving end point host_port while providing the IP address and 
-            #the recieving route (There are multiple ) receiving routes (/hand shake /receieve file )                                         
-            #payload should be a dictionary in python format
-            #keep in mind  running this function inside the main server thread, throttles and slows the app maybe even killing it 
-            #you should initiate it inside a new thread 
+            requests.post(url=url, data=data)
 
-            address=MEDIUM + peer.ip + ":" + peer.port + route #Forge the address
+    def transmit_json(self, url, json):
+        with self.app.app_context():
+            requests.post(url=url, json=json)
 
-            try:
+    def start(self):
+        self.app.run(host=self.ip_address, port=self.host_port)
 
-                _thread.start_new_thread(self.transmit, (address, payload))
-
-            except:
-
-                return " <h1> Data transmission failed </h1>", 400
-
-            return " <h1> Data was  sent successfully </h1>" , 200
-    def run_server(self):
-
-            self.app.run(host=self.ip_address, port=DEFAULT_PORT)
+# def async_req(self, peer, route, payload):
+#     address = PROT + peer.ip + ":" + peer.port + route
+#
+#     try:
+#
+#         _thread.start_new_thread(self.transmit_json, (address, payload))
+#
+#     except:
+#
+#         return " <h1> Data transmission failed </h1>", 400
+#
+#     return " <h1> Data was  sent successfully </h1>", 200

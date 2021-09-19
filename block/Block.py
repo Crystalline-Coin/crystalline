@@ -1,5 +1,5 @@
 import time
-from helper import gen_hash_encoded
+from crystaline.block.helper import gen_hash_encoded
 from pathlib import Path
 from ..file.file import File
 import json
