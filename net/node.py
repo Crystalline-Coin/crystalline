@@ -61,7 +61,7 @@ class Node:
                 json_string = json.dumps(block.to_dict())
             except:
                 print("Invalid block index")
-                status_code = 500
+                status_code = 404
             return json_string, status_code, {'ContentType': 'application/json'}
                
 
