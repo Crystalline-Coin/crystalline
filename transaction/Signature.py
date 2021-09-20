@@ -28,7 +28,7 @@ def sign(transaction, privatekey):
 def verify_signature(transaction, publickey):
     
     transaction_details = (
-                        transaction.input_address 
+                          transaction.input_address 
                         + transaction.output_address 
                         + transaction.value
                         )
