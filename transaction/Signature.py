@@ -8,8 +8,14 @@ CURVE_NAME = 'Ed448'
 
 def sign(transaction, privatekey):
     
-    transaction_details = transaction.input_address + transaction.output_address + transaction.value
-    trans_hash = hl.sha256(transaction_details.encode()).digest()
+    transaction_details = (
+                          transaction.input_address 
+                        + transaction.output_address 
+                        + transaction.value
+                        )
+    trans_hash = hl.sha256(
+                        transaction_details.encode()
+                    ).digest()
     
     curve = Curve.get_curve(CURVE_NAME)
     private_key = ECPrivateKey(privatekey, curve)
@@ -21,8 +27,14 @@ def sign(transaction, privatekey):
 
 def verify_signature(transaction, publickey):
     
-    transaction_details = transaction.input_address + transaction.output_address + transaction.value
-    trans_hash = hl.sha256(transaction_details.encode()).digest()
+    transaction_details = (
+                        transaction.input_address 
+                        + transaction.output_address 
+                        + transaction.value
+                        )
+    trans_hash = hl.sha256(
+                        transaction_details.encode()
+                    ).digest()
 
     public_key = ECPublicKey(publickey)
 
