@@ -31,9 +31,11 @@ class Transaction:
         json_string = file.read()
         self.from_json(json_string)
         file.close()
-
-    def get_details(self):
-        return self.input_address + self.output_address
+        
+    def get_details(self): 
+        input_address_str = ''.join([str(x) for t in self.input_address for x in t]) 
+        output_address_str = ''.join([str(x) for t in self.output_address for x in t]) 
+        return input_address_str + output_address_str
 
     def get_hash(self):
         pass
