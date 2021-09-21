@@ -1,17 +1,7 @@
-import os
-import sys
-current_path = os.path.abspath(os.path.dirname(__file__)) 
-sys.path.append(current_path) 
-project_dir = str(current_path)
-sys.path.append('../public_address/')
-print(sys.path)
-from public_address.public_address_generator import PublicAddressGenerator
-import sys
-sys.path.append('../transaction/')
 from transaction import Signature as sg
 from transaction import Transaction as tr
 from transaction import public_address_generator as pa
-
+from public_address.public_address_generator import PublicAddressGenerator
 
 a = tr.Transaction("in address", "out address", "value", "")
 
