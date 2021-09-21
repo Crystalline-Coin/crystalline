@@ -35,5 +35,8 @@ class Transaction:
         self.from_json(json_string)
         file.close()
 
+    def get_details(self):
+        return self.input_address + self.output_address + self.value
+
     def is_valid(self):
         pass

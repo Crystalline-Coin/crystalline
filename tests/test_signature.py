@@ -12,11 +12,6 @@ from transaction import Signature as sg
 from transaction import Transaction as tr
 from transaction import public_address_generator as pa
 
-#import Signature as sg
-#import Transaction as tr
-#import public_address_generator as pa
-
-print("test")
 
 a = tr.Transaction("in address", "out address", "value", "")
 
