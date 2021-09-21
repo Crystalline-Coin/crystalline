@@ -51,7 +51,7 @@ class Block:
         with open(new_path, mode='wb') as new_file:
             new_file.write(file.content)
     
-    def is_file_size_valid(self,file_path):
+    def is_file_size_valid(self):
         total_size=0
         for file in self.files:
             total_size+=len(file.content.encode(STRING_FORMAT))
@@ -59,7 +59,7 @@ class Block:
             return False
         else:
             return True
-    def is_transaction_size_valid(self,transactions_dir):
+    def is_transaction_size_valid(self):
         total_size=0
         for transaction in self.transactions:
             total_size+=len(transaction.content.encode(STRING_FORMAT))
