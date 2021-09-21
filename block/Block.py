@@ -1,5 +1,5 @@
+
 import time
-import os
 from helper import gen_hash_encoded
 from pathlib import Path
 from ..file.file import File
@@ -7,27 +7,21 @@ import json
 
 FILE_NAME_PREFIX = 'cry_'
 FILE_EXTENSION = '.blk'
-BYTE=8
-BLOCK_FILE_SIZE=3*1024*1024
-BLOCK_TRANSACTION_SIZE=1*1024*1024
+BLOCK_FILE_SIZE = 3*1024*1024
+BLOCK_TRANSACTION_SIZE = 1*1024*1024
+STRING_FORMAT='utf-8'
 class Block:
     def __init__(self, version: str, prev_hash: str, difficulty_target: int, nonce: int,
-                 timestamp: time = int(time.time()), files = None,transactions=None):
+                 timestamp: time = int(time.time()), files = None):
         self.version = version
         self.prev_hash = prev_hash
         self.difficulty_target = difficulty_target
         self.nonce = nonce
         self.timestamp = timestamp
-
         if files is None:
             self.files = []
         else:
             self.files = list(files)
-
-        if transactions is None:
-            self.transactions=[]
-        else:
-            self.transactions=list(transactions)
 
     def to_dict(self):
         return {
@@ -56,10 +50,11 @@ class Block:
         new_path = file_path + '/' + file.name
         with open(new_path, mode='wb') as new_file:
             new_file.write(file.content)
+    
     def is_file_size_valid(self,file_path):
         total_size=0
         for file in self.files:
-            total_size+=os.path.getsize(file_path+'/'+file)
+            total_size+=len(file.content.encode(STRING_FORMAT))
         if(total_size>=BLOCK_FILE_SIZE):
             return False
         else:
@@ -67,7 +62,7 @@ class Block:
     def is_transaction_size_valid(self,transactions_dir):
         total_size=0
         for transaction in self.transactions:
-            total_size+=os.path.getsize(transactions_dir+'/'+transaction)
+            total_size+=len(transaction.content.encode(STRING_FORMAT))
         if(total_size>=BLOCK_TRANSACTION_SIZE):
             return False
         else:
@@ -80,7 +75,7 @@ class Block:
             return False
         else:
             return True
-
+            
     def save(self, file_path):
         first_part_dict = self.to_dict()
         files_dict = {
@@ -93,7 +88,6 @@ class Block:
         json_string = json.dumps(first_part_dict.update(files_dict))
         with open(path, mode='w') as file:
             file.write(json_string)
-       
 
     @staticmethod
     def load(file_path):
@@ -108,4 +102,6 @@ class Block:
         timestamp = int(name[STARTING_INDEX:ENDING_INDEX])
         return Block(block_dict['version'], block_dict['prev_hash'],
                     block_dict['difficulty_target'], block_dict['nonce'],
-                    timestamp, block_files)    
+                    timestamp, block_files)
+
+
