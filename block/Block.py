@@ -1,5 +1,39 @@
+
+Skip to content
+Pull requests
+Issues
+Marketplace
+Explore
+@SyntheticDemon
+Crystaline-Coin /
+crystaline
+Private
+
+0
+0
+
+    0
+
+Code
+Issues
+Pull requests 3
+Actions
+Projects
+Security
+
+    Insights
+
+crystaline/block/Block.py /
+@mohammadsaadati80
+mohammadsaadati80 Add is block size valid function
+Latest commit 032f74b 3 days ago
+History
+3 contributors
+@tahafkh
+@shabihish
+@mohammadsaadati80
+86 lines (77 sloc) 2.85 KB
 import time
-import os
 from helper import gen_hash_encoded
 from pathlib import Path
 from ..file.file import File
@@ -7,27 +41,22 @@ import json
 
 FILE_NAME_PREFIX = 'cry_'
 FILE_EXTENSION = '.blk'
-BLOCK_FILE_SIZE=3*1024*1024
-BLOCK_TRANSACTION_SIZE=1*1024*1024
-STRING_FORMAT='utf-8'
+BYTE=8
+BLOCK_FILE_SIZE = 3*1024*1024
+BLOCK_TRANSACTION_SIZE = 1*1024*1024
+
 class Block:
     def __init__(self, version: str, prev_hash: str, difficulty_target: int, nonce: int,
-                 timestamp: time = int(time.time()), files = None,transactions=None):
+                 timestamp: time = int(time.time()), files = None):
         self.version = version
         self.prev_hash = prev_hash
         self.difficulty_target = difficulty_target
         self.nonce = nonce
         self.timestamp = timestamp
-
         if files is None:
             self.files = []
         else:
             self.files = list(files)
-
-        if transactions is None:
-            self.transactions=[]
-        else:
-            self.transactions=list(transactions)
 
     def to_dict(self):
         return {
@@ -56,30 +85,12 @@ class Block:
         new_path = file_path + '/' + file.name
         with open(new_path, mode='wb') as new_file:
             new_file.write(file.content)
-    def is_file_size_valid(self,file_path):
-        total_size=0
-        for file in self.files:
-            total_size+=len(file.content.encode(STRING_FORMAT))
-        if(total_size>=BLOCK_FILE_SIZE):
+    
+    def is_block_size_valid(self, block_size):
+        if(block_size <= BLOCK_TRANSACTION_SIZE + BLOCK_FILE_SIZE):
             return False
         else:
-            return True
-    def is_transaction_size_valid(self,transactions_dir):
-        total_size=0
-        for transaction in self.transactions:
-            total_size+=len(transaction.content.encode(STRING_FORMAT))
-        if(total_size>=BLOCK_TRANSACTION_SIZE):
-            return False
-        else:
-            return True
-            
-    def is_valid(self,files_dir,transactions_dir):
-        if(not self.version or not self.prev_hash or not self.difficulty_target or not self.nonce 
-        or not self.timestamp or not self.is_file_size_valid(files_dir) 
-        or not self.is_transaction_size_valid(transactions_dir)):
-            return False
-        else:
-            return True
+            return True  
 
     def save(self, file_path):
         first_part_dict = self.to_dict()
@@ -93,7 +104,6 @@ class Block:
         json_string = json.dumps(first_part_dict.update(files_dict))
         with open(path, mode='w') as file:
             file.write(json_string)
-       
 
     @staticmethod
     def load(file_path):
@@ -108,4 +118,20 @@ class Block:
         timestamp = int(name[STARTING_INDEX:ENDING_INDEX])
         return Block(block_dict['version'], block_dict['prev_hash'],
                     block_dict['difficulty_target'], block_dict['nonce'],
-                    timestamp, block_files)    
+                    timestamp, block_files)
+
+    © 2021 GitHub, Inc.
+    Terms
+    Privacy
+    Security
+    Status
+    Docs
+
+    Contact GitHub
+    Pricing
+    API
+    Training
+    Blog
+    About
+
+Loading complete
