@@ -1,17 +1,15 @@
 import json
-
+import hashlib as hl
 class Transaction: 
-    def __init__(self, _input_address, _output_address, _value, _signature):
+    def __init__(self, _input_address, _output_address, _signature):
         self.input_address = _input_address
         self.output_address = _output_address
-        self.value = _value
         self.signature = _signature
 
     def to_json(self):
         transactions_json = {
             "input_address" : self.input_address,
             "output_address": self.output_address,
-            "value": self.value,
             "signature" : self.signature
         }
         return json.dumps(transactions_json)
@@ -20,7 +18,6 @@ class Transaction:
         loads_transactions_json = json.loads(transactions_json)
         self.input_address = loads_transactions_json["input_address"]
         self.output_address = loads_transactions_json["output_address"]
-        self.value = loads_transactions_json["value"]
         self.signature = loads_transactions_json["signature"]
 
     def save(self, path):
@@ -36,7 +33,10 @@ class Transaction:
         file.close()
 
     def get_details(self):
-        return self.input_address + self.output_address + self.value
+        return self.input_address + self.output_address
+
+    def get_hash(self):
+        pass
 
     def is_valid(self):
         pass

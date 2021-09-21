@@ -1,4 +1,3 @@
-import Transaction as tr
 import hashlib as hl
 from ecpy.ecdsa import ECDSA
 from ecpy.curves import Curve, Point
