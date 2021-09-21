@@ -80,15 +80,3 @@ class Node:
     def start(self):
         self.app.run(host=self.ip_address, port=self.host_port)
 
-# def async_req(self, peer, route, payload):
-#     address = PROT + peer.ip + ":" + peer.port + route
-#
-#     try:
-#
-#         _thread.start_new_thread(self.transmit_json, (address, payload))
-#
-#     except:
-#
-#         return " <h1> Data transmission failed </h1>", 400
-#
-#     return " <h1> Data was  sent successfully </h1>", 200
