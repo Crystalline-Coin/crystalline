@@ -1,38 +1,4 @@
 
-Skip to content
-Pull requests
-Issues
-Marketplace
-Explore
-@SyntheticDemon
-Crystaline-Coin /
-crystaline
-Private
-
-0
-0
-
-    0
-
-Code
-Issues
-Pull requests 3
-Actions
-Projects
-Security
-
-    Insights
-
-crystaline/block/Block.py /
-@mohammadsaadati80
-mohammadsaadati80 Add is block size valid function
-Latest commit 032f74b 3 days ago
-History
-3 contributors
-@tahafkh
-@shabihish
-@mohammadsaadati80
-86 lines (77 sloc) 2.85 KB
 import time
 from helper import gen_hash_encoded
 from pathlib import Path
@@ -120,18 +86,4 @@ class Block:
                     block_dict['difficulty_target'], block_dict['nonce'],
                     timestamp, block_files)
 
-    © 2021 GitHub, Inc.
-    Terms
-    Privacy
-    Security
-    Status
-    Docs
 
-    Contact GitHub
-    Pricing
-    API
-    Training
-    Blog
-    About
-
-Loading complete
