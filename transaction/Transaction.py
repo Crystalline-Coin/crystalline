@@ -1,5 +1,7 @@
 import json
-import hashlib as hl
+import Signature as sg
+import crystaline.block.helper as hp
+
 class Transaction: 
     def __init__(self, _input_address, _output_address, _signature):
         self.input_address = _input_address
@@ -31,14 +33,15 @@ class Transaction:
         json_string = file.read()
         self.from_json(json_string)
         file.close()
-        
-    def get_details(self): 
-        input_address_str = ''.join([str(x) for t in self.input_address for x in t]) 
-        output_address_str = ''.join([str(x) for t in self.output_address for x in t]) 
+
+    def get_details(self):
+        input_address_str = ''.join([str(x) for t in self.input_address for x in t])
+        output_address_str = ''.join([str(x) for t in self.output_address for x in t])
         return input_address_str + output_address_str
 
     def get_hash(self):
-        pass
+        return hp.gen_hash(self.get_details())
 
-    def is_valid(self):
+    def is_valid(self, public_key):
         pass
+        
