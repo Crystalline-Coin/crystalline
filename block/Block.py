@@ -57,6 +57,7 @@ class Block:
             total_size+=len(file.content.encode(STRING_FORMAT))
         if(total_size>=BLOCK_FILE_SIZE):
             return False
+        
         else:
             return True
     def is_transaction_size_valid(self):
@@ -65,6 +66,7 @@ class Block:
             total_size+=len(transaction.content.encode(STRING_FORMAT))
         if(total_size>=BLOCK_TRANSACTION_SIZE):
             return False
+        
         else:
             return True
             
@@ -73,6 +75,7 @@ class Block:
         or not self.timestamp or not self.is_file_size_valid(files_dir) 
         or not self.is_transaction_size_valid(transactions_dir)):
             return False
+        
         else:
             return True
             
