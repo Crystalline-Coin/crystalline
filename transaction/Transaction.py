@@ -11,7 +11,7 @@ class Transaction:
         transactions_json = {
             "input_address" : dict(self.input_address),
             "output_address": dict(self.output_address),
-            "signature" : str(self.signature)
+            "signature" : str(self.signature) 
         }
         return json.dumps(transactions_json)
 
@@ -19,7 +19,7 @@ class Transaction:
         loads_transactions_json = json.loads(transactions_json)
         self.input_address = [(k, v) for k, v in loads_transactions_json["input_address"].items()]
         self.output_address = [(k, v) for k, v in loads_transactions_json["output_address"].items()]
-        self.signature = bytes(loads_transactions_json["signature"].encode())
+        self.signature = loads_transactions_json["signature"][2:-1].encode().decode('unicode_escape').encode("raw_unicode_escape")
 
     def save(self, path):
         file = open(path, "w")
