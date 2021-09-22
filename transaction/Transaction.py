@@ -1,5 +1,4 @@
 import json
-import Signature as sg
 import crystaline.block.helper as hp
 
 class Transaction: 
@@ -10,16 +9,16 @@ class Transaction:
 
     def to_json(self):
         transactions_json = {
-            "input_address" : self.input_address,
-            "output_address": self.output_address,
+            "input_address" : dict(self.input_address),
+            "output_address": dict(self.output_address),
             "signature" : self.signature
         }
         return json.dumps(transactions_json)
 
     def from_json(self, transactions_json):
         loads_transactions_json = json.loads(transactions_json)
-        self.input_address = loads_transactions_json["input_address"]
-        self.output_address = loads_transactions_json["output_address"]
+        self.input_address = [(k, v) for k, v in loads_transactions_json["input_address"].items()]
+        self.output_address = [(k, v) for k, v in loads_transactions_json["output_address"].items()]
         self.signature = loads_transactions_json["signature"]
 
     def save(self, path):
