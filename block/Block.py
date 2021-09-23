@@ -7,10 +7,9 @@ import json
 
 FILE_NAME_PREFIX = 'cry_'
 FILE_EXTENSION = '.blk'
-BYTE=8
 BLOCK_FILE_SIZE = 3*1024*1024
 BLOCK_TRANSACTION_SIZE = 1*1024*1024
-
+STRING_FORMAT='utf-8'
 class Block:
     def __init__(self, version: str, prev_hash: str, difficulty_target: int, nonce: int,
                  timestamp: time = int(time.time()), files = None):
@@ -56,12 +55,34 @@ class Block:
         with open(new_path, mode='wb') as new_file:
             new_file.write(file.content)
     
-    def is_block_size_valid(self, block_size):
-        if(block_size <= BLOCK_TRANSACTION_SIZE + BLOCK_FILE_SIZE):
+    def is_file_size_valid(self):
+        total_size=0
+        for file in self.files:
+            total_size+=len(file.content.encode(STRING_FORMAT))
+        if(total_size>=BLOCK_FILE_SIZE):
             return False
+        
         else:
-            return True  
-
+            return True
+    def is_transaction_size_valid(self):
+        total_size=0
+        for transaction in self.transactions:
+            total_size+=len(transaction.content.encode(STRING_FORMAT))
+        if(total_size>=BLOCK_TRANSACTION_SIZE):
+            return False
+        
+        else:
+            return True
+            
+    def is_valid(self,files_dir,transactions_dir):
+        if(not self.version or not self.prev_hash or not self.difficulty_target or not self.nonce 
+        or not self.timestamp or not self.is_file_size_valid(files_dir) 
+        or not self.is_transaction_size_valid(transactions_dir)):
+            return False
+        
+        else:
+            return True
+            
     def save(self, file_path):
         block_dict = self.to_dict()
         path = file_path + '/' + FILE_NAME_PREFIX \
