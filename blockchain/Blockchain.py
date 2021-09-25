@@ -62,7 +62,7 @@ class Blockchain:
         return self.chain[index] 
 
     def get_utxo(self, trans_hash, output_index):
-        for i in range(0, self.length):
+        for i in range(0, len(self.chain)):
             curr_block = self.get_block(i)
             for trans in curr_block.transactions:
                 if trans.get_hash() == trans_hash:
@@ -74,7 +74,7 @@ class Blockchain:
         return None
 
     def utxo_is_spent(self, block_index, utxo):
-        for i in range(block_index+1, self.length):
+        for i in range(block_index+1, len(self.chain)):
             curr_block = self.get_block(i)
             for trans in curr_block.transactions:
                 if trans.has_input(utxo):
