@@ -61,4 +61,10 @@ class Transaction:
         else :
             return None
 
-    
+    def has_input(self, utxo):
+        for i in self.input_address:
+            if i == utxo:
+                return True
+        return False
+
+   
