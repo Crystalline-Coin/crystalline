@@ -54,3 +54,11 @@ class Transaction:
             return True
         else :
             return False
+
+    def get_output(self, index):
+        if len(output_address) > index:
+            return self.output_address[index]
+        else :
+            return None
+
+    
