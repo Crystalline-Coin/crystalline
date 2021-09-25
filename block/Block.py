@@ -1,9 +1,10 @@
-
-import time
 from crystaline.block.helper import gen_hash_encoded
-from pathlib import Path
+from crystaline.block.helper import gen_hash
 from crystaline.file.file import File
+from crystaline.transaction.Transaction import Transaction
+from pathlib import Path
 import json
+import time
 
 FILE_NAME_PREFIX = 'cry_'
 FILE_EXTENSION = '.blk'
@@ -12,7 +13,7 @@ BLOCK_TRANSACTION_SIZE = 1*1024*1024
 STRING_FORMAT='utf-8'
 class Block:
     def __init__(self, version: str, prev_hash: str, difficulty_target: int, nonce: int,
-                 timestamp: time = int(time.time()), files = None):
+                 timestamp: time = int(time.time()), files = None , transactinos = None):
         self.version = version
         self.prev_hash = prev_hash
         self.difficulty_target = difficulty_target
@@ -22,6 +23,11 @@ class Block:
             self.files = []
         else:
             self.files = list(files)
+        if transactinos is None:
+            self.transactinos = []
+        else:
+            self.transactinos = list(transactinos)
+
 
     def to_dict(self):
         block_dict = {
@@ -90,6 +96,18 @@ class Block:
         json_string = json.dumps(block_dict)
         with open(path, mode='w') as file:
             file.write(json_string)
+
+    def get_files_hash(self):
+        files_hash_concat = str 
+        for _file in self.files:
+            files_hash_concat += _file.file_hash
+        return gen_hash(files_hash_concat)
+
+    def get_transactions_hash(self):
+        transactions_hash_concat = str
+        for _transaction in self.transactions:
+            transactions_hash_concat += _transaction.get_hash()
+        return gen_hash(transactions_hash_concat)
 
     @staticmethod
     def load(file_path):
