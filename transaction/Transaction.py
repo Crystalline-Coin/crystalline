@@ -1,6 +1,6 @@
 import json
 import crystaline.block.helper as hp
-import Signature as sg
+import crystaline.transaction.Signature as sg
 
 class Transaction: 
     def __init__(self, _input_address, _output_address, _signature):
@@ -58,7 +58,7 @@ class Transaction:
         return False
 
     def get_output(self, index):
-        if len(output_address) > index:
+        if len(self.output_address) > index:
             return self.output_address[index]
         else :
             return None
