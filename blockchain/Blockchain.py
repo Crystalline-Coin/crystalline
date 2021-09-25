@@ -61,9 +61,6 @@ class Blockchain:
         assert self.is_block_available(index= index)
         return self.chain[index] 
 
-    def get_length(self):
-        return self.length
-
     def get_utxo(self, trans_hash, output_index):
         for i in range(0, self.length):
             curr_block = self.get_block(i)
