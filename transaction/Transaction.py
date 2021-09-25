@@ -42,6 +42,9 @@ class Transaction:
     def get_hash(self):
         return hp.gen_hash(self.get_details())
 
+    def to_dict(self):
+        return self.__dict__
+
     def is_valid(self, public_key):
         if sg.verify_signature(self, public_key):
             return True
