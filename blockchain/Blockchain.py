@@ -75,3 +75,11 @@ class Blockchain:
                     else :
                         return tuple(utxo , i)
         return None
+
+    def utxo_is_spent(self, block_index, utxo):
+        for i in range(block_index+1, self.length):
+            curr_block = self.get_block(i)
+            for trans in curr_block.transactions:
+                if trans.has_input(utxo):
+                    return True
+        return False
