@@ -45,6 +45,10 @@ class Transaction:
     def to_dict(self):
         return self.__dict__
 
+    @staticmethod
+    def from_dict(dict):
+        return Transaction(dict['_input_address'], dict['_output_address'], dict['_signature'])
+
     def is_valid(self, public_key):
         if sg.verify_signature(self, public_key):
             return True
