@@ -63,3 +63,15 @@ class Blockchain:
 
     def get_length(self):
         return self.length
+
+    def get_utxo(self, trans_hash, output_index):
+        for i in range(0, self.length):
+            curr_block = self.get_block(i)
+            for trans in curr_block.transactions:
+                if trans.get_hash() == trans_hash:
+                    utxo = trans.get_output(output_index)
+                    if utxo == None :
+                        return None
+                    else :
+                        return tuple(utxo , i)
+        return None
