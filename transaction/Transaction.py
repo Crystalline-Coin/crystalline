@@ -58,7 +58,7 @@ class Transaction:
         return False
 
     def get_output(self, index):
-        if len(output_address) > index:
+        if len(self.output_address) > index:
             return self.output_address[index]
         else :
             return None
@@ -76,13 +76,13 @@ class Transaction:
             output_index = input_add[1]
             temp = blockchain.get_utxo(trans_hash, output_index)
             if temp == None:
-                return tuple(False, [])
+                return False, []
             else :
                 (utxo, index) = temp
                 utxos_values.append(utxo[1])
                 if blockchain.utxo_is_spent(index, input_add):
-                    return tuple(False, [])
-        return tuple(True, utxos_values)
+                    return False, []
+        return True, utxos_values
 
     def get_sum_of_outputs_values(self):
         sum_of_values = 0
