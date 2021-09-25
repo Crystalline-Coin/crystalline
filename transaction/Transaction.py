@@ -1,5 +1,6 @@
 import json
 import crystaline.block.helper as hp
+import Signature as sg
 
 class Transaction: 
     def __init__(self, _input_address, _output_address, _signature):
@@ -42,5 +43,7 @@ class Transaction:
         return hp.gen_hash(self.get_details())
 
     def is_valid(self, public_key):
-        pass
-        
+        if sg.verify_signature(self, public_key):
+            return True
+        else :
+            return False
