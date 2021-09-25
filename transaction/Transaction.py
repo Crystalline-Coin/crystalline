@@ -67,4 +67,17 @@ class Transaction:
                 return True
         return False
 
-   
+    def validate_input_UTXOs(self, block_chain):
+        utxos_values = []
+        for input_add in self.input_address:
+            trans_hash = input_add[0]
+            output_index = input_add[1]
+            temp = block_chain.get_utxo(trans_hash, output_index)
+            if temp == None:
+                return tuple(False, [])
+            else :
+                (utxo, index) = temp
+                utxos_values.append(utxo[1])
+                if block_chain.utxo_is_spent(index, input_add):
+                    return tuple(False, [])
+        return tuple(True, utxos_values)
