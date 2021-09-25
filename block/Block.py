@@ -3,7 +3,7 @@ import time
 from crystaline.block.helper import gen_hash_encoded
 from pathlib import Path
 from crystaline.file.file import File
-from crystaline.transaction.transaction import Transaction
+from crystaline.transaction.Transaction import Transaction
 import json
 
 FILE_NAME_PREFIX = 'cry_'
