@@ -1,6 +1,6 @@
 
 import time
-from crystaline.block.helper import gen_hash_encoded
+from crystaline.block.helper import gen_hash
 from pathlib import Path
 from crystaline.file.file import File
 from crystaline.transaction.Transaction import Transaction
@@ -44,13 +44,9 @@ class Block:
         return block_dict
 
     def generate_block_hash(self):
-        arr = bytearray(self.version)
-        arr.extend(self.prev_hash)
-        arr.extend([self.difficulty_target])
-        arr.extend([self.nonce])
-        arr.extend([self.timestamp])
+        data_string = str(self.version) + str(self.prev_hash) + str(self.difficulty_target) + str(self.nonce) + str(self.timestamp)
         #TODO: add transactions hash to block hash
-        return gen_hash_encoded(arr)
+        return gen_hash(data_string)
 
     def upload_file(self, file_path):
         path = Path(file_path)
