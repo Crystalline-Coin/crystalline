@@ -49,11 +49,13 @@ class Transaction:
     def from_dict(dict):
         return Transaction(dict['_input_address'], dict['_output_address'], dict['_signature'])
 
-    def is_valid(self, public_key):
+    def is_valid(self, public_key, blockchain):
         if sg.verify_signature(self, public_key):
-            return True
-        else :
-            return False
+            (flag, utxos_values) = self.validate_input_UTXOs(blockchain)
+            if flag == True:
+                if self.get_sum_of_outputs_values() <= sum(utxos_values):
+                    return True
+        return False
 
     def get_output(self, index):
         if len(output_address) > index:
@@ -67,17 +69,23 @@ class Transaction:
                 return True
         return False
 
-    def validate_input_UTXOs(self, block_chain):
+    def validate_input_UTXOs(self, blockchain):
         utxos_values = []
         for input_add in self.input_address:
             trans_hash = input_add[0]
             output_index = input_add[1]
-            temp = block_chain.get_utxo(trans_hash, output_index)
+            temp = blockchain.get_utxo(trans_hash, output_index)
             if temp == None:
                 return tuple(False, [])
             else :
                 (utxo, index) = temp
                 utxos_values.append(utxo[1])
-                if block_chain.utxo_is_spent(index, input_add):
+                if blockchain.utxo_is_spent(index, input_add):
                     return tuple(False, [])
         return tuple(True, utxos_values)
+
+    def get_sum_of_outputs_values(self):
+        sum_of_values = 0
+        for output in self.output_address:
+            sum_of_values += output[1]
+        return sum_of_values
