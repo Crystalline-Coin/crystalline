@@ -1,5 +1,4 @@
 import time
-import hashlib
 from crystaline.block.Block import Block
 from crystaline.fee_calculator import fee_calculator
 
