@@ -1,4 +1,6 @@
 import json
+import hashlib
+import crystaline.block.helper as hp
 
 class File:
 
@@ -7,6 +9,7 @@ class File:
         self._name = name
         self._creator = creator
         self._creation_transaction = creation_transaction
+        self._file_hash = self.get_hash()
 
     @property
     def name(self):
@@ -24,6 +27,10 @@ class File:
     def creation_transaction(self):
         return self._creation_transaction
 
+    @property
+    def file_hash(self):
+        return self._file_hash
+
     def to_dict(self):
         return self.__dict__
 
@@ -34,6 +41,10 @@ class File:
 
     def to_json(self):
         return json.dumps(self.__dict__)
+
+    @staticmethod
+    def get_hash(self):
+        return hp.gen_hash(str(self.to_json()))                                                    
 
     @staticmethod
     def from_json(file_json):
