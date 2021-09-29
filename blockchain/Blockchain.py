@@ -1,10 +1,9 @@
 import time
-import hashlib
 from crystaline.block.Block import Block
 from crystaline.fee_calculator import fee_calculator
 
-GENESIS_FIRST_BLOCK_DIFFICULTY = 0
 GENESIS_BLOCK_DIFFICULTY = 0
+BLOCK_DIFFICULTY = 0
 
 class Blockchain:
     
@@ -17,7 +16,7 @@ class Blockchain:
         if(len(self.chain)):
             new_block = Block(len(self.chain), self.last_block.generate_block_hash(), difficulty_target, GENESIS_BLOCK_DIFFICULTY , time.time())
         else:
-            new_block = Block(len(self.chain), GENESIS_FIRST_BLOCK_DIFFICULTY , difficulty_target, GENESIS_FIRST_BLOCK_DIFFICULTY , time.time())
+            new_block = Block(len(self.chain), BLOCK_DIFFICULTY , difficulty_target, BLOCK_DIFFICULTY , time.time())
         self.chain.append(new_block)
         self.length += 1
         return new_block
