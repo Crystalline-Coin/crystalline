@@ -1,9 +1,10 @@
 import json
 import crystaline.block.helper as hp
 import crystaline.transaction.Signature as sg
+import crystaline.public_address.public_address_generator as pa
 
 class Transaction: 
-    def __init__(self, _input_address, _output_address, _signature):
+    def __init__(self, _input_address, _output_address, _signature = ""):
         self.input_address = _input_address
         self.output_address = _output_address
         self.signature = _signature
@@ -51,7 +52,7 @@ class Transaction:
 
     def is_valid(self, public_key, blockchain):
         if sg.verify_signature(self, public_key):
-            (flag, utxos_values) = self.validate_input_UTXOs(blockchain)
+            (flag, utxos_values) = self.validate_input_UTXOs(blockchain, public_key)
             if flag == True:
                 if self.get_sum_of_outputs_values() <= sum(utxos_values):
                     return True
@@ -69,7 +70,7 @@ class Transaction:
                 return True
         return False
 
-    def validate_input_UTXOs(self, blockchain):
+    def validate_input_UTXOs(self, blockchain, public_key):
         utxos_values = []
         for input_add in self.input_address:
             trans_hash = input_add[0]
@@ -80,7 +81,9 @@ class Transaction:
             else :
                 (utxo, index) = temp
                 utxos_values.append(utxo[1])
-                if blockchain.utxo_is_spent(index, input_add):
+                if not utxo_belongs_to_pubkey(utxo, public_key):
+                    return False, []
+                elif blockchain.utxo_is_spent(index, input_add):
                     return False, []
         return True, utxos_values
 
@@ -89,3 +92,10 @@ class Transaction:
         for output in self.output_address:
             sum_of_values += output[1]
         return sum_of_values
+
+    def utxo_belongs_to_pubkey(utxo, public_key):
+        public_address = utxo[0]
+        public_address_from_public_key = pa.generate_public_address_from_public_key(public_key)
+        if public_address == public_address_from_public_key:
+            return True
+        return False
