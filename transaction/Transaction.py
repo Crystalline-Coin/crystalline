@@ -9,6 +9,10 @@ class Transaction:
         self.output_address = _output_address
         self.signature = _signature
 
+    def sign(self, private_key):
+        if self.signature == "" :
+            self.signature = sg.sign(self, private_key)
+
     def to_json(self):
         transactions_json = {
             "input_address" : dict(self.input_address),
@@ -81,7 +85,7 @@ class Transaction:
             else :
                 (utxo, index) = temp
                 utxos_values.append(utxo[1])
-                if not utxo_belongs_to_pubkey(utxo, public_key):
+                if not self.utxo_belongs_to_pubkey(utxo, public_key):
                     return False, []
                 elif blockchain.utxo_is_spent(index, input_add):
                     return False, []
@@ -93,9 +97,10 @@ class Transaction:
             sum_of_values += output[1]
         return sum_of_values
 
+    @staticmethod
     def utxo_belongs_to_pubkey(utxo, public_key):
         public_address = utxo[0]
-        public_address_from_public_key = pa.generate_public_address_from_public_key(public_key)
+        public_address_from_public_key = pa.PublicAddressGenerator.generate_public_address_from_public_key(public_key)
         if public_address == public_address_from_public_key:
             return True
         return False
