@@ -36,14 +36,14 @@ class Blockchain:
         time_period = time_period * 24 * 60 * 60
         G_x = 1
         for i in range(len(self.chain) , 0 ,-1):
-        now_time = int(time.time())
-        times_diffrence  = now_time - self.chain[i].timestamp
-        if(times_diffrence > time_period):
-            break
-        else:
-            for j in range(0 , len(self.chain[i].files)):                      
-                if self.chain[i].files[j] == uploader_address:
-        G_x *= G_x_calculator(times_diffrence , uploaded_file_size)
+            now_time = int(time.time())
+            times_diffrence  = now_time - self.chain[i].timestamp
+            if(times_diffrence > time_period):
+                break
+            else:
+                for j in range(0 , len(self.chain[i].files)):
+                    if self.chain[i].files[j] == uploader_address:
+                        G_x *= G_x_calculator(times_diffrence , uploaded_file_size)
         fee = F_x * G_x
         return fee
     
