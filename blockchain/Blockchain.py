@@ -11,7 +11,7 @@ class Blockchain:
     def __init__(self):
         self.chain = []
         self.length = 0
-        self.add_new_block(difficulty_target = 0)
+        self.add_new_block(difficulty_target = 0, transactions = [])
 
     def add_new_block(self, difficulty_target, transactions):
         if(len(self.chain)):

@@ -48,8 +48,7 @@ while input_text != '0':
             print("Please create a transaction first!")
         else :
             pv_key = int(input("please enter your Private key (integer type) to sign the transaction : "))
-            sig = sg.sign(transaction, pv_key)
-            transaction.signature = sig
+            transaction.sign(pv_key)
 
     if input_text == '3' :
         pv_key = int(input("please enter your Private key (integer type) to generate your Public key : "))

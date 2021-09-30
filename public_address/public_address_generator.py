@@ -50,10 +50,10 @@ class PublicAddressGenerator:
     def generate_public_address_from_public_key(public_key):
         x, y = public_key.x, public_key.y
         concatenation = str(x) + str(y)
-        hash_value = self.main_hash(concatenation.encode(ENCODING))
+        hash_value = PublicAddressGenerator.main_hash(concatenation.encode(ENCODING))
         address = VERSION_BYTE + hash_value
-        address += self.get_checksum(bytes.fromhex(address)) 
-        return self.base_represent(address)
+        address += PublicAddressGenerator.get_checksum(bytes.fromhex(address)) 
+        return PublicAddressGenerator.base_represent(address)
 
     def create_public_key(self):
         generator = self._curve.generator
