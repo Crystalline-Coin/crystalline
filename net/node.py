@@ -104,7 +104,7 @@ class Node:
         @self.app.route(URL_ADD_TXO, methods=DEFAULT_METHODS)
         def add_txo():
             txo_json = request.get_json()
-            self.transaction_pool.append(.from_json(file_json))
+            self.transaction_pool.append(Transaction.from_json(txo_json))
             return 'Successfully added.', 200
 
     def transmit_data(self, url, data):
