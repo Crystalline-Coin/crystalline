@@ -4,7 +4,7 @@ import pytest
 
 from crystaline.net.node import Node
 from crystaline.net.node import DEFAULT_PROTOCOL, DEFAULT_METHODS
-from crystaline.net.node import URI_ADD_NODE, URI_GET_NODES, URI_GET_STATUS, URI_GET_BLOCK
+from crystaline.net.node import URL_ADD_NODE, URL_GET_NODES, URL_GET_STATUS, URL_GET_BLOCK
 from crystaline.net.node import PARAM_IP, PARAM_PORT, PARAM_BLOCK_INDEX, PARAM_NODES_LIST_STATUS, PARAM_NODES_LIST_PORT
 from crystaline.net.node import STATUS_RADDR_UP
 from crystaline.net.node import get_peer_status
@@ -52,11 +52,11 @@ def wait_for_url(url: str, method: str, timeout: float):
 
 
 def test_net_add_node(running_node):
-    wait_for_url(url=DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URI_GET_STATUS,
+    wait_for_url(url=DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URL_GET_STATUS,
                  method=DEFAULT_METHODS[0],
                  timeout=2)
 
-    req_add_node_url = DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URI_ADD_NODE
+    req_add_node_url = DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URL_ADD_NODE
     if 'POST' in DEFAULT_METHODS:
         res = requests.post(req_add_node_url,
                             params={
@@ -77,13 +77,13 @@ def test_net_add_node(running_node):
 
     time.sleep(0.5)
     if 'POST' in DEFAULT_METHODS:
-        res = requests.post(DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URI_GET_NODES,
+        res = requests.post(DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URL_GET_NODES,
                             params={
                                 PARAM_IP: NODE_IP_ADDR,
                                 PARAM_PORT: NODE_PORT}
                             )
     elif 'GET' in DEFAULT_METHODS:
-        res = requests.get(DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URI_GET_NODES,
+        res = requests.get(DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URL_GET_NODES,
                            params={
                                PARAM_IP: NODE_IP_ADDR,
                                PARAM_PORT: NODE_PORT}
@@ -101,10 +101,10 @@ def test_net_add_node(running_node):
 
 
 def test_net_get_block_state_404(running_node):
-    wait_for_url(url=DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URI_GET_STATUS,
+    wait_for_url(url=DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URL_GET_STATUS,
                  method=DEFAULT_METHODS[0],
                  timeout=2)
-    req_get_block_url = DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URI_GET_BLOCK
+    req_get_block_url = DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URL_GET_BLOCK
 
     if 'POST' in DEFAULT_METHODS:
         res = requests.post(req_get_block_url,
@@ -121,10 +121,10 @@ def test_net_get_block_state_404(running_node):
 
 
 def test_net_get_block_state_200(running_node_with_blockchain):
-    wait_for_url(url=DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URI_GET_STATUS,
+    wait_for_url(url=DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URL_GET_STATUS,
                  method=DEFAULT_METHODS[0],
                  timeout=2)
-    req_get_block_url = DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URI_GET_BLOCK
+    req_get_block_url = DEFAULT_PROTOCOL + '://' + NODE_IP_ADDR + ':' + str(NODE_PORT) + URL_GET_BLOCK
 
     if 'POST' in DEFAULT_METHODS:
         res = requests.post(req_get_block_url,
