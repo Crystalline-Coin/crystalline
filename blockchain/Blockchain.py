@@ -13,11 +13,11 @@ class Blockchain:
         self.length = 0
         self.add_new_block(difficulty_target = 0)
 
-    def add_new_block(self, difficulty_target):
+    def add_new_block(self, difficulty_target, transactions):
         if(len(self.chain)):
-            new_block = Block(len(self.chain), self.last_block.generate_block_hash(), difficulty_target, GENESIS_BLOCK_DIFFICULTY , time.time())
+            new_block = Block(len(self.chain), self.last_block.generate_block_hash(), difficulty_target, GENESIS_BLOCK_DIFFICULTY , time.time(), transactions)
         else:
-            new_block = Block(len(self.chain), GENESIS_FIRST_BLOCK_DIFFICULTY , difficulty_target, GENESIS_FIRST_BLOCK_DIFFICULTY , time.time())
+            new_block = Block(len(self.chain), GENESIS_FIRST_BLOCK_DIFFICULTY , difficulty_target, GENESIS_FIRST_BLOCK_DIFFICULTY , time.time(), transactions)
         self.chain.append(new_block)
         self.length += 1
         return new_block

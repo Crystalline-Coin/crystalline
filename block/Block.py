@@ -69,6 +69,7 @@ class Block:
         
         else:
             return True
+            
     def is_transaction_size_valid(self):
         total_size=0
         for transaction in self.transactions:
