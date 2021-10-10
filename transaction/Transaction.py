@@ -2,7 +2,7 @@ import json
 import crystaline.block.helper as hp
 
 class Transaction: 
-    def __init__(self, _input_address, _output_address, _signature):
+    def __init__(self, _input_address = None, _output_address = None, _signature = None):
         self.input_address = _input_address
         self.output_address = _output_address
         self.signature = _signature
@@ -15,11 +15,13 @@ class Transaction:
         }
         return json.dumps(transactions_json)
 
-    def from_json(self, transactions_json):
+    @classmethod
+    def from_json(cls, transactions_json):
         loads_transactions_json = json.loads(transactions_json)
-        self.input_address = [(k, v) for k, v in loads_transactions_json["input_address"].items()]
-        self.output_address = [(k, v) for k, v in loads_transactions_json["output_address"].items()]
-        self.signature = loads_transactions_json["signature"][2:-1].encode().decode('unicode_escape').encode("raw_unicode_escape")
+        input_address = [(k, v) for k, v in loads_transactions_json["input_address"].items()]
+        output_address = [(k, v) for k, v in loads_transactions_json["output_address"].items()]
+        signature = loads_transactions_json["signature"][2:-1].encode().decode('unicode_escape').encode("raw_unicode_escape")
+        return cls(input_address, output_address, signature)
 
     def save(self, path):
         file = open(path, "w")

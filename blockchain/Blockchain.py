@@ -59,3 +59,6 @@ class Blockchain:
     def get_block(self, index : int):
         assert self.is_block_available(index= index)
         return self.chain[index] 
+
+    def get_hashed_chain(self):
+        return []

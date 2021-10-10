@@ -34,15 +34,15 @@ class File:
     def to_dict(self):
         return self.__dict__
 
-    @staticmethod
-    def from_dict(dict):
-        return File(dict['_content'], dict['_name'],
+    @classmethod
+    def from_dict(cls, dict):
+        return cls(dict['_content'], dict['_name'],
                     dict['_creator'], dict['_creation_transaction'])
 
     def to_json(self):
         return json.dumps(self.__dict__)
 
-    @staticmethod
+
     def get_hash(self):
         return hp.gen_hash(str(self.to_json()))                                                    
 
