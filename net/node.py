@@ -1,19 +1,23 @@
 import _thread
 from flask import Flask
-from flask import request
+from flask import request, jsonify
 import requests
 import json
 from crystaline.blockchain.Blockchain import Blockchain
+from crystaline.file.file import File
+from crystaline.transaction.Transaction import  Transaction
 import multiprocessing
 
 DEFAULT_PROTOCOL = 'http'
 DEFAULT_METHODS = ['POST', 'GET']
 DEFAULT_PORT = 5000
 
-URI_GET_NODES = '/get_nodes'
-URI_ADD_NODE = '/add_node'
-URI_GET_STATUS = '/get_status'
-URI_GET_BLOCK = '/get_block'
+URL_GET_NODES = '/get_nodes'
+URL_ADD_NODE = '/add_node'
+URL_GET_STATUS = '/get_status'
+URL_GET_BLOCK = '/get_block'
+URL_ADD_TXO = '/add_txo'
+URL_ADD_FILE = '/add_file'
 
 STATUS_RADDR_UP = 'UP'
 STATUS_RADDR_DOWN = 'DOWN'
@@ -53,21 +57,24 @@ class Node:
 
         self.running_process = None
 
+        self.file_pool = []
+        self.transaction_pool = []
+
         def add_node(node_ip, node_port):
-            url = DEFAULT_PROTOCOL + '://' + node_ip + ':' + node_port + URI_GET_STATUS
+            url = DEFAULT_PROTOCOL + '://' + node_ip + ':' + node_port + URL_GET_STATUS
             node_status = get_peer_status(url, DEFAULT_METHODS[0])
             self.nodes_list[node_ip] = {PARAM_NODES_LIST_STATUS: node_status, PARAM_NODES_LIST_PORT: node_port}
             pass
 
-        @self.app.route(URI_GET_STATUS, methods=DEFAULT_METHODS)
+        @self.app.route(URL_GET_STATUS, methods=DEFAULT_METHODS)
         def get_curr_status():
             return json.dumps({'UP': True}), 200, {'ContentType': 'application/json'}
 
-        @self.app.route(URI_GET_NODES, methods=DEFAULT_METHODS)
+        @self.app.route(URL_GET_NODES, methods=DEFAULT_METHODS)
         def get_nodes():
             return json.dumps(self.nodes_list)
 
-        @self.app.route(URI_ADD_NODE, methods=DEFAULT_METHODS)
+        @self.app.route(URL_ADD_NODE, methods=DEFAULT_METHODS)
         def add_node_async():
             node_ip = request.args.get(PARAM_IP)
             node_port = request.args.get(PARAM_PORT)
@@ -75,7 +82,7 @@ class Node:
             _thread.start_new_thread(add_node, (node_ip, node_port))
             return 'Successfully added.', 200
 
-        @self.app.route(URI_GET_BLOCK, methods=DEFAULT_METHODS)
+        @self.app.route(URL_GET_BLOCK, methods=DEFAULT_METHODS)
         def get_block():
             status_code = 200
             json_string = ''
@@ -87,6 +94,16 @@ class Node:
                 print("Invalid block index")
                 status_code = 404
             return json_string, status_code, {'ContentType': 'application/json'}
+
+        @self.app.route(URL_ADD_FILE, methods=DEFAULT_METHODS)
+        def add_file():
+            self.file_pool.append(File.from_json(request.get_json()))
+            return 'Successfully added.', 200
+
+        @self.app.route(URL_ADD_TXO, methods=DEFAULT_METHODS)
+        def add_txo():
+            self.transaction_pool.append(Transaction.from_json(request.get_json()))
+            return 'Successfully added.', 200
 
     def transmit_data(self, url, data):
         with self.app.app_context():
