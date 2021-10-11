@@ -10,13 +10,13 @@ class Blockchain:
     def __init__(self):
         self.chain = []
         self.length = 0
-        self.add_new_block(difficulty_target = 0)
+        self.add_new_block(difficulty_target = 0, transactions = [])
 
-    def add_new_block(self, difficulty_target):
+    def add_new_block(self, difficulty_target, transactions):
         if(len(self.chain)):
-            new_block = Block(len(self.chain), self.last_block.generate_block_hash(), difficulty_target, GENESIS_BLOCK_DIFFICULTY , time.time())
+            new_block = Block(len(self.chain), self.last_block.generate_block_hash(), difficulty_target, GENESIS_BLOCK_DIFFICULTY , time.time(), transactions)
         else:
-            new_block = Block(len(self.chain), BLOCK_DIFFICULTY , difficulty_target, BLOCK_DIFFICULTY , time.time())
+            new_block = Block(len(self.chain), GENESIS_FIRST_BLOCK_DIFFICULTY , difficulty_target, GENESIS_FIRST_BLOCK_DIFFICULTY , time.time(), transactions)
         self.chain.append(new_block)
         self.length += 1
         return new_block
@@ -60,5 +60,25 @@ class Blockchain:
         assert self.is_block_available(index= index)
         return self.chain[index] 
 
+    def get_utxo(self, trans_hash, output_index):
+        for i in range(0, len(self.chain)):
+            curr_block = self.get_block(i)
+            for trans in curr_block.transactions:
+                if trans.get_hash() == trans_hash:
+                    utxo = trans.get_output(output_index)
+                    if utxo == None :
+                        return None
+                    else :
+                        return utxo , i
+        return None
+
+    def utxo_is_spent(self, block_index, utxo):
+        for i in range(block_index+1, len(self.chain)):
+            curr_block = self.get_block(i)
+            for trans in curr_block.transactions:
+                if trans.has_input(utxo):
+                    return True
+        return False
+    
     def get_hashed_chain(self):
         return []

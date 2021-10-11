@@ -1,4 +1,3 @@
-from crystaline.block.helper import gen_hash_encoded
 from crystaline.block.helper import gen_hash
 from crystaline.file.file import File
 from crystaline.transaction.Transaction import Transaction
@@ -13,12 +12,16 @@ BLOCK_TRANSACTION_SIZE = 1*1024*1024
 STRING_FORMAT='utf-8'
 class Block:
     def __init__(self, version: str, prev_hash: str, difficulty_target: int, nonce: int,
-                 timestamp: time = int(time.time()), files = None , transactinos = None):
+                 timestamp: time = int(time.time()), transactions = None, files = None):
         self.version = version
         self.prev_hash = prev_hash
         self.difficulty_target = difficulty_target
         self.nonce = nonce
         self.timestamp = timestamp
+        if transactions is None:
+            self.transactions = []
+        else:
+            self.transactions = list(transactions)
         if files is None:
             self.files = []
         else:
@@ -36,18 +39,18 @@ class Block:
             'difficulty_target': self.difficulty_target,
             'nonce': self.nonce
         }
+        block_dict['transactions'] = []
+        for transaction in self.transactions:
+            block_dict['transactions'].append(transaction.to_dict())
         block_dict['files'] = []
         for file in self.files:
             block_dict['files'].append(file.to_dict())
         return block_dict
 
     def generate_block_hash(self):
-        arr = bytearray(self.version)
-        arr.extend(self.prev_hash)
-        arr.extend([self.difficulty_target])
-        arr.extend([self.nonce])
-        arr.extend([self.timestamp])
-        return gen_hash_encoded(arr)
+        data_string = str(self.version) + str(self.prev_hash) + str(self.difficulty_target) + str(self.nonce) + str(self.timestamp)
+        #TODO: add transactions hash to block hash
+        return gen_hash(data_string)
 
     def upload_file(self, file_path):
         path = Path(file_path)
@@ -70,6 +73,7 @@ class Block:
         
         else:
             return True
+            
     def is_transaction_size_valid(self):
         total_size=0
         for transaction in self.transactions:
@@ -115,6 +119,9 @@ class Block:
         ENDING_INDEX = -len(FILE_EXTENSION)
         with open(file_path, mode='r') as new_file:
             block_dict = json.loads(new_file.read())
+        block_transactions = []
+        for transaction in block_dict['transactions']:
+            block_transactions.append(Transaction.from_dict(transaction))
         block_files = []
         for file in block_dict['files']:
             block_files.append(File.from_dict(file))
@@ -122,6 +129,6 @@ class Block:
         timestamp = int(name[STARTING_INDEX:ENDING_INDEX])
         return Block(block_dict['version'], block_dict['prev_hash'],
                     block_dict['difficulty_target'], block_dict['nonce'],
-                    timestamp, block_files)
+                    timestamp, block_transactions, block_files)
 
 

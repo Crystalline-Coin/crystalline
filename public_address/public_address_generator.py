@@ -45,6 +45,15 @@ class PublicAddressGenerator:
             address //= BASE
         return ''.join('1' for i in range(leading_ones)) \
                 + represent
+    
+    @staticmethod
+    def generate_public_address_from_public_key(public_key):
+        x, y = public_key.x, public_key.y
+        concatenation = str(x) + str(y)
+        hash_value = PublicAddressGenerator.main_hash(concatenation.encode(ENCODING))
+        address = VERSION_BYTE + hash_value
+        address += PublicAddressGenerator.get_checksum(bytes.fromhex(address)) 
+        return PublicAddressGenerator.base_represent(address)
 
     def create_public_key(self):
         generator = self._curve.generator
