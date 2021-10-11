@@ -1,6 +1,7 @@
 import time
 from crystaline.block.Block import Block
 from crystaline.fee_calculator import fee_calculator
+from crystaline.block.helper import gen_hash
 
 GENESIS_BLOCK_DIFFICULTY = 0
 BLOCK_DIFFICULTY = 0
@@ -81,4 +82,14 @@ class Blockchain:
         return False
     
     def get_hashed_chain(self):
-        return []
+        hash_list = []
+        for block in self.chain:
+            hash_list.append(block.generate_block_hash())
+        return hash_list
+
+    def get_hash(self):
+        hash_list = self.get_hashed_chain()
+        hash_list_str = ""
+        for hs in hash_list:
+            hash_list_str += hs
+        return gen_hash(hash_list_str)
