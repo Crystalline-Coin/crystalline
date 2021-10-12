@@ -4,7 +4,7 @@ import crystaline.transaction.Signature as sg
 import crystaline.public_address.public_address_generator as pa
 
 class Transaction: 
-    def __init__(self, _input_address = None, _output_address = None, _signature = None):
+    def __init__(self, _input_address = None, _output_address = None, _signature = ""):
         self.input_address = _input_address
         self.output_address = _output_address
         self.signature = _signature
