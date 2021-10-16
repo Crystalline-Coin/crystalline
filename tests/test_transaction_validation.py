@@ -235,5 +235,5 @@ outputs.append((test_accounts[2].public_address, 23))
 test_transaction = tr.Transaction(inputs, outputs)
 test_transaction.sign(test_accounts[1]._private_key)
 print("   Verification result : ", test_transaction.is_valid(test_accounts[0].public_key, test_blockchain))
-
+#########################################################
 print("Done!")
