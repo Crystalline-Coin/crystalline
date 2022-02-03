@@ -26,10 +26,10 @@ class Block:
             self.files = []
         else:
             self.files = list(files)
-        if transactinos is None:
-            self.transactinos = []
+        if transactions is None:
+            self.transactions = []
         else:
-            self.transactinos = list(transactinos)
+            self.transactions = list(transactions)
 
 
     def to_dict(self):
