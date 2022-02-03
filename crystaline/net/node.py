@@ -9,15 +9,10 @@ from crystaline.transaction.Transaction import  Transaction
 import multiprocessing
 
 DEFAULT_PROTOCOL = 'http'
-DEFAULT_METHODS = ['POST', 'GET']
+DEFAULT_METHODS = [['POST'], 'GET']
 DEFAULT_PORT = 5000
 
-URL_GET_NODES = '/get_nodes'
-URL_ADD_NODE = '/add_node'
 URL_GET_STATUS = '/get_status'
-URL_GET_BLOCK = '/get_block'
-URL_ADD_TXO = '/add_txo'
-URL_ADD_FILE = '/add_file'
 
 STATUS_RADDR_UP = 'UP'
 STATUS_RADDR_DOWN = 'DOWN'
@@ -31,7 +26,7 @@ PARAM_NODES_LIST_STATUS = 'status'
 
 
 def get_peer_status(url, method):
-    if 'POST' in DEFAULT_METHODS:
+    if ['POST'] in DEFAULT_METHODS:
         res = requests.post(url)
     elif 'GET' in DEFAULT_METHODS:
         res = requests.get(url)
@@ -64,17 +59,18 @@ class Node:
             url = DEFAULT_PROTOCOL + '://' + node_ip + ':' + node_port + URL_GET_STATUS
             node_status = get_peer_status(url, DEFAULT_METHODS[0])
             self.nodes_list[node_ip] = {PARAM_NODES_LIST_STATUS: node_status, PARAM_NODES_LIST_PORT: node_port}
+            # TODO: ?
             pass
 
-        @self.app.route(URL_GET_STATUS, methods=DEFAULT_METHODS)
+        @self.app.route(URL_GET_STATUS, methods=["GET"])
         def get_curr_status():
             return json.dumps({'UP': True}), 200, {'ContentType': 'application/json'}
 
-        @self.app.route(URL_GET_NODES, methods=DEFAULT_METHODS)
+        @self.app.route('/get_nodes', methods=["GET"])
         def get_nodes():
             return json.dumps(self.nodes_list)
 
-        @self.app.route(URL_ADD_NODE, methods=DEFAULT_METHODS)
+        @self.app.route('/add_node', methods=["POST"])
         def add_node_async():
             node_ip = request.args.get(PARAM_IP)
             node_port = request.args.get(PARAM_PORT)
@@ -82,7 +78,7 @@ class Node:
             _thread.start_new_thread(add_node, (node_ip, node_port))
             return 'Successfully added.', 200
 
-        @self.app.route(URL_GET_BLOCK, methods=DEFAULT_METHODS)
+        @self.app.route('/get_block', methods=["GET"])
         def get_block():
             status_code = 200
             json_string = ''
@@ -95,15 +91,25 @@ class Node:
                 status_code = 404
             return json_string, status_code, {'ContentType': 'application/json'}
 
-        @self.app.route(URL_ADD_FILE, methods=DEFAULT_METHODS)
+        @self.app.route('/add_file', methods=['POST'])
         def add_file():
             self.file_pool.append(File.from_json(request.get_json()))
             return 'Successfully added.', 200
 
-        @self.app.route(URL_ADD_TXO, methods=DEFAULT_METHODS)
+        @self.app.route('/add_txo', methods=['POST'])
         def add_txo():
             self.transaction_pool.append(Transaction.from_json(request.get_json()))
             return 'Successfully added.', 200
+
+        # TODO: Get transaction/file pool
+
+        # LONG TODO: Add block 
+
+        # TODO: Get chain
+
+        # TODO: Get Transaction
+
+        # LONG TODO: Node saving and loading
 
     def transmit_data(self, url, data):
         with self.app.app_context():
