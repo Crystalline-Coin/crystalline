@@ -7,7 +7,7 @@ class Blockchain:
     def __init__(self):
         self.chain = []
         self.add_new_block(difficulty_target = 0)
-
+        
     def add_new_block(self, difficulty_target):
         if(len(self.chain)):
             new_block = Block(len(self.chain), self.last_block.generate_block_hash(), difficulty_target, 0, time.time())
@@ -27,5 +27,8 @@ class Blockchain:
         return True
     
     @property
+    #Shouldn't the name be get_last_block?
     def last_block(self):
         return self.chain[-1]
+    def get_block_hash_list(self):
+       return [element.generate_block_hash() for element in self.chain]
