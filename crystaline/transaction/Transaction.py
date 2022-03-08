@@ -1,7 +1,7 @@
 import json
-import crystaline.block.helper as hp
-import crystaline.transaction.Signature as sg
-import crystaline.public_address.public_address_generator as pa
+from ..block import helper as hp
+from ..transaction import Signature as sg
+from ..public_address import public_address_generator as pa
 
 class Transaction: 
     def __init__(self, _input_address = None, _output_address = None, _signature = ""):
