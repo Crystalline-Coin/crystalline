@@ -2,14 +2,9 @@ import time
 
 import pytest
 
-from crystaline.net.node import Node
-from crystaline.net.node import DEFAULT_PROTOCOL, DEFAULT_METHODS
-from crystaline.net.node import URL_ADD_NODE, URL_GET_NODES, URL_GET_STATUS, URL_GET_BLOCK, URL_ADD_TXO, URL_ADD_FILE
-from crystaline.net.node import PARAM_IP, PARAM_PORT, PARAM_BLOCK_INDEX, PARAM_NODES_LIST_STATUS, PARAM_NODES_LIST_PORT
-from crystaline.net.node import STATUS_RADDR_UP
-from crystaline.net.node import get_peer_status
+from ..net.node import *
 
-from crystaline.blockchain.Blockchain import Blockchain
+from ..blockchain.Blockchain import Blockchain
 
 import json
 import requests

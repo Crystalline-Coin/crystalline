@@ -1,7 +1,7 @@
 import time
-from crystaline.block.Block import Block
-from crystaline.fee_calculator import fee_calculator
-from crystaline.block.helper import gen_hash
+from ..block.Block import Block
+from ..fee_calculator import fee_calculator
+from ..block.helper import gen_hash
 
 GENESIS_BLOCK_DIFFICULTY = 0
 GENESIS_FIRST_BLOCK_DIFFICULTY = 0

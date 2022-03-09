@@ -3,10 +3,10 @@ import sys
 
 sys.path.insert(1, "C:/Users/Lenovo/Desktop")
 
-import crystaline.transaction.Transaction as tr
-import crystaline.blockchain.Blockchain as bc
-import crystaline.public_address.public_address_generator as pa
-import crystaline.block.helper as hp
+from ..transaction import Transaction as tr
+from ..blockchain import Blockchain as bc
+from ..public_address import public_address_generator as pa
+from ..block import helper as hp
 
 print("Test transaction validation : ")
 
