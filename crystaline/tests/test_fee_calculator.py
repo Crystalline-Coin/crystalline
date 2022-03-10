@@ -8,7 +8,7 @@ N = 4
 
 
 def test_F_x():
-    assert fc.F_x_calculator(fc.ALPHA, SIZE) == 371
+    assert fc.F_x_calculator(SIZE) == 371
 
 
 def test_H_x():

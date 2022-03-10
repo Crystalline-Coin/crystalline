@@ -4,7 +4,7 @@ N = 1
 BETA = 20
 
 
-def F_x_calculator(alpha, uploaded_file_size):                                  # uploaded_file_size : S_c
+def F_x_calculator(uploaded_file_size, alpha=ALPHA):                                  # uploaded_file_size : S_c
     F_x = uploaded_file_size * alpha + alpha        
     for i in range(0, int(uploaded_file_size)):                                 # applying floors
         F_x += 1
