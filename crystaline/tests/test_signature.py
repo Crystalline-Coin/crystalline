@@ -6,18 +6,6 @@ import pytest
 
 @pytest.fixture()
 def transaction():
-    # print("   0  -> exit")
-    # print("   1  -> create transaction")
-    # print("   2  -> sign transaction")
-    # print("   3  -> get public key")
-    # print("   4  -> validate signature with public key")
-    # print("   5  -> print transaction details in string format(except signature)")
-    # print("   6  -> print transaction inputs")
-    # print("   7  -> print transaction outputs")
-    # print("   8  -> print transaction signature")
-    # print("   9  -> print transaction data in json format")
-    # print("   10 -> save transaction to file")
-    # print("   11 -> load transaction from file")
     inputs = [
         ("test_input_address", 0)
     ]
