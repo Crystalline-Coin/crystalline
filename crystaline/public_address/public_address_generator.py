@@ -78,3 +78,7 @@ class PublicAddressGenerator:
     @property
     def public_address(self):
         return self._public_address
+
+    @property
+    def curve(self):
+        return self._curve
