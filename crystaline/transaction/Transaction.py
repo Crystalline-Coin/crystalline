@@ -3,6 +3,7 @@ from ..block import helper as hp
 from ..transaction import Signature as sg
 from ..public_address import public_address_generator as pa
 
+
 class Transaction: 
     def __init__(self, _input_address = None, _output_address = None, _signature = ""):
         self.input_address = _input_address
@@ -10,14 +11,14 @@ class Transaction:
         self.signature = _signature
 
     def sign(self, private_key):
-        if self.signature == "" :
+        if self.signature == "":
             self.signature = sg.sign(self, private_key)
 
     def to_json(self):
         transactions_json = {
-            "input_address" : dict(self.input_address),
+            "input_address": dict(self.input_address),
             "output_address": dict(self.output_address),
-            "signature" : str(self.signature) 
+            "signature": str(self.signature)
         }
         return json.dumps(transactions_json)
 
@@ -59,7 +60,7 @@ class Transaction:
     def is_valid(self, public_key, blockchain):
         if sg.verify_signature(self, public_key):
             (flag, utxos_values) = self.validate_input_UTXOs(blockchain, public_key)
-            if flag == True:
+            if flag:
                 if self.get_sum_of_outputs_values() <= sum(utxos_values):
                     return True
         return False

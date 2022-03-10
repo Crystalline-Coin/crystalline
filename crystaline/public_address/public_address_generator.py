@@ -70,7 +70,10 @@ class PublicAddressGenerator:
     @property
     def public_key(self):
         return self._public_key
-    
+
+    @property
+    def private_key(self):
+        return self._private_key
 
     @property
     def public_address(self):
