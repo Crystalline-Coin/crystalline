@@ -39,7 +39,8 @@ class Transaction:
     def load(self, path):
         file = open(path, "r")
         json_string = file.read()
-        self.from_json(json_string)
+        loaded = self.from_json(json_string)
+        self.input_address, self.output_address, self.signature = loaded.input_address, loaded.output_address, loaded.signature
         file.close()
 
     def get_details(self):
