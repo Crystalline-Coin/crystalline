@@ -1,3 +1,4 @@
+import re
 import time
 from crystaline.block.Block import Block
 from crystaline.fee_calculator import fee_calculator
@@ -11,9 +12,11 @@ class Blockchain:
     
     def __init__(self):
         self.chain = []
+        self.all_block_hashes = []
         self.length = 0
         self.add_new_block(difficulty_target = 0, transactions = [])
-
+        self.last_force_update_status = False
+    
     def add_new_block(self, difficulty_target, transactions):
         if(len(self.chain)):
             new_block = Block(len(self.chain), self.last_block.generate_block_hash(), difficulty_target, GENESIS_BLOCK_DIFFICULTY , time.time(), transactions)
@@ -94,3 +97,18 @@ class Blockchain:
         for hs in hash_list:
             hash_list_str += hs
         return gen_hash(hash_list_str)
+
+    def get_block_hashes_list(self):
+        self.last_force_update_status = False
+        new_chain_hashes = []
+        for i in range(len(self.all_block_hashes)):
+           new_chain_hashes.append(self.chain[i].generate_block_hash())
+        if new_chain_hashes != self.all_block_hashes:
+            self.last_force_update_status = True
+            self.all_block_hashes = new_chain_hashes[:]
+        for i in range(len(self.all_block_hashes), len(self.chain)):
+            self.all_block_hashes.append(self.chain[i].genrate_block_hash())
+        return self.all_block_hashes
+    
+    def get_last_force_update_status(self):
+        return self.last_force_update_status
