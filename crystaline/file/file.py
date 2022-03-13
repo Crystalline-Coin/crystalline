@@ -6,12 +6,14 @@ class File:
     PARAM_NAME, PARAM_CONTENT, PARAM_CREATOR, PARAM_CREATION_TXO = \
         '_name', '_content', '_creator', '_creation_transaction'
 
-    def __init__(self, content, name, creator=None, creation_transaction=None):
+    def __init__(self, content: str, name, creator=None, creation_transaction=None):
+        assert isinstance(content, str)
         self._content = content
+
         self._name = name
         self._creator = creator
         self._creation_transaction = creation_transaction
-        self._file_hash = self.get_hash()
+        self._hash = self.get_hash()
 
     @property
     def name(self):
@@ -30,8 +32,8 @@ class File:
         return self._creation_transaction
 
     @property
-    def file_hash(self):
-        return self._file_hash
+    def hash(self):
+        return self._hash
 
     def to_dict(self):
         return self.__dict__
@@ -55,8 +57,7 @@ class File:
 
     def __eq__(self, other):
         if isinstance(self, other.__class__):
-            return other.content == self.content and other._name == self._name \
-                   and other._creator == self._creator and other._creation_transaction == self._creation_transaction \
-                   and other._file_hash == self._file_hash
+            return other.content == self.content and other.name == self._name \
+                   and other.creator == self._creator and other.creation_transaction == self._creation_transaction \
+                   and other.hash == self._hash
         return False
-

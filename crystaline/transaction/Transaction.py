@@ -108,3 +108,10 @@ class Transaction:
         if public_address == public_address_from_public_key:
             return True
         return False
+
+    def __eq__(self, other):
+        if isinstance(self, other.__class__):
+            return other.input_address == self.input_address and \
+                   other.output_address == self.output_address and \
+                   other.signature == self.signature
+        return False
