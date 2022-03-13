@@ -2,7 +2,7 @@ import json
 from ..block import helper as hp
 
 class File:
-
+    PARAM_NAME, PARAM_CONTENT, PARAM_CREATOR, PARAM_CREATION_TXO = '_name', '_content', '_creator', '_creation_transaction'
     def __init__(self, content, name ,  creator = None, creation_transaction = None):
         self._content = content
         self._name = name
@@ -51,3 +51,9 @@ class File:
                                     File(obj['_content'], obj['_name'],
                                     obj['_creator'], obj['_creation_transaction']))
 
+    def __eq__(self, other):
+        if isinstance(self, other.__class__):
+            return other.content == self.content and other._name == self._name \
+            and other._creator == self._creator and other._creation_transaction == self._creation_transaction \
+            and  other._file_hash == self._file_hash
+        return False

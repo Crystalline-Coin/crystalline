@@ -132,3 +132,10 @@ class Block:
         return Block(block_dict['version'], block_dict['prev_hash'],
                      block_dict['difficulty_target'], block_dict['nonce'],
                      timestamp, block_transactions, block_files)
+
+    def __eq__(self, other):
+        if isinstance(self, other.__class__):
+            return other.version == self.version and other.prev_hash == self.prev_hash \
+            and other.difficulty_target == self.difficulty_target and other.nonce == self.nonce \
+            and  other.transactions == self.transactions and other.files == self.files
+        return False
