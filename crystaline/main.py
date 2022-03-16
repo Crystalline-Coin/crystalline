@@ -7,5 +7,5 @@ sys.path.append(BASE_PATH)
 from crystaline.net.node import Node
 
 if __name__ == "__main__":
-    node = Node('localhost')
+    node = Node("localhost")
     node.start()

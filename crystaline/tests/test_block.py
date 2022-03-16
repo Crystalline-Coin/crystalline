@@ -5,11 +5,16 @@ import time
 
 @pytest.fixture
 def mblock():
-    return Block('version', 'prev_hash', 1000, 999)
+    return Block("version", "prev_hash", 1000, 999)
 
 
 def test_block_params(mblock):
-    assert mblock.version == 'version' and mblock.prev_hash == 'prev_hash' and mblock.difficulty_target == 1000 and mblock.nonce == 999
+    assert (
+        mblock.version == "version"
+        and mblock.prev_hash == "prev_hash"
+        and mblock.difficulty_target == 1000
+        and mblock.nonce == 999
+    )
 
 
 def test_block_timestamp_is_early_enough(mblock):

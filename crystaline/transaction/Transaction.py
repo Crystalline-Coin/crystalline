@@ -3,30 +3,40 @@ import crystaline.block.helper as hp
 import crystaline.transaction.Signature as sg
 import crystaline.public_address.public_address_generator as pa
 
-class Transaction: 
-    def __init__(self, _input_address = None, _output_address = None, _signature = ""):
+
+class Transaction:
+    def __init__(self, _input_address=None, _output_address=None, _signature=""):
         self.input_address = _input_address
         self.output_address = _output_address
         self.signature = _signature
 
     def sign(self, private_key):
-        if self.signature == "" :
+        if self.signature == "":
             self.signature = sg.sign(self, private_key)
 
     def to_json(self):
         transactions_json = {
-            "input_address" : dict(self.input_address),
+            "input_address": dict(self.input_address),
             "output_address": dict(self.output_address),
-            "signature" : str(self.signature) 
+            "signature": str(self.signature),
         }
         return json.dumps(transactions_json)
 
     @classmethod
     def from_json(cls, transactions_json):
         loads_transactions_json = json.loads(transactions_json)
-        input_address = [(k, v) for k, v in loads_transactions_json["input_address"].items()]
-        output_address = [(k, v) for k, v in loads_transactions_json["output_address"].items()]
-        signature = loads_transactions_json["signature"][2:-1].encode().decode('unicode_escape').encode("raw_unicode_escape")
+        input_address = [
+            (k, v) for k, v in loads_transactions_json["input_address"].items()
+        ]
+        output_address = [
+            (k, v) for k, v in loads_transactions_json["output_address"].items()
+        ]
+        signature = (
+            loads_transactions_json["signature"][2:-1]
+            .encode()
+            .decode("unicode_escape")
+            .encode("raw_unicode_escape")
+        )
         return cls(input_address, output_address, signature)
 
     def save(self, path):
@@ -42,8 +52,8 @@ class Transaction:
         file.close()
 
     def get_details(self):
-        input_address_str = ''.join([str(x) for t in self.input_address for x in t])
-        output_address_str = ''.join([str(x) for t in self.output_address for x in t])
+        input_address_str = "".join([str(x) for t in self.input_address for x in t])
+        output_address_str = "".join([str(x) for t in self.output_address for x in t])
         return input_address_str + output_address_str
 
     def get_hash(self):
@@ -54,7 +64,9 @@ class Transaction:
 
     @staticmethod
     def from_dict(dict):
-        return Transaction(dict['_input_address'], dict['_output_address'], dict['_signature'])
+        return Transaction(
+            dict["_input_address"], dict["_output_address"], dict["_signature"]
+        )
 
     def is_valid(self, public_key, blockchain):
         if sg.verify_signature(self, public_key):
@@ -67,7 +79,7 @@ class Transaction:
     def get_output(self, index):
         if len(self.output_address) > index:
             return self.output_address[index]
-        else :
+        else:
             return None
 
     def has_input(self, utxo):
@@ -84,7 +96,7 @@ class Transaction:
             temp = blockchain.get_utxo(trans_hash, output_index)
             if temp == None:
                 return False, []
-            else :
+            else:
                 (utxo, index) = temp
                 utxos_values.append(utxo[1])
                 if not self.utxo_belongs_to_pubkey(utxo, public_key):
@@ -102,7 +114,11 @@ class Transaction:
     @staticmethod
     def utxo_belongs_to_pubkey(utxo, public_key):
         public_address = utxo[0]
-        public_address_from_public_key = pa.PublicAddressGenerator.generate_public_address_from_public_key(public_key)
+        public_address_from_public_key = (
+            pa.PublicAddressGenerator.generate_public_address_from_public_key(
+                public_key
+            )
+        )
         if public_address == public_address_from_public_key:
             return True
         return False
