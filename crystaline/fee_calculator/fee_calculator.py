@@ -29,4 +29,4 @@ def K_x_calculator(time_period , beta , file_size):                             
     return k_x
 
 def G_x_calculator(times_diffrence , file_size):
-    return K_x_calculator(file_size) * H_x_calculator(times_diffrence)
+    return K_x_calculator(TIME_PERIOD , BETA , file_size) * H_x_calculator(TIME_PERIOD , N , times_diffrence)
