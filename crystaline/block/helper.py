@@ -6,7 +6,7 @@ INITIAL_REWARD_R = 50
 
 
 def gen_hash(data: str):
-    data_arr = bytearray(data, encoding='utf-8')
+    data_arr = bytearray(data, encoding="utf-8")
     return sha384(sha3_256(data_arr).digest()).hexdigest()
 
 
@@ -23,8 +23,11 @@ def __calc_block_reward_i(block_height: int, reward_interval: int):
 
 
 def __calc_reward(block_height: int, R_i: float, reward_interval: int, i: int):
-    return math.pow((1 + R_i), (block_height - reward_interval * i) / (1.0 * reward_interval)) - math.pow((1 + R_i), (
-            block_height - 1 - reward_interval * i) / (1.0 * reward_interval))
+    return math.pow(
+        (1 + R_i), (block_height - reward_interval * i) / (1.0 * reward_interval)
+    ) - math.pow(
+        (1 + R_i), (block_height - 1 - reward_interval * i) / (1.0 * reward_interval)
+    )
 
 
 def get_block_reward(block_height: int):

@@ -1,3 +1,4 @@
+import re
 import time
 from ..block.Block import Block
 from ..fee_calculator.fee_calculator import *
@@ -8,24 +9,41 @@ GENESIS_FIRST_BLOCK_DIFFICULTY = 0
 GENESIS_FIRST_BLOCK_HASH = '0'
 
 
+
 class Blockchain:
     def __init__(self):
         self.chain = []
+        self.all_block_hashes = []
         self.length = 0
         self.add_new_block(difficulty_target=0, transactions=[])
+        self.last_force_update_status = False
 
     def add_new_block(self, difficulty_target, transactions):
         if len(self.chain):
-            new_block = Block(str(len(self.chain)), self.last_block.generate_block_hash(), difficulty_target, GENESIS_BLOCK_DIFFICULTY, time.time(), transactions)
+            new_block = Block(
+                len(self.chain),
+                self.last_block.generate_block_hash(),
+                difficulty_target,
+                GENESIS_BLOCK_DIFFICULTY,
+                time.time(),
+                transactions,
+            )
         else:
-            new_block = Block(str(len(self.chain)), GENESIS_FIRST_BLOCK_HASH, difficulty_target, GENESIS_FIRST_BLOCK_DIFFICULTY, time.time(), transactions)
+            new_block = Block(
+                len(self.chain),
+                GENESIS_FIRST_BLOCK_HASH,
+                difficulty_target,
+                GENESIS_FIRST_BLOCK_DIFFICULTY,
+                time.time(),
+                transactions,
+            )
         self.chain.append(new_block)
         self.length += 1
         return new_block
 
     def validate(self):
         for i in range(1, len(self.chain)):
-            previous_block = self.chain[i-1]
+            previous_block = self.chain[i - 1]
             current_block = self.chain[i]
             if previous_block.generate_block_hash() != current_block.prev_hash:
                 return False
@@ -43,12 +61,12 @@ class Blockchain:
             if times_difference > time_period:
                 break
             else:
-                for j in range(0 , len(self.chain[i].files)):
+                for j in range(0, len(self.chain[i].files)):
                     if self.chain[i].files[j] == uploader_address:
                         G_x *= G_x_calculator(times_difference, uploaded_file_size)
         fee = F_x * G_x
         return fee
-    
+
     @property
     def last_block(self):
         return self.chain[-1]
@@ -75,13 +93,13 @@ class Blockchain:
         return None
 
     def utxo_is_spent(self, block_index, utxo):
-        for i in range(block_index+1, len(self.chain)):
+        for i in range(block_index + 1, len(self.chain)):
             curr_block = self.get_block(i)
             for trans in curr_block.transactions:
                 if trans.has_input(utxo):
                     return True
         return False
-    
+
     def get_hashed_chain(self):
         hash_list = []
         for block in self.chain:
@@ -94,3 +112,18 @@ class Blockchain:
         for hs in hash_list:
             hash_list_str += hs
         return gen_hash(hash_list_str)
+
+    def get_block_hashes_list(self):
+        self.last_force_update_status = False
+        new_chain_hashes = []
+        for i in range(len(self.all_block_hashes)):
+            new_chain_hashes.append(self.chain[i].generate_block_hash())
+        if new_chain_hashes != self.all_block_hashes:
+            self.last_force_update_status = True
+            self.all_block_hashes = new_chain_hashes[:]
+        for i in range(len(self.all_block_hashes), len(self.chain)):
+            self.all_block_hashes.append(self.chain[i].genrate_block_hash())
+        return self.all_block_hashes
+
+    def get_last_force_update_status(self):
+        return self.last_force_update_status

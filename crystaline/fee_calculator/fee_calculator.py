@@ -1,4 +1,9 @@
-TIME_PERIOD = 30                                                                # time_period : t
+import time
+
+from ..blockchain import Blockchain
+
+
+TIME_PERIOD = 30  # time_period : t
 ALPHA = 2
 N = 1
 BETA = 20
@@ -20,10 +25,12 @@ def H_x_calculator(time_period, n, times_difference):
     return H_x
 
 
-def K_x_calculator(time_period, beta, file_size):                               # file size: s
-    k_x = -(time_period/(file_size+(time_period/beta))) + beta
+def K_x_calculator(time_period, beta, file_size):  # file size: s
+    k_x = -(time_period / (file_size + (time_period / beta))) + beta
     return k_x
 
 
-def G_x_calculator(time_period, times_difference, file_size):
-    return K_x_calculator(time_period, BETA, file_size) * H_x_calculator(time_period, N, times_difference)
+def G_x_calculator(times_difference, file_size):
+    return K_x_calculator(TIME_PERIOD, BETA, file_size) * H_x_calculator(
+        TIME_PERIOD, N, times_difference
+    )
