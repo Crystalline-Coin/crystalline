@@ -7,12 +7,11 @@ MAX_OF_POSSIBLE_STAKE_X_TIMEWEIGHT = float
 GROWTH_LENGTH_STAIR = float
 
 
-
 def mining_equation(miner_founded_hash , user_utxo , user_utxo_timeweight , 
                     current_average_time_of_mining , user_address , miner_all_uploaded_files_size):
     difficulty = current_average_time_of_mining / WANTED_AVERAGE_MINING_TIME
-    booster = booster_calculator(user_utxo , user_utxo_timeweight)
-    right_side_of_equation = MIDDLE_OF_64_BYTE_HASHES * Difficulty * Booster
+    booster = booster_calculator(user_utxo , user_utxo_timeweight, miner_all_uploaded_files_size)
+    right_side_of_equation = MIDDLE_OF_64_BYTE_HASHES * difficulty * booster
     if(miner_founded_hash <= right_side_of_equation):
         return True
     else:
