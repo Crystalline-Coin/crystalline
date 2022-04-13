@@ -127,3 +127,6 @@ class Blockchain:
 
     def get_last_force_update_status(self):
         return self.last_force_update_status
+
+    def get_chain(self, starting_index, ending_index):
+        return self.chain[starting_index: ending_index]
