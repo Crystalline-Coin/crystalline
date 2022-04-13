@@ -1,5 +1,6 @@
 import time
 from crystaline.transaction.Transaction import Transaction
+from crystaline.block.Block import Block
 
 import pytest
 
@@ -163,7 +164,8 @@ def test_net_get_block_state_404(running_node):
 
 
 def test_net_get_chain_200(running_node_with_blockchain):
-    running_node_with_blockchain.blockchain.chain.append()
+    running_node_with_blockchain.blockchain.chain.append(Block("version", "prev_hash", 1000, 999))
+    running_node_with_blockchain.blockchain.chain.append(Block("version", "prev_hash", 1000, 999))
 
 
     wait_for_url(
@@ -178,25 +180,22 @@ def test_net_get_chain_200(running_node_with_blockchain):
     )
 
     req_get_chain_url = (
-        DEFAULT_PROTOCOL + "://" + NODE_IP_ADDR + ":" + str(NODE_PORT) + URL_GET_CHAIN + "?" + PARAM_START + "=1" + "&" + PARAM_END + "=2"
+        DEFAULT_PROTOCOL + "://" + NODE_IP_ADDR + ":" + str(NODE_PORT) + URL_GET_CHAIN
     )
 
 
     if "POST" in DEFAULT_METHODS:
-        res = requests.post(req_get_chain_url, params={PARAM_BLOCK_INDEX: 1})
+        res = requests.post(req_get_chain_url, params={PARAM_START: 1, PARAM_END : 2})
     elif "GET" in DEFAULT_METHODS:
-        res = requests.get(req_get_chain_url, params={PARAM_BLOCK_INDEX: 1})
+        res = requests.get(req_get_chain_url, params={PARAM_START: 1, PARAM_END : 2})
     else:
         raise Exception("No consistent RESTful methods used.")
 
     assert res.status_code == 200
 
     res_dict = res.json()
-    assert res_dict["index"] == 1
-    assert res_dict["previous_hash"] == "0"
-    assert res_dict["timestamp"] == 0
-    assert res_dict["data"] == "0"
-    assert res_dict["hash"] == "0"
+    chain = running_node_with_blockchain.blockchain.get_hashed_chain(0, 2)
+    assert chain == res_dict
     res.close()
 
 def test_net_get_block_state_200(running_node_with_blockchain):
@@ -293,7 +292,7 @@ def test_net_add_txo_state_200(running_node_with_blockchain):
         )
     elif "GET" in DEFAULT_METHODS:
         res = requests.get(
-            req_add_file_url,
+            req_add_txo_url,
             json=json.dumps(sample_txo),
             headers={"ContentType": "application/json"},
         )

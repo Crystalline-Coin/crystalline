@@ -157,12 +157,7 @@ class Node:
             start_index = request.args.get(PARAM_START)
             end_index = request.args.get(PARAM_END)
             try:
-                chain = self.blockchain.get_chain(int(start_index) - 1, int(end_index))
-                hashes = {}
-                index = start_index
-                for block in chain:
-                    hashes[index] = block.generate_block_hash()
-                json_string = json.dumps(hashes)
+                json_string = self.blockchain.get_hashed_chain(int(start_index) - 1, int(end_index))
             except:
                 status_code = 404
             return json_string, status_code, {"ContentType": "application/json"}
