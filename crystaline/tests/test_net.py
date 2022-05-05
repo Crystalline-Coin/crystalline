@@ -104,8 +104,8 @@ def test_net_add_node(running_node):
 
     res_dict = res.json()
     assert NODE_IP_ADDR in res_dict
-    assert res_dict[NODE_IP_ADDR][PARAM_NODES_LIST_PORT] == str(NODE_PORT)
-    assert res_dict[NODE_IP_ADDR][PARAM_NODES_LIST_STATUS] == STATUS_RADDR_UP
+    assert res_dict[NODE_IP_ADDR][PARAM_NODES_DICT_PORT] == str(NODE_PORT)
+    assert res_dict[NODE_IP_ADDR][PARAM_NODES_DICT_STATUS] == STATUS_RADDR_UP
     res.close()
 
 

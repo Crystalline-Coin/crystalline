@@ -21,8 +21,8 @@ PARAM_IP = "dst_ip"
 PARAM_PORT = "dst_port"
 PARAM_BLOCK_INDEX = "block_index"
 
-PARAM_NODES_LIST_PORT = "port"
-PARAM_NODES_LIST_STATUS = "status"
+PARAM_NODES_DICT_PORT = "port"
+PARAM_NODES_DICT_STATUS = "status"
 
 
 def get_peer_status(url, method):
@@ -42,17 +42,17 @@ class Node:
         ip_address: str,
         host_port: int = DEFAULT_PORT,
         blockchain: Blockchain = None,
-        nodes_list=None,
+        nodes_dict=None,
     ):
-        if nodes_list is None:
-            nodes_list = {}
+        if nodes_dict is None:
+            nodes_dict = {}
 
         self.ip_address = ip_address
         self.host_port = host_port
 
         self.app = Flask(__name__)
 
-        self.nodes_list = nodes_list
+        self.nodes_dict = nodes_dict
         self.blockchain = blockchain
 
         self.running_process = None
@@ -63,9 +63,9 @@ class Node:
         def add_node(node_ip, node_port):
             url = DEFAULT_PROTOCOL + "://" + node_ip + ":" + node_port + URL_GET_STATUS
             node_status = get_peer_status(url, DEFAULT_METHODS[0])
-            self.nodes_list[node_ip] = {
-                PARAM_NODES_LIST_STATUS: node_status,
-                PARAM_NODES_LIST_PORT: node_port,
+            self.nodes_dict[node_ip] = {
+                PARAM_NODES_DICT_STATUS: node_status,
+                PARAM_NODES_DICT_PORT: node_port,
             }
             # TODO: ?
             pass
@@ -76,7 +76,7 @@ class Node:
 
         @self.app.route("/get_nodes", methods=["GET"])
         def get_nodes():
-            return json.dumps(self.nodes_list)
+            return json.dumps(self.nodes_dict)
 
         @self.app.route("/add_node", methods=["POST"])
         def add_node_async():
