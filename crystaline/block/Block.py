@@ -2,9 +2,9 @@ from pathlib import Path
 import json
 import time
 
-from crystaline.block.helper import gen_hash
-from crystaline.file.file import File
-from crystaline.transaction.Transaction import Transaction
+from ..block.helper import gen_hash
+from ..file.file import File
+from ..transaction.Transaction import Transaction
 
 FILE_NAME_PREFIX = "cry_"
 FILE_EXTENSION = ".blk"
