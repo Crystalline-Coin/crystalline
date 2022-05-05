@@ -70,5 +70,13 @@ class PublicAddressGenerator:
         return self._public_key
 
     @property
+    def private_key(self):
+        return self._private_key
+
+    @property
     def public_address(self):
         return self._public_address
+
+    @property
+    def curve(self):
+        return self._curve

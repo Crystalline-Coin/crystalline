@@ -1,4 +1,4 @@
-from crystaline.block import Block
+from ..block import Block
 
 FILE_PATH = "/home/taha/Downloads/michael-jackson-billie-jean-128.mp3"
 NEW_FILE_PATH = "/home/taha/Desktop"

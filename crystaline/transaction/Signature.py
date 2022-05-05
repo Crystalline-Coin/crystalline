@@ -5,6 +5,7 @@ from ecpy.keys import ECPublicKey, ECPrivateKey
 CURVE_NAME = "Ed448"
 
 
+
 def sign(transaction, privatekey):
     trans_hash = transaction.get_hash()
 
@@ -24,5 +25,5 @@ def verify_signature(transaction, publickey):
 
     signer = ECDSA()
     signature = transaction.signature
-
-    return signer.verify(bytearray(trans_hash, encoding="utf-8"), signature, public_key)
+    
+    return signer.verify(bytearray(trans_hash, encoding='utf-8'), signature, public_key)

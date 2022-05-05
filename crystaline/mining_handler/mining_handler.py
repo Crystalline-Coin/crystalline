@@ -18,7 +18,7 @@ def mining_equation(
     miner_all_uploaded_files_size,
 ):
     difficulty = current_average_time_of_mining / WANTED_AVERAGE_MINING_TIME
-    booster = booster_calculator(user_utxo, user_utxo_timeweight)
+    booster = booster_calculator(user_utxo, user_utxo_timeweight, miner_all_uploaded_files_size)
     right_side_of_equation = MIDDLE_OF_64_BYTE_HASHES * difficulty * booster
     if miner_founded_hash <= right_side_of_equation:
         return True

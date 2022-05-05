@@ -1,11 +1,7 @@
 import pytest
 
-from crystaline.block.helper import gen_hash_encoded, gen_hash
-from crystaline.block.helper import (
-    __calc_block_reward_i,
-    __calc_block_reward_R_i,
-    __calc_reward,
-)
+from ..block.helper import gen_hash_encoded, gen_hash
+from ..block.helper import __calc_block_reward_i, __calc_block_reward_R_i, __calc_reward
 import math
 
 
