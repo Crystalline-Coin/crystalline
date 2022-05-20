@@ -6,10 +6,10 @@ import time
 import string
 from copy import deepcopy
 
-from ..block.block import Block
-from ..block import helper
-from ..transaction.Transaction import Transaction
-from ..file.file import File
+from crystaline.block.block import Block
+from crystaline.block import helper
+from crystaline.transaction import Transaction
+from crystaline.file.file import File
 
 B_VERSION, B_PREV_HASH, B_DIFF_TARGET, B_NONCE, B_FILES, B_TRANSACTIONS, = \
     'version', 'prev_hash', random.randint(1, 1000), random.randint(1, 1000), \

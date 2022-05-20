@@ -2,12 +2,14 @@ from ecpy.curves import Curve, Point
 from hashlib import sha256, sha3_224
 
 
-"""Using ECPy for elliptic curve. 
+"""
+Using ECPy for elliptic curve. 
 More information on: https://ec-python.readthedocs.io/en/latest/
 """
 
 
-"""Generating 1000 addresses in about 0.54s(tested 3 times for better results).
+"""
+Generating 1000 addresses in about 0.54s(tested multiple times for better results).
 So generating an address takes about 0.00054s on average.
 """
 ENCODING = "utf-8"
