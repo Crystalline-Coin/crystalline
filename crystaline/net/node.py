@@ -9,7 +9,7 @@ from crystaline.transaction.transaction import  Transaction
 import multiprocessing
 
 DEFAULT_PROTOCOL = "http"
-DEFAULT_METHODS = ["POST", "GET"]
+DEFAULT_METHODS = ["GET", "POST"]
 DEFAULT_PORT = 5000
 
 URL_GET_STATUS = "/get_status"
@@ -41,9 +41,9 @@ URL_GET_CHAIN = "/get_chain"
 URL_GET_TRANSACTION = "/get_transaction"
 
 def get_peer_status(url, method):
-    if "POST" in DEFAULT_METHODS:
+    if "POST" in method:
         res = requests.post(url)
-    elif "GET" in DEFAULT_METHODS:
+    elif "GET" in method:
         res = requests.get(url)
     else:
         raise Exception("Provided method is not consistent.")
@@ -156,7 +156,7 @@ class Node:
             start_index = request.args.get(PARAM_START)
             end_index = request.args.get(PARAM_END)
             try:
-                json_string = self.blockchain.get_hashed_chain(int(start_index) - 1, int(end_index))
+                json_string = self.blockchain.get_hashed_chain(int(start_index) - 1, int(end_index) - 1)
             except:
                 status_code = 404
             return json_string, status_code, {"ContentType": "application/json"}
