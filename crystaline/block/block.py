@@ -1,8 +1,8 @@
 import os.path
 
-from ..block.helper import gen_hash
-from ..file.file import File
-from ..transaction.Transaction import Transaction
+from crystaline.block.helper import gen_hash
+from crystaline.file.file import File
+from crystaline.transaction.transaction import Transaction
 from pathlib import Path
 import json
 import time
