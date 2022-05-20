@@ -1,7 +1,7 @@
 import json
 from crystaline.block import helper as hp
-from crystaline.transaction.Signature import Signature as sg
-from crystaline.public_address.public_address_generator import public_address_generator as pa
+from crystaline.transaction import signature as sg
+from crystaline.public_address.public_address_generator import PublicAddressGenerator
 
 
 
@@ -117,7 +117,7 @@ class Transaction:
     def utxo_belongs_to_pubkey(utxo, public_key):
         public_address = utxo[0]
         public_address_from_public_key = (
-            pa.PublicAddressGenerator.generate_public_address_from_public_key(
+            PublicAddressGenerator.generate_public_address_from_public_key(
                 public_key
             )
         )
