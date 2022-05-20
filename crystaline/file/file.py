@@ -6,8 +6,7 @@ class File:
     PARAM_NAME, PARAM_CONTENT, PARAM_CREATOR, PARAM_CREATION_TXO = \
         '_name', '_content', '_creator', '_creation_transaction'
 
-    def __init__(self, content: str, name, creator=None, creation_transaction=None):
-        assert isinstance(content, str)
+    def __init__(self, content, name, creator=None, creation_transaction=None):
         self._content = content
 
         self._name = name
@@ -44,7 +43,7 @@ class File:
                    dict_in[cls.PARAM_CREATOR], dict_in[cls.PARAM_CREATION_TXO])
 
     def to_json(self):
-        return json.dumps(self.__dict__)
+        return json.dumps(self.to_dict())
 
     def get_hash(self):
         return hp.gen_hash(self.to_json())

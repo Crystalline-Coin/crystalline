@@ -94,7 +94,6 @@ class Block:
 
     def upload_file(self, file_path):
         path = Path(file_path)
-        # TODO: Check if mode: r is okay (not rb)
         with open(file_path, mode='rb') as new_file:
             new_file = File(new_file.read(), path.name)
             self._files.append(new_file)
