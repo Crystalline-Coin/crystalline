@@ -1,7 +1,7 @@
 import json
-from ..block import helper as hp
-from ..transaction import Signature as sg
-from ..public_address import public_address_generator as pa
+from crystaline.block import helper as hp
+from crystaline.transaction.Signature import Signature as sg
+from crystaline.public_address.public_address_generator import public_address_generator as pa
 
 
 
