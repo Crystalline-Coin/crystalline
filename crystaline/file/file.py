@@ -35,7 +35,12 @@ class File:
         return self._hash
 
     def to_dict(self):
-        return self.__dict__
+        return {
+            File.PARAM_NAME: self._name,
+            File.PARAM_CONTENT: str(self._content),
+            File.PARAM_CREATOR: self._creator,
+            File.PARAM_CREATION_TXO: self._creation_transaction
+        }
 
     @classmethod
     def from_dict(cls, dict_in):
