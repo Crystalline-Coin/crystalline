@@ -19,6 +19,6 @@ def test_H_x():
 def test_K_x():
     assert fc.K_x_calculator(TIME_1, fc.BETA, SIZE) == 19.91902834008097
 
-# TODO: Check the result of this test
+
 def test_G_x():
-    assert fc.G_x_calculator(TIME_2 - TIME_1, SIZE) == 860502.0242914979
+    assert fc.G_x_calculator(TIME_2 - TIME_1, SIZE) == 5121542.168674699
