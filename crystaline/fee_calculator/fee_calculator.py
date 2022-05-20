@@ -1,7 +1,5 @@
 import time
 
-from crystaline.blockchain.blockchain import Blockchain
-
 
 TIME_PERIOD = 30  # time_period : t
 ALPHA = 2
