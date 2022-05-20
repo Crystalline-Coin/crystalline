@@ -1,6 +1,6 @@
 import time
 
-from crystaline.blockchain import Blockchain
+from crystaline.blockchain.blockchain import Blockchain
 
 
 TIME_PERIOD = 30  # time_period : t
@@ -9,18 +9,17 @@ N = 1
 BETA = 20
 
 
-def F_x_calculator(alpha, uploaded_file_size):  # uploaded_file_size : S_c
-    F_x = uploaded_file_size * alpha + alpha
-    for i in range(0, int(uploaded_file_size)):  # applying floors
+def F_x_calculator(uploaded_file_size, alpha=ALPHA):                                  # uploaded_file_size : S_c
+    F_x = uploaded_file_size * alpha + alpha        
+    for i in range(0, int(uploaded_file_size)):                                 # applying floors
         F_x += 1
     return F_x
 
 
-def H_x_calculator(time_period, n, times_diffrence):
+def H_x_calculator(time_period, n, times_difference):
     time_period = time_period * 24 * 60 * 60
-    H_x = 0
-    if times_diffrence <= time_period:
-        H_x = pow(time_period / times_diffrence, n)
+    if times_difference <= time_period:
+        H_x = pow(time_period/times_difference, n)
     else:
         H_x = 1
     return H_x
@@ -31,7 +30,7 @@ def K_x_calculator(time_period, beta, file_size):  # file size: s
     return k_x
 
 
-def G_x_calculator(times_diffrence, file_size):
+def G_x_calculator(times_difference, file_size):
     return K_x_calculator(TIME_PERIOD, BETA, file_size) * H_x_calculator(
-        TIME_PERIOD, N, times_diffrence
+        TIME_PERIOD, N, times_difference
     )

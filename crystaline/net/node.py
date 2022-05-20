@@ -3,11 +3,10 @@ from flask import Flask
 from flask import request, jsonify
 import requests
 import json
-import multiprocessing
-
-from crystaline.blockchain.Blockchain import Blockchain
+from crystaline.blockchain.blockchain import Blockchain
 from crystaline.file.file import File
-from crystaline.transaction.Transaction import Transaction
+from crystaline.transaction.transaction import  Transaction
+import multiprocessing
 
 DEFAULT_PROTOCOL = "http"
 DEFAULT_METHODS = [["POST"], "GET"]
@@ -27,8 +26,8 @@ PARAM_END = "ending_block"
 
 PARAM_TXOID = "txo_id"
 
-PARAM_NODES_LIST_PORT = "port"
-PARAM_NODES_LIST_STATUS = "status"
+PARAM_NODES_DICT_PORT = "port"
+PARAM_NODES_DICT_STATUS = "status"
 
 URL_ADD_NODE = "/add_node"
 URL_GET_NODES = "/get_nodes"
@@ -58,17 +57,17 @@ class Node:
         ip_address: str,
         host_port: int = DEFAULT_PORT,
         blockchain: Blockchain = None,
-        nodes_list=None,
+        nodes_dict=None,
     ):
-        if nodes_list is None:
-            nodes_list = {}
+        if nodes_dict is None:
+            nodes_dict = {}
 
         self.ip_address = ip_address
         self.host_port = host_port
 
         self.app = Flask(__name__)
 
-        self.nodes_list = nodes_list
+        self.nodes_dict = nodes_dict
         self.blockchain = blockchain
 
         self.running_process = None
@@ -79,9 +78,9 @@ class Node:
         def add_node(node_ip, node_port):
             url = DEFAULT_PROTOCOL + "://" + node_ip + ":" + node_port + URL_GET_STATUS
             node_status = get_peer_status(url, DEFAULT_METHODS[0])
-            self.nodes_list[node_ip] = {
-                PARAM_NODES_LIST_STATUS: node_status,
-                PARAM_NODES_LIST_PORT: node_port,
+            self.nodes_dict[node_ip] = {
+                PARAM_NODES_DICT_STATUS: node_status,
+                PARAM_NODES_DICT_PORT: node_port,
             }
             # TODO: ?
             pass
@@ -92,7 +91,7 @@ class Node:
 
         @self.app.route(URL_GET_NODES, methods=["GET"])
         def get_nodes():
-            return json.dumps(self.nodes_list)
+            return json.dumps(self.nodes_dict)
 
         @self.app.route(URL_ADD_NODE, methods=["POST"])
         def add_node_async():

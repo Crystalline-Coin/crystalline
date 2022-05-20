@@ -1,7 +1,8 @@
 import json
-import crystaline.block.helper as hp
-import crystaline.transaction.Signature as sg
-import crystaline.public_address.public_address_generator as pa
+from crystaline.block import helper as hp
+from crystaline.transaction import signature as sg
+from crystaline.public_address.public_address_generator import PublicAddressGenerator
+
 
 
 class Transaction:
@@ -18,7 +19,7 @@ class Transaction:
         transactions_json = {
             "input_address": dict(self.input_address),
             "output_address": dict(self.output_address),
-            "signature": str(self.signature),
+            "signature": str(self.signature)
         }
         return json.dumps(transactions_json)
 
@@ -48,7 +49,8 @@ class Transaction:
     def load(self, path):
         file = open(path, "r")
         json_string = file.read()
-        self.from_json(json_string)
+        loaded = self.from_json(json_string)
+        self.input_address, self.output_address, self.signature = loaded.input_address, loaded.output_address, loaded.signature
         file.close()
 
     def get_details(self):
@@ -71,7 +73,7 @@ class Transaction:
     def is_valid(self, public_key, blockchain):
         if sg.verify_signature(self, public_key):
             (flag, utxos_values) = self.validate_input_UTXOs(blockchain, public_key)
-            if flag == True:
+            if flag:
                 if self.get_sum_of_outputs_values() <= sum(utxos_values):
                     return True
         return False
@@ -115,10 +117,17 @@ class Transaction:
     def utxo_belongs_to_pubkey(utxo, public_key):
         public_address = utxo[0]
         public_address_from_public_key = (
-            pa.PublicAddressGenerator.generate_public_address_from_public_key(
+            PublicAddressGenerator.generate_public_address_from_public_key(
                 public_key
             )
         )
         if public_address == public_address_from_public_key:
             return True
+        return False
+
+    def __eq__(self, other):
+        if isinstance(self, other.__class__):
+            return other.input_address == self.input_address and \
+                   other.output_address == self.output_address and \
+                   other.signature == self.signature
         return False

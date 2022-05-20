@@ -1,6 +1,6 @@
 import time
-from crystaline.transaction.Transaction import Transaction
-from crystaline.block.Block import Block
+from crystaline.transaction.transaction import Transaction
+from crystaline.block.block import Block
 
 import pytest
 
@@ -22,8 +22,8 @@ from crystaline.net.node import (
     PARAM_IP,
     PARAM_PORT,
     PARAM_BLOCK_INDEX,
-    PARAM_NODES_LIST_STATUS,
-    PARAM_NODES_LIST_PORT,
+    PARAM_NODES_DICT_PORT,
+    PARAM_NODES_DICT_STATUS,
     PARAM_START,
     PARAM_END,
     PARAM_TXOID,
@@ -31,7 +31,7 @@ from crystaline.net.node import (
 from crystaline.net.node import STATUS_RADDR_UP
 from crystaline.net.node import get_peer_status
 
-from crystaline.blockchain.Blockchain import Blockchain
+from crystaline.blockchain.blockchain import Blockchain
 
 import json
 import requests
@@ -131,8 +131,8 @@ def test_net_add_node(running_node):
 
     res_dict = res.json()
     assert NODE_IP_ADDR in res_dict
-    assert res_dict[NODE_IP_ADDR][PARAM_NODES_LIST_PORT] == str(NODE_PORT)
-    assert res_dict[NODE_IP_ADDR][PARAM_NODES_LIST_STATUS] == STATUS_RADDR_UP
+    assert res_dict[NODE_IP_ADDR][PARAM_NODES_DICT_PORT] == str(NODE_PORT)
+    assert res_dict[NODE_IP_ADDR][PARAM_NODES_DICT_STATUS] == STATUS_RADDR_UP
     res.close()
 
 
