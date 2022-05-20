@@ -9,7 +9,7 @@ from crystaline.transaction.transaction import  Transaction
 import multiprocessing
 
 DEFAULT_PROTOCOL = "http"
-DEFAULT_METHODS = [["POST"], "GET"]
+DEFAULT_METHODS = ["POST", "GET"]
 DEFAULT_PORT = 5000
 
 URL_GET_STATUS = "/get_status"
@@ -41,7 +41,7 @@ URL_GET_CHAIN = "/get_chain"
 URL_GET_TRANSACTION = "/get_transaction"
 
 def get_peer_status(url, method):
-    if ["POST"] in DEFAULT_METHODS:
+    if "POST" in DEFAULT_METHODS:
         res = requests.post(url)
     elif "GET" in DEFAULT_METHODS:
         res = requests.get(url)
