@@ -1,6 +1,6 @@
-from crystaline.transaction import *
-from crystaline.transaction import Transaction as tr
-from crystaline.public_address import public_address_generator as pa
+from crystaline.transaction.signature import *
+from crystaline.transaction.transaction import Transaction as tr
+from crystaline.public_address.public_address_generator import PublicAddressGenerator as pa
 import pytest
 
 
@@ -12,12 +12,12 @@ def transaction():
     outputs = [
         ("test_public_address", 25)
     ]
-    transaction = tr.Transaction(inputs, outputs, "")
+    transaction = tr(inputs, outputs, "")
 
     pv_key = 123456
     transaction.sign(pv_key)
 
-    pub_add = pa.PublicAddressGenerator(pv_key)
+    pub_add = pa(pv_key)
     pub_key = pub_add.public_key
 
     return transaction, pub_key
@@ -48,7 +48,7 @@ def test_write_and_read_from_file(transaction):
     file_address = "test_file.txt"
     trans.save(file_address)
 
-    temp = tr.Transaction([], [], "")
+    temp = tr([], [], "")
     temp.load(file_address)
 
     assert trans.get_details() == temp.get_details()
