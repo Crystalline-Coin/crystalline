@@ -1,8 +1,8 @@
 import re
 import time
-from ..block.Block import Block
-from ..fee_calculator.fee_calculator import *
-from ..block.helper import gen_hash
+from crystaline.block.block import Block
+from crystaline.fee_calculator.fee_calculator import *
+from crystaline.block.helper import gen_hash
 
 GENESIS_BLOCK_DIFFICULTY = 0
 GENESIS_FIRST_BLOCK_DIFFICULTY = 0

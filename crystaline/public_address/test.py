@@ -1,4 +1,4 @@
-from ..public_address.public_address_generator import PublicAddressGenerator
+from crystaline.public_address.public_address_generator import PublicAddressGenerator
 import time
 
 if __name__ == "__main__":

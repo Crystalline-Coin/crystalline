@@ -1,10 +1,10 @@
 import random
 import pytest
 
-from ..transaction import Transaction as tr
-from ..blockchain import blockchain as bc
-from ..public_address import public_address_generator as pa
-from ..block import helper as hp
+from crystaline.transaction import Transaction as tr
+from crystaline.blockchain import blockchain as bc
+from crystaline.public_address import public_address_generator as pa
+from crystaline.block import helper as hp
 
 
 @pytest.fixture

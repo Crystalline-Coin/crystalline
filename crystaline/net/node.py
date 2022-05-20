@@ -3,9 +3,9 @@ from flask import Flask
 from flask import request, jsonify
 import requests
 import json
-from ..blockchain import Blockchain
-from ..file.file import File
-from ..transaction.Transaction import  Transaction
+from crystaline.blockchain.blockchain import Blockchain
+from crystaline.file.file import File
+from crystaline.transaction.transaction import  Transaction
 import multiprocessing
 
 DEFAULT_PROTOCOL = "http"

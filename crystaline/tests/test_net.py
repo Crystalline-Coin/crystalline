@@ -2,9 +2,9 @@ import time
 
 import pytest
 
-from ..net.node import *
+from crystaline.net.node import *
 
-from ..blockchain import Blockchain
+from crystaline.blockchain import Blockchain
 
 import json
 import requests

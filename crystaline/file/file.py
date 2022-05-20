@@ -1,5 +1,5 @@
 import json
-from ..block import helper as hp
+from crystaline.block.helper import helper as hp
 
 
 class File:
