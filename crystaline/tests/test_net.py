@@ -57,7 +57,7 @@ def test_net_add_node(running_node):
         + ":"
         + str(NODE_PORT)
         + URL_GET_STATUS,
-        method=[DEFAULT_METHODS[0]],
+        method="GET",
         timeout=2,
     )
 
@@ -99,7 +99,7 @@ def test_net_get_block_state_404(running_node):
         + ":"
         + str(NODE_PORT)
         + URL_GET_STATUS,
-        method=DEFAULT_METHODS[0],
+        method="GET",
         timeout=2,
     )
     req_get_block_url = (
@@ -125,7 +125,7 @@ def test_net_get_chain_200(running_node_with_blockchain):
         + ":"
         + str(NODE_PORT)
         + URL_GET_STATUS,
-        method=DEFAULT_METHODS[0],
+        method="GET",
         timeout=2,
     )
 
@@ -151,7 +151,7 @@ def test_net_get_block_state_200(running_node_with_blockchain):
         + ":"
         + str(NODE_PORT)
         + URL_GET_STATUS,
-        method=DEFAULT_METHODS[0],
+        method="GET",
         timeout=2,
     )
     req_get_block_url = (
@@ -172,7 +172,7 @@ def test_net_add_file_state_200(running_node_with_blockchain):
         + ":"
         + str(NODE_PORT)
         + URL_GET_STATUS,
-        method=DEFAULT_METHODS[0],
+        method="GET",
         timeout=2,
     )
     req_add_file_url = (
@@ -203,7 +203,7 @@ def test_net_add_txo_state_200(running_node_with_blockchain):
         + ":"
         + str(NODE_PORT)
         + URL_GET_STATUS,
-        method=DEFAULT_METHODS[0],
+        method="GET",
         timeout=2,
     )
     req_add_txo_url = (

@@ -9,7 +9,6 @@ from crystaline.transaction.transaction import  Transaction
 import multiprocessing
 
 DEFAULT_PROTOCOL = "http"
-DEFAULT_METHODS = ["GET", "POST"]
 DEFAULT_PORT = 5000
 
 URL_GET_STATUS = "/get_status"
@@ -77,7 +76,7 @@ class Node:
 
         def add_node(node_ip, node_port):
             url = DEFAULT_PROTOCOL + "://" + node_ip + ":" + node_port + URL_GET_STATUS
-            node_status = get_peer_status(url, DEFAULT_METHODS[0])
+            node_status = get_peer_status(url, "GET")
             self.nodes_dict[node_ip] = {
                 PARAM_NODES_DICT_STATUS: node_status,
                 PARAM_NODES_DICT_PORT: node_port,
