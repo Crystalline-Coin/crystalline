@@ -5,7 +5,7 @@ import requests
 import json
 from crystaline.blockchain.blockchain import Blockchain
 from crystaline.file.file import File
-from crystaline.transaction.Transaction import  Transaction
+from crystaline.transaction.transaction import  Transaction
 import multiprocessing
 
 DEFAULT_PROTOCOL = "http"
