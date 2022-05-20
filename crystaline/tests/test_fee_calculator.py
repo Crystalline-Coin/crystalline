@@ -1,5 +1,5 @@
 import pytest
-from ..fee_calculator import fee_calculator as fc
+from crystaline.fee_calculator import fee_calculator as fc
 
 SIZE = 123
 TIME_1 = 10

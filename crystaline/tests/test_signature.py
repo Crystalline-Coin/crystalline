@@ -1,6 +1,6 @@
-from ..transaction.Signature import *
-from ..transaction import Transaction as tr
-from ..public_address import public_address_generator as pa
+from crystaline.transaction import *
+from crystaline.transaction import Transaction as tr
+from crystaline.public_address import public_address_generator as pa
 import pytest
 
 

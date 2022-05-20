@@ -1,8 +1,8 @@
 import pytest
 import random
-from ..public_address import public_address_generator as pa
-from ..blockchain import Blockchain as bc
-from ..transaction import Transaction as tr
+from crystaline.public_address import public_address_generator as pa
+from crystaline.blockchain import Blockchain as bc
+from crystaline.transaction import Transaction as tr
 
 
 @pytest.fixture

@@ -2,7 +2,7 @@ import pytest
 import json
 from copy import deepcopy
 
-from ..file.file import File
+from crystaline.file.file import File
 
 F_NAME = 'f_name'
 F_CONTENT = 'f_content'
