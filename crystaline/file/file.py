@@ -1,15 +1,14 @@
 import json
 from crystaline.block import helper as hp
 
+PARAM_NAME, PARAM_CONTENT, PARAM_CREATOR, PARAM_CREATION_TXO = (
+    "_name",
+    "_content",
+    "_creator",
+    "_creation_transaction",
+)
 
 class File:
-    PARAM_NAME, PARAM_CONTENT, PARAM_CREATOR, PARAM_CREATION_TXO = (
-        "_name",
-        "_content",
-        "_creator",
-        "_creation_transaction",
-    )
-
     def __init__(self, content, name, creator=None, creation_transaction=None):
         self._content = content
 
@@ -40,20 +39,23 @@ class File:
 
     def to_dict(self):
         return {
-            File.PARAM_NAME: self._name,
-            File.PARAM_CONTENT: str(self._content),
-            File.PARAM_CREATOR: self._creator,
-            File.PARAM_CREATION_TXO: self._creation_transaction,
+            PARAM_NAME: self._name,
+            PARAM_CONTENT: str(self._content),
+            PARAM_CREATOR: self._creator,
+            PARAM_CREATION_TXO: self._creation_transaction,
         }
 
     @classmethod
     def from_dict(cls, dict_in):
         return cls(
-            dict_in[cls.PARAM_CONTENT],
-            dict_in[cls.PARAM_NAME],
-            dict_in[cls.PARAM_CREATOR],
-            dict_in[cls.PARAM_CREATION_TXO],
+            dict_in[PARAM_CONTENT],
+            dict_in[PARAM_NAME],
+            dict_in[PARAM_CREATOR],
+            dict_in[PARAM_CREATION_TXO],
         )
+    
+    def get_size(self):
+        return len(self.to_json())
 
     def to_json(self):
         return json.dumps(self.to_dict())
@@ -66,10 +68,10 @@ class File:
         return json.loads(
             file_json,
             object_hook=lambda obj: File(
-                obj["_content"],
-                obj["_name"],
-                obj["_creator"],
-                obj["_creation_transaction"],
+                obj[PARAM_CONTENT],
+                obj[PARAM_NAME],
+                obj[PARAM_CREATOR],
+                obj[PARAM_CREATION_TXO],
             ),
         )
 
