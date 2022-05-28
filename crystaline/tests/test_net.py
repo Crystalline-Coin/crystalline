@@ -137,7 +137,7 @@ def test_net_get_chain_200(running_node_with_blockchain):
     assert res.status_code == 200
 
     res_dict = res.json()
-    chain = running_node_with_blockchain.blockchain.get_hashed_chain(0, 1)
+    chain = running_node_with_blockchain.blockchain.get_chain_hashes(0, 1)
     assert json.loads(chain) == res_dict
     res.close()
 

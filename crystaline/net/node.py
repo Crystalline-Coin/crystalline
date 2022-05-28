@@ -160,7 +160,7 @@ class Node:
             start_index = request.args.get(PARAM_START)
             end_index = request.args.get(PARAM_END)
             try:
-                json_string = self.blockchain.get_hashed_chain(
+                json_string = self.blockchain.get_chain_hashes(
                     int(start_index) - 1, int(end_index) - 1
                 )
             except:
