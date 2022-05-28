@@ -21,4 +21,4 @@ def test_K_x():
 
 
 def test_G_x():
-    assert fc.G_x_calculator(TIME_1, TIME_2, SIZE) == 860502.0242914979
+    assert fc.G_x_calculator(TIME_2 - TIME_1, SIZE) == 5121542.168674699

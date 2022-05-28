@@ -8,7 +8,7 @@ from copy import deepcopy
 
 from crystaline.block.block import Block
 from crystaline.block import helper
-from crystaline.transaction import Transaction
+from crystaline.transaction.transaction import Transaction
 from crystaline.file.file import File
 
 B_VERSION, B_PREV_HASH, B_DIFF_TARGET, B_NONCE, B_FILES, B_TRANSACTIONS, = \
@@ -70,8 +70,8 @@ def test_block_to_dict(mblock: Block):
 
 def test_upload_file(mblock: Block, tmp_file: str):
     mblock.upload_file(tmp_file)
-    # TODO: Check if mode: r is okay (not rb)=-=-=-
-    with open(tmp_file, 'r') as fp:
+
+    with open(tmp_file, 'rb') as fp:
         assert mblock._files[-1] == File(fp.read(), Path(tmp_file).name)
 
 
@@ -84,8 +84,7 @@ def test_upload_and_download_file(mblock: Block, tmp_file: str, tmp_path: str):
 
     mblock.download_file(download_dir, -1)
 
-    # TODO: Check if mode: r is okay (not rb)
-    with open(os.path.join(download_dir, TMP_FILE_NAME), 'r') as fp:
+    with open(os.path.join(download_dir, TMP_FILE_NAME), 'rb') as fp:
         assert mblock._files[-1] == File(fp.read(), Path(tmp_file).name)
 
 

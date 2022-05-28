@@ -1,13 +1,12 @@
 import json
-from crystaline.block.helper import helper as hp
+from crystaline.block import helper as hp
 
 
 class File:
     PARAM_NAME, PARAM_CONTENT, PARAM_CREATOR, PARAM_CREATION_TXO = \
         '_name', '_content', '_creator', '_creation_transaction'
 
-    def __init__(self, content: str, name, creator=None, creation_transaction=None):
-        assert isinstance(content, str)
+    def __init__(self, content, name, creator=None, creation_transaction=None):
         self._content = content
 
         self._name = name
@@ -36,7 +35,12 @@ class File:
         return self._hash
 
     def to_dict(self):
-        return self.__dict__
+        return {
+            File.PARAM_NAME: self._name,
+            File.PARAM_CONTENT: str(self._content),
+            File.PARAM_CREATOR: self._creator,
+            File.PARAM_CREATION_TXO: self._creation_transaction
+        }
 
     @classmethod
     def from_dict(cls, dict_in):
@@ -44,7 +48,7 @@ class File:
                    dict_in[cls.PARAM_CREATOR], dict_in[cls.PARAM_CREATION_TXO])
 
     def to_json(self):
-        return json.dumps(self.__dict__)
+        return json.dumps(self.to_dict())
 
     def get_hash(self):
         return hp.gen_hash(self.to_json())

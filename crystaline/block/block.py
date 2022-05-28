@@ -1,8 +1,8 @@
 import os.path
 
-from ..block.helper import gen_hash
-from ..file.file import File
-from ..transaction.Transaction import Transaction
+from crystaline.block.helper import gen_hash
+from crystaline.file.file import File
+from crystaline.transaction.transaction import Transaction
 from pathlib import Path
 import json
 import time
@@ -94,7 +94,6 @@ class Block:
 
     def upload_file(self, file_path):
         path = Path(file_path)
-        # TODO: Check if mode: r is okay (not rb)
         with open(file_path, mode='rb') as new_file:
             new_file = File(new_file.read(), path.name)
             self._files.append(new_file)
@@ -102,7 +101,6 @@ class Block:
     def download_file(self, parent_dir, file_idx):
         file = self._files[file_idx]
         new_path = os.path.join(parent_dir, file.name)
-        # TODO: Check if mode: w is okay (not wb)
         with open(new_path, mode='wb') as fp:
             fp.write(file.content)
 
@@ -142,12 +140,11 @@ class Block:
             return True
 
     def save(self, file_path):
-        # TODO: Fix the issue with json serialization
+        # TODO: Check filesystem
         path = os.path.join(file_path, 
-                            self.FILE_NAME_PREFIX,
+                            self.FILE_NAME_PREFIX + 
                             str(self._timestamp) + self.FILE_EXTENSION)
         json_string = json.dumps(self.to_dict())
-        #FIXME: Maybe wb?
         with open(path, mode='w') as file:
             file.write(json_string)
         return path

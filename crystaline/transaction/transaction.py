@@ -67,7 +67,7 @@ class Transaction:
     @staticmethod
     def from_dict(dict):
         return Transaction(
-            dict["_input_address"], dict["_output_address"], dict["_signature"]
+            dict["input_address"], dict["output_address"], dict["signature"]
         )
 
     def is_valid(self, public_key, blockchain):

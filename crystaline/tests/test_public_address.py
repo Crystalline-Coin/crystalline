@@ -2,7 +2,7 @@ import pytest
 from crystaline.public_address import public_address_generator as pa
 from ecpy.curves import Point, Curve
 
-CURVE_NAME = 'Ed448'
+from crystaline.public_address.public_address_generator import *
 
 
 @pytest.fixture

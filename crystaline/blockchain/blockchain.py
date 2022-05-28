@@ -1,7 +1,10 @@
 import re
 import time
+import json
+
 from crystaline.block.block import Block
 from crystaline.fee_calculator.fee_calculator import *
+
 from crystaline.block.helper import gen_hash
 
 GENESIS_BLOCK_DIFFICULTY = 0
@@ -127,3 +130,15 @@ class Blockchain:
 
     def get_last_force_update_status(self):
         return self.last_force_update_status
+
+    def get_chain(self, starting_index, ending_index):
+        return self.chain[starting_index: ending_index]
+
+    def get_hashed_chain(self, starting_index, ending_index):
+        chain = self.get_chain(starting_index, ending_index)
+        hashes = {}
+        index = starting_index
+        for block in chain:
+            hashes[index] = block.generate_block_hash()
+            index += 1
+        return json.dumps(hashes)

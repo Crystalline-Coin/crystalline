@@ -9,7 +9,6 @@ from crystaline.transaction.transaction import  Transaction
 import multiprocessing
 
 DEFAULT_PROTOCOL = "http"
-DEFAULT_METHODS = [["POST"], "GET"]
 DEFAULT_PORT = 5000
 
 URL_GET_STATUS = "/get_status"
@@ -21,14 +20,29 @@ PARAM_IP = "dst_ip"
 PARAM_PORT = "dst_port"
 PARAM_BLOCK_INDEX = "block_index"
 
+PARAM_START = "starting_block"
+PARAM_END = "ending_block"
+
+PARAM_TXOID = "txo_id"
+
 PARAM_NODES_DICT_PORT = "port"
 PARAM_NODES_DICT_STATUS = "status"
 
+URL_ADD_NODE = "/add_node"
+URL_GET_NODES = "/get_nodes"
+URL_GET_STATUS = "/get_status"
+URL_GET_BLOCK = "/get_block"
+URL_ADD_TXO = "/add_txo"
+URL_ADD_FILE = "/add_file"
+URL_GET_FILE_POOL = "/get_file_pool"
+URL_GET_TRANSACTION_POOL = "/get_transaction_pool"
+URL_GET_CHAIN = "/get_chain"
+URL_GET_TRANSACTION = "/get_transaction"
 
 def get_peer_status(url, method):
-    if ["POST"] in DEFAULT_METHODS:
+    if "POST" in method:
         res = requests.post(url)
-    elif "GET" in DEFAULT_METHODS:
+    elif "GET" in method:
         res = requests.get(url)
     else:
         raise Exception("Provided method is not consistent.")
@@ -58,11 +72,11 @@ class Node:
         self.running_process = None
 
         self.file_pool = []
-        self.transaction_pool = []
+        self.transaction_pool = {}
 
         def add_node(node_ip, node_port):
             url = DEFAULT_PROTOCOL + "://" + node_ip + ":" + node_port + URL_GET_STATUS
-            node_status = get_peer_status(url, DEFAULT_METHODS[0])
+            node_status = get_peer_status(url, "GET")
             self.nodes_dict[node_ip] = {
                 PARAM_NODES_DICT_STATUS: node_status,
                 PARAM_NODES_DICT_PORT: node_port,
@@ -74,11 +88,11 @@ class Node:
         def get_curr_status():
             return json.dumps({"UP": True}), 200, {"ContentType": "application/json"}
 
-        @self.app.route("/get_nodes", methods=["GET"])
+        @self.app.route(URL_GET_NODES, methods=["GET"])
         def get_nodes():
             return json.dumps(self.nodes_dict)
 
-        @self.app.route("/add_node", methods=["POST"])
+        @self.app.route(URL_ADD_NODE, methods=["POST"])
         def add_node_async():
             node_ip = request.args.get(PARAM_IP)
             node_port = request.args.get(PARAM_PORT)
@@ -86,7 +100,7 @@ class Node:
             _thread.start_new_thread(add_node, (node_ip, node_port))
             return "Successfully added.", 200
 
-        @self.app.route("/get_block", methods=["GET"])
+        @self.app.route(URL_GET_BLOCK, methods=["GET"])
         def get_block():
             status_code = 200
             json_string = ""
@@ -99,23 +113,65 @@ class Node:
                 status_code = 404
             return json_string, status_code, {"ContentType": "application/json"}
 
-        @self.app.route("/add_file", methods=["POST"])
+        @self.app.route(URL_ADD_FILE, methods=["POST"])
         def add_file():
             self.file_pool.append(File.from_json(request.get_json()))
             return "Successfully added.", 200
 
-        @self.app.route("/add_txo", methods=["POST"])
+        @self.app.route(URL_ADD_TXO, methods=["POST"])
         def add_txo():
-            self.transaction_pool.append(Transaction.from_json(request.get_json()))
+            new_transaction = Transaction.from_json(request.get_json())
+            self.transaction_pool[new_transaction.get_hash()] = new_transaction
             return "Successfully added.", 200
 
-        # TODO: Get transaction/file pool
+        @self.app.route(URL_GET_FILE_POOL, methods=["GET"])
+        def get_file_pool():
+            file_pool = []
+            for file in self.file_pool:
+                file_pool.append(file.to_json())
+            return json.dumps(file_pool), 200, {"ContentType": "application/json"}
+        
+        @self.app.route(URL_GET_TRANSACTION_POOL, methods=["GET"])
+        def get_transaction_pool():
+            transaction_pool = []
+            for txo, transaction in self.transaction_pool.items():
+                transaction_pool.append(transaction.to_json())
+            return json.dumps(transaction_pool), 200, {"ContentType": "application/json"}
 
         # LONG TODO: Add block
 
-        # TODO: Get chain
+        @self.app.route(URL_GET_CHAIN, methods=["GET"])
+        def get_chain():
+            """
+            Given a starting and ending block index, return the chain between them(including both).
 
-        # TODO: Get Transaction
+            start: int. Starting block index.
+            end: int. Ending block index.
+            """
+
+            status_code = 200
+            json_string = ""
+            
+            start_index = request.args.get(PARAM_START)
+            end_index = request.args.get(PARAM_END)
+            try:
+                json_string = self.blockchain.get_hashed_chain(int(start_index) - 1, int(end_index) - 1)
+            except:
+                status_code = 404
+            return json_string, status_code, {"ContentType": "application/json"}
+
+        @self.app.route(URL_GET_TRANSACTION, methods=["GET"])
+        def get_transaction(self):
+            status_code = 200
+            json_string = ""
+
+            txo = request.args.get(PARAM_TXOID)
+            try:
+                transaction = self.transaction_pool[txo]
+                json_string = transaction.to_json()
+            except:
+                status_code = 404
+            return 
 
         # LONG TODO: Node saving and loading
 

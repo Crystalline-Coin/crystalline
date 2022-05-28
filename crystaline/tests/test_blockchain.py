@@ -1,8 +1,8 @@
 import pytest
 import random
 from crystaline.public_address import public_address_generator as pa
-from crystaline.blockchain import Blockchain as bc
-from crystaline.transaction import Transaction as tr
+from crystaline.blockchain.blockchain import Blockchain as bc
+from crystaline.transaction.transaction import Transaction as tr
 
 
 @pytest.fixture
@@ -19,7 +19,7 @@ def accounts():
 @pytest.fixture
 def blockchain(accounts):
     test_accounts = accounts
-    test_blockchain = bc.Blockchain()
+    test_blockchain = bc()
 
     for k in range(1, 5):
         transactions = []
@@ -27,7 +27,7 @@ def blockchain(accounts):
         inputs = [(reward, 0)]
         for i in range(0, 5):
             outputs = [(test_accounts[i].public_address, 25)]
-            transactions.append(tr.Transaction(inputs, outputs))
+            transactions.append(tr(inputs, outputs))
 
         test_blockchain.add_new_block(0, transactions)
 
@@ -37,7 +37,7 @@ def blockchain(accounts):
     outputs = [
         (test_accounts[0].public_address, 25)
     ]
-    first_transaction = tr.Transaction(inputs, outputs)
+    first_transaction = tr(inputs, outputs)
     first_transaction.sign(test_accounts[0].private_key)
     test_blockchain.add_new_block(0, [first_transaction])
     
@@ -52,7 +52,7 @@ def test_add_block(blockchain):
     outputs = [
         (test_accounts[0].public_address, 25)
     ]
-    first_transaction = tr.Transaction(inputs, outputs)
+    first_transaction = tr(inputs, outputs)
     first_transaction.sign(test_accounts[0].private_key)
     test_blockchain.add_new_block(0, [first_transaction])
 
