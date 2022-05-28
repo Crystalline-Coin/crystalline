@@ -1,5 +1,9 @@
+from crystaline import transaction
 from crystaline.blockchain.blockchain import Blockchain
 from crystaline.file.file import File
+from crystaline.block.block import BLOCK_FILE_SIZE, BLOCK_TRANSACTION_SIZE, NONCE_RANGE,Block
+from crystaline.transaction.transaction import Transaction
+import time
 
 
 class Miner:
@@ -8,11 +12,36 @@ class Miner:
         self.file_pool = file_pool
         self.transaction_pool = transaction_pool
     
-    def mine_block(self):
-        files_to_be_mined = []
-        files_size = 0
-        transactions_to_be_mined = []
+    def get_items_to_be_mined(self, items, max_items_size):
+        items_to_be_mined = []
+        items_size = 0
 
-        for file in self.file_pool:
-            files_to_be_mined.append(file)
-            files_size += File(file).size
+        for item in items:
+            items_to_be_mined.append(item)
+            items_size += item.get_size()
+            if (items_size > max_items_size):
+                items_to_be_mined.pop(-1)
+                break
+
+        return items_to_be_mined
+    
+    def mine_block(self):
+        files_to_be_mined = self.get_items_to_be_mined(self.file_pool, BLOCK_FILE_SIZE)
+        transactions_to_be_mined = self.get_items_to_be_mined(self.transaction_pool, BLOCK_TRANSACTION_SIZE)
+
+        for i in range(NONCE_RANGE[0], NONCE_RANGE[1]):
+            block = Block(
+                version="1",
+                prev_hash=self.blockchain.get_last_block_hash(),
+                difficulty_target=self.blockchain.get_difficulty_target(),
+                nonce=i,
+                timestamp=int(time.time()),
+                transactions=transactions_to_be_mined,
+                files=files_to_be_mined,
+            )
+            if block.is_valid():
+                self.blockchain.add_block(block)
+                self.file_pool = [x for x in self.file_pool if x not in files_to_be_mined]
+                self.transaction_pool = [x for x in self.transaction_pool if x not in transactions_to_be_mined]
+                return block
+        return None
