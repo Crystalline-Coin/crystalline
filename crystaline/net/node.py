@@ -185,7 +185,9 @@ class Node:
         @self.app.route(URL_MINE_BLOCK, methods=["POST"])
         def mine_block():
             miner = Miner(self.blockchain, self.file_pool, self.transaction_pool)
-            miner.mine_block()
+            block = miner.mine_block()
+            if (not block):
+                return "mining failed, no blocks found!", 500
             return "done", 200
 
         # LONG TODO: Node saving and loading
