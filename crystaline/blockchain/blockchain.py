@@ -6,6 +6,7 @@ from crystaline.block.block import Block
 from crystaline.fee_calculator.fee_calculator import *
 
 from crystaline.block.helper import gen_hash
+from crystaline.mining_handler.mining_handler import MIDDLE_OF_64_BYTE_HASHES
 
 GENESIS_BLOCK_DIFFICULTY = 0
 GENESIS_BLOCK_HASH = "0"
@@ -145,4 +146,8 @@ class Blockchain:
 
     def get_chain(self, starting_index, ending_index):
         return self.chain[starting_index:ending_index]
+    
+    def get_difficulty_target(self):
+        # TODO: COMPLETE HERE VERY IMPORTANT!
+        return MIDDLE_OF_64_BYTE_HASHES
 
