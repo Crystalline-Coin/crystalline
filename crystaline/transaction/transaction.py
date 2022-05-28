@@ -14,6 +14,9 @@ class Transaction:
         if self.signature == "":
             self.signature = sg.sign(self, private_key)
 
+    def get_size(self):
+        return len(self.to_json())
+
     def to_json(self):
         transactions_json = {
             "input_address": dict(self.input_address),
