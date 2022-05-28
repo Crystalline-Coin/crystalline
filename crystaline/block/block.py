@@ -27,6 +27,7 @@ import time
 
 BLOCK_FILE_SIZE = 3 * 1024 * 1024
 BLOCK_TRANSACTION_SIZE = 1 * 1024 * 1024
+NONCE_RANGE = (1, 2 ** 20)
 
 
 class Block:
@@ -152,19 +153,18 @@ class Block:
 
     def is_valid(self):
         if (
-            not self.version
-            or not self.prev_hash
-            or not self.difficulty_target
-            or not self.nonce
-            or not self.timestamp
-            # TODO: WTF IS THIS?
-            # or not self.is_file_size_valid(files_dir)
-            # or not self.is_transaction_size_valid(transactions_dir)
+            not self.is_nonce_valid()
+            or not self.is_file_size_valid()
+            or not self.is_transaction_size_valid()
+            
         ):
             return False
 
         else:
             return True
+    
+    def is_nonce_valid(self):
+        return self._nonce < NONCE_RANGE[1] and self._nonce >= NONCE_RANGE[0]
 
     def save(self, file_path):
         # TODO: Check filesystem
