@@ -25,12 +25,13 @@ import time
     "_timestamp",
 )
 
+BLOCK_FILE_SIZE = 3 * 1024 * 1024
+BLOCK_TRANSACTION_SIZE = 1 * 1024 * 1024
+
 
 class Block:
     FILE_NAME_PREFIX = "cry_"
     FILE_EXTENSION = ".blk"
-    BLOCK_FILE_SIZE = 3 * 1024 * 1024
-    BLOCK_TRANSACTION_SIZE = 1 * 1024 * 1024
     STRING_FORMAT = "utf-8"
 
     def __init__(
@@ -133,8 +134,8 @@ class Block:
     def is_files_size_valid(self):
         total_size = 0
         for file in self._files:
-            total_size += len(file.content.encode(self.STRING_FORMAT))
-        if total_size >= self.BLOCK_FILE_SIZE:
+            total_size += len(file.get_size())
+        if total_size >= BLOCK_FILE_SIZE:
             return False
         else:
             return True
@@ -143,8 +144,8 @@ class Block:
         # TODO: Fix the issue with transaction.content
         total_size = 0
         for transaction in self._transactions:
-            total_size += len(transaction.content.encode(self.STRING_FORMAT))
-        if total_size >= self.BLOCK_TRANSACTION_SIZE:
+            total_size += len(transaction.get_size())
+        if total_size >= BLOCK_TRANSACTION_SIZE:
             return False
         else:
             return True
