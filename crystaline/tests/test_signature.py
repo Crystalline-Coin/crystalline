@@ -1,17 +1,15 @@
 from crystaline.transaction.signature import *
 from crystaline.transaction.transaction import Transaction as tr
-from crystaline.public_address.public_address_generator import PublicAddressGenerator as pa
+from crystaline.public_address.public_address_generator import (
+    PublicAddressGenerator as pa,
+)
 import pytest
 
 
 @pytest.fixture()
 def transaction():
-    inputs = [
-        ("test_input_address", 0)
-    ]
-    outputs = [
-        ("test_public_address", 25)
-    ]
+    inputs = [("test_input_address", 0)]
+    outputs = [("test_public_address", 25)]
     transaction = tr(inputs, outputs, "")
 
     pv_key = 123456

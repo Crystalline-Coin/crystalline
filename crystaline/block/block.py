@@ -7,18 +7,42 @@ from pathlib import Path
 import json
 import time
 
-PARAM_VERSION, PARAM_PREV_HASH, PARAM_DIFF_TARGET, PARAM_NONCE, PARAM_FILES, PARAM_TRANSACTIONS, PARAM_TIMESTAMP = \
-        '_version', '_prev_hash', '_difficulty_target', '_nonce', '_files', '_transactions', '_timestamp'
+(
+    PARAM_VERSION,
+    PARAM_PREV_HASH,
+    PARAM_DIFF_TARGET,
+    PARAM_NONCE,
+    PARAM_FILES,
+    PARAM_TRANSACTIONS,
+    PARAM_TIMESTAMP,
+) = (
+    "_version",
+    "_prev_hash",
+    "_difficulty_target",
+    "_nonce",
+    "_files",
+    "_transactions",
+    "_timestamp",
+)
+
 
 class Block:
-    FILE_NAME_PREFIX = 'cry_'
-    FILE_EXTENSION = '.blk'
+    FILE_NAME_PREFIX = "cry_"
+    FILE_EXTENSION = ".blk"
     BLOCK_FILE_SIZE = 3 * 1024 * 1024
     BLOCK_TRANSACTION_SIZE = 1 * 1024 * 1024
-    STRING_FORMAT = 'utf-8'
+    STRING_FORMAT = "utf-8"
 
-    def __init__(self, version: str, prev_hash: str, difficulty_target: int, nonce: int,
-                 timestamp: time = int(time.time()), transactions=None, files=None):
+    def __init__(
+        self,
+        version: str,
+        prev_hash: str,
+        difficulty_target: int,
+        nonce: int,
+        timestamp: time = int(time.time()),
+        transactions=None,
+        files=None,
+    ):
         self._version = version
         self._prev_hash = prev_hash
         self._difficulty_target = difficulty_target
@@ -66,13 +90,15 @@ class Block:
         return self._files
 
     def to_dict(self):
-        block_dict = {PARAM_VERSION: self.version, 
-                      PARAM_PREV_HASH: self._prev_hash,
-                      PARAM_DIFF_TARGET: self._difficulty_target, 
-                      PARAM_NONCE: self._nonce,
-                      PARAM_TIMESTAMP: self._timestamp,
-                      PARAM_FILES: self._files, 
-                      PARAM_TRANSACTIONS: self._transactions}
+        block_dict = {
+            PARAM_VERSION: self.version,
+            PARAM_PREV_HASH: self._prev_hash,
+            PARAM_DIFF_TARGET: self._difficulty_target,
+            PARAM_NONCE: self._nonce,
+            PARAM_TIMESTAMP: self._timestamp,
+            PARAM_FILES: self._files,
+            PARAM_TRANSACTIONS: self._transactions,
+        }
         block_dict[PARAM_TRANSACTIONS] = []
         for transaction in self.transactions:
             block_dict[PARAM_TRANSACTIONS].append(transaction.to_dict())
@@ -94,14 +120,14 @@ class Block:
 
     def upload_file(self, file_path):
         path = Path(file_path)
-        with open(file_path, mode='rb') as new_file:
+        with open(file_path, mode="rb") as new_file:
             new_file = File(new_file.read(), path.name)
             self._files.append(new_file)
 
     def download_file(self, parent_dir, file_idx):
         file = self._files[file_idx]
         new_path = os.path.join(parent_dir, file.name)
-        with open(new_path, mode='wb') as fp:
+        with open(new_path, mode="wb") as fp:
             fp.write(file.content)
 
     def is_files_size_valid(self):
@@ -130,7 +156,7 @@ class Block:
             or not self.difficulty_target
             or not self.nonce
             or not self.timestamp
-            #TODO: WTF IS THIS?
+            # TODO: WTF IS THIS?
             # or not self.is_file_size_valid(files_dir)
             # or not self.is_transaction_size_valid(transactions_dir)
         ):
@@ -141,11 +167,12 @@ class Block:
 
     def save(self, file_path):
         # TODO: Check filesystem
-        path = os.path.join(file_path, 
-                            self.FILE_NAME_PREFIX + 
-                            str(self._timestamp) + self.FILE_EXTENSION)
+        path = os.path.join(
+            file_path,
+            self.FILE_NAME_PREFIX + str(self._timestamp) + self.FILE_EXTENSION,
+        )
         json_string = json.dumps(self.to_dict())
-        with open(path, mode='w') as file:
+        with open(path, mode="w") as file:
             file.write(json_string)
         return path
 
@@ -167,7 +194,7 @@ class Block:
         STARTING_INDEX = len(Block.FILE_NAME_PREFIX)
         ENDING_INDEX = -len(Block.FILE_EXTENSION)
         # FIXME: rb or r?
-        with open(file_path, mode='r') as new_file:
+        with open(file_path, mode="r") as new_file:
             block_dict = json.loads(new_file.read())
         block_transactions = []
         for transaction in block_dict[PARAM_TRANSACTIONS]:
@@ -189,7 +216,13 @@ class Block:
 
     def __eq__(self, other):
         if isinstance(self, other.__class__):
-            return other.version == self._version and other.prev_hash == self._prev_hash \
-                   and other.difficulty_target == self._difficulty_target and other.nonce == self._nonce \
-                   and other.transactions == self._transactions and other.files == self._files and self._timestamp == other.timestamp
+            return (
+                other.version == self._version
+                and other.prev_hash == self._prev_hash
+                and other.difficulty_target == self._difficulty_target
+                and other.nonce == self._nonce
+                and other.transactions == self._transactions
+                and other.files == self._files
+                and self._timestamp == other.timestamp
+            )
         return False

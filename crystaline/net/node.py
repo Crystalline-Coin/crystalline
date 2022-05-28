@@ -5,7 +5,7 @@ import requests
 import json
 from crystaline.blockchain.blockchain import Blockchain
 from crystaline.file.file import File
-from crystaline.transaction.transaction import  Transaction
+from crystaline.transaction.transaction import Transaction
 import multiprocessing
 
 DEFAULT_PROTOCOL = "http"
@@ -38,6 +38,7 @@ URL_GET_FILE_POOL = "/get_file_pool"
 URL_GET_TRANSACTION_POOL = "/get_transaction_pool"
 URL_GET_CHAIN = "/get_chain"
 URL_GET_TRANSACTION = "/get_transaction"
+
 
 def get_peer_status(url, method):
     if "POST" in method:
@@ -130,13 +131,17 @@ class Node:
             for file in self.file_pool:
                 file_pool.append(file.to_json())
             return json.dumps(file_pool), 200, {"ContentType": "application/json"}
-        
+
         @self.app.route(URL_GET_TRANSACTION_POOL, methods=["GET"])
         def get_transaction_pool():
             transaction_pool = []
             for txo, transaction in self.transaction_pool.items():
                 transaction_pool.append(transaction.to_json())
-            return json.dumps(transaction_pool), 200, {"ContentType": "application/json"}
+            return (
+                json.dumps(transaction_pool),
+                200,
+                {"ContentType": "application/json"},
+            )
 
         # LONG TODO: Add block
 
@@ -151,11 +156,13 @@ class Node:
 
             status_code = 200
             json_string = ""
-            
+
             start_index = request.args.get(PARAM_START)
             end_index = request.args.get(PARAM_END)
             try:
-                json_string = self.blockchain.get_hashed_chain(int(start_index) - 1, int(end_index) - 1)
+                json_string = self.blockchain.get_hashed_chain(
+                    int(start_index) - 1, int(end_index) - 1
+                )
             except:
                 status_code = 404
             return json_string, status_code, {"ContentType": "application/json"}
@@ -171,7 +178,7 @@ class Node:
                 json_string = transaction.to_json()
             except:
                 status_code = 404
-            return 
+            return
 
         # LONG TODO: Node saving and loading
 

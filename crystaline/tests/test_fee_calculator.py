@@ -12,8 +12,8 @@ def test_F_x():
 
 
 def test_H_x():
-    assert fc.H_x_calculator(TIME_1, N, TIME_2) == 3.4828517376e+18
-    assert fc.H_x_calculator(TIME_2, N, TIME_1) == 8.916100448256e+20
+    assert fc.H_x_calculator(TIME_1, N, TIME_2) == 3.4828517376e18
+    assert fc.H_x_calculator(TIME_2, N, TIME_1) == 8.916100448256e20
 
 
 def test_K_x():

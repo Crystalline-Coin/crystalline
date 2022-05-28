@@ -9,8 +9,7 @@ from crystaline.block.helper import gen_hash
 
 GENESIS_BLOCK_DIFFICULTY = 0
 GENESIS_FIRST_BLOCK_DIFFICULTY = 0
-GENESIS_FIRST_BLOCK_HASH = '0'
-
+GENESIS_FIRST_BLOCK_HASH = "0"
 
 
 class Blockchain:
@@ -53,7 +52,7 @@ class Blockchain:
             if previous_block.timestamp > current_block.timestamp:
                 return False
         return True
-    
+
     def calculate_fee(self, time_period, uploaded_file_size, uploader_address):
         F_x = F_x_calculator(uploaded_file_size)
         time_period = time_period * 24 * 60 * 60
@@ -78,10 +77,10 @@ class Blockchain:
         if self.length <= index:
             return False
         return True
-    
-    def get_block(self, index : int):
+
+    def get_block(self, index: int):
         assert self.is_block_available(index=index)
-        return self.chain[index] 
+        return self.chain[index]
 
     def get_utxo(self, trans_hash, output_index):
         for i in range(0, len(self.chain)):
@@ -132,7 +131,7 @@ class Blockchain:
         return self.last_force_update_status
 
     def get_chain(self, starting_index, ending_index):
-        return self.chain[starting_index: ending_index]
+        return self.chain[starting_index:ending_index]
 
     def get_hashed_chain(self, starting_index, ending_index):
         chain = self.get_chain(starting_index, ending_index)

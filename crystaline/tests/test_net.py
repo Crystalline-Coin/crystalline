@@ -49,6 +49,7 @@ def wait_for_url(url: str, method: str, timeout: float):
         timeout -= 1
     raise RuntimeError("Url-wait timed out.")
 
+
 def test_net_add_node(running_node):
     wait_for_url(
         url=DEFAULT_PROTOCOL
@@ -65,22 +66,17 @@ def test_net_add_node(running_node):
         DEFAULT_PROTOCOL + "://" + NODE_IP_ADDR + ":" + str(NODE_PORT) + URL_ADD_NODE
     )
     res = requests.post(
-            req_add_node_url, params={PARAM_IP: NODE_IP_ADDR, PARAM_PORT: NODE_PORT}
-        )
+        req_add_node_url, params={PARAM_IP: NODE_IP_ADDR, PARAM_PORT: NODE_PORT}
+    )
 
     assert res.status_code == 200
     res.close()
 
     time.sleep(0.5)
     res = requests.get(
-                DEFAULT_PROTOCOL
-                + "://"
-                + NODE_IP_ADDR
-                + ":"
-                + str(NODE_PORT)
-                + URL_GET_NODES,
-                params={PARAM_IP: NODE_IP_ADDR, PARAM_PORT: NODE_PORT},
-            )
+        DEFAULT_PROTOCOL + "://" + NODE_IP_ADDR + ":" + str(NODE_PORT) + URL_GET_NODES,
+        params={PARAM_IP: NODE_IP_ADDR, PARAM_PORT: NODE_PORT},
+    )
 
     assert res.status_code == 200
 
@@ -114,9 +110,12 @@ def test_net_get_block_state_404(running_node):
 
 
 def test_net_get_chain_200(running_node_with_blockchain):
-    running_node_with_blockchain.blockchain.chain.append(Block("version", "prev_hash", 1000, 999))
-    running_node_with_blockchain.blockchain.chain.append(Block("version", "prev_hash", 1000, 999))
-
+    running_node_with_blockchain.blockchain.chain.append(
+        Block("version", "prev_hash", 1000, 999)
+    )
+    running_node_with_blockchain.blockchain.chain.append(
+        Block("version", "prev_hash", 1000, 999)
+    )
 
     wait_for_url(
         url=DEFAULT_PROTOCOL
@@ -133,8 +132,7 @@ def test_net_get_chain_200(running_node_with_blockchain):
         DEFAULT_PROTOCOL + "://" + NODE_IP_ADDR + ":" + str(NODE_PORT) + URL_GET_CHAIN
     )
 
-
-    res = requests.get(req_get_chain_url, params={PARAM_START: 1, PARAM_END : 2})
+    res = requests.get(req_get_chain_url, params={PARAM_START: 1, PARAM_END: 2})
 
     assert res.status_code == 200
 
@@ -142,6 +140,7 @@ def test_net_get_chain_200(running_node_with_blockchain):
     chain = running_node_with_blockchain.blockchain.get_hashed_chain(0, 1)
     assert json.loads(chain) == res_dict
     res.close()
+
 
 def test_net_get_block_state_200(running_node_with_blockchain):
     wait_for_url(
@@ -186,10 +185,10 @@ def test_net_add_file_state_200(running_node_with_blockchain):
     }
 
     res = requests.post(
-            req_add_file_url,
-            json=json.dumps(sample_file),
-            headers={"ContentType": "application/json"},
-        )
+        req_add_file_url,
+        json=json.dumps(sample_file),
+        headers={"ContentType": "application/json"},
+    )
 
     assert res.status_code == 200
     res.close()
@@ -216,10 +215,10 @@ def test_net_add_txo_state_200(running_node_with_blockchain):
     }
 
     res = requests.post(
-            req_add_txo_url,
-            json=json.dumps(sample_txo),
-            headers={"ContentType": "application/json"},
-        )
+        req_add_txo_url,
+        json=json.dumps(sample_txo),
+        headers={"ContentType": "application/json"},
+    )
 
     assert res.status_code == 200
     res.close()

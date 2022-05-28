@@ -4,7 +4,6 @@ from crystaline.transaction import signature as sg
 from crystaline.public_address.public_address_generator import PublicAddressGenerator
 
 
-
 class Transaction:
     def __init__(self, _input_address=None, _output_address=None, _signature=""):
         self.input_address = _input_address
@@ -19,7 +18,7 @@ class Transaction:
         transactions_json = {
             "input_address": dict(self.input_address),
             "output_address": dict(self.output_address),
-            "signature": str(self.signature)
+            "signature": str(self.signature),
         }
         return json.dumps(transactions_json)
 
@@ -50,7 +49,11 @@ class Transaction:
         file = open(path, "r")
         json_string = file.read()
         loaded = self.from_json(json_string)
-        self.input_address, self.output_address, self.signature = loaded.input_address, loaded.output_address, loaded.signature
+        self.input_address, self.output_address, self.signature = (
+            loaded.input_address,
+            loaded.output_address,
+            loaded.signature,
+        )
         file.close()
 
     def get_details(self):
@@ -117,9 +120,7 @@ class Transaction:
     def utxo_belongs_to_pubkey(utxo, public_key):
         public_address = utxo[0]
         public_address_from_public_key = (
-            PublicAddressGenerator.generate_public_address_from_public_key(
-                public_key
-            )
+            PublicAddressGenerator.generate_public_address_from_public_key(public_key)
         )
         if public_address == public_address_from_public_key:
             return True
@@ -127,7 +128,9 @@ class Transaction:
 
     def __eq__(self, other):
         if isinstance(self, other.__class__):
-            return other.input_address == self.input_address and \
-                   other.output_address == self.output_address and \
-                   other.signature == self.signature
+            return (
+                other.input_address == self.input_address
+                and other.output_address == self.output_address
+                and other.signature == self.signature
+            )
         return False

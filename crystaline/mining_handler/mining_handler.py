@@ -9,6 +9,7 @@ DEFAULT_UPLOADED_FILE_SIZE_COEFF = float
 DEFAULT_Y_INTERCEPT_COEFF = float
 DEFAULT_X_INTERCEPT_COEFF = float
 
+
 def mining_equation(
     miner_founded_hash,
     user_utxo,
@@ -18,12 +19,15 @@ def mining_equation(
     miner_all_uploaded_files_size,
 ):
     difficulty = current_average_time_of_mining / WANTED_AVERAGE_MINING_TIME
-    booster = booster_calculator(user_utxo, user_utxo_timeweight, miner_all_uploaded_files_size)
+    booster = booster_calculator(
+        user_utxo, user_utxo_timeweight, miner_all_uploaded_files_size
+    )
     right_side_of_equation = MIDDLE_OF_64_BYTE_HASHES * difficulty * booster
     if miner_founded_hash <= right_side_of_equation:
         return True
     else:
         return False
+
 
 def booster_calculator(user_utxo, user_utxo_timeweight, miner_all_uploaded_files_size):
     x = user_utxo * user_utxo_timeweight
@@ -40,20 +44,27 @@ def booster_calculator(user_utxo, user_utxo_timeweight, miner_all_uploaded_files
         x - GROWTH_LENGTH_STAIR
         x_stairs_count += 1
 
-    booster = (
-        1 + ((y - 1) / all_stairs_count) * x_stairs_count
-    )
+    booster = 1 + ((y - 1) / all_stairs_count) * x_stairs_count
     return booster
 
+
 def POA_factor(miner_all_uploaded_files_size):
-    POA_Coefficient = math.tanh(uploaded_files_size_coefficient() * miner_all_uploaded_files_size - x_intercept_coefficient()) + y_intercept_coefficient()
-    
+    POA_Coefficient = (
+        math.tanh(
+            uploaded_files_size_coefficient() * miner_all_uploaded_files_size
+            - x_intercept_coefficient()
+        )
+        + y_intercept_coefficient()
+    )
+
+
 def uploaded_files_size_coefficient():
     return DEFAULT_UPLOADED_FILE_SIZE_COEFF
+
 
 def y_intercept_coefficient():
     return DEFAULT_Y_INTERCEPT_COEFF
 
+
 def x_intercept_coefficient():
     return DEFAULT_X_INTERCEPT_COEFF
-    
