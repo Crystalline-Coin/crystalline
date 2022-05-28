@@ -5,11 +5,12 @@ import requests
 import json
 from crystaline.blockchain.blockchain import Blockchain
 from crystaline.file.file import File
+from crystaline.mining_handler.miner import Miner
 from crystaline.transaction.transaction import Transaction
 import multiprocessing
 
 DEFAULT_PROTOCOL = "http"
-DEFAULT_PORT = 5000
+DEFAULT_PORT = 5002
 
 URL_GET_STATUS = "/get_status"
 
@@ -38,6 +39,7 @@ URL_GET_FILE_POOL = "/get_file_pool"
 URL_GET_TRANSACTION_POOL = "/get_transaction_pool"
 URL_GET_CHAIN = "/get_chain"
 URL_GET_TRANSACTION = "/get_transaction"
+URL_MINE_BLOCK = "/mine_block"
 
 
 def get_peer_status(url, method):
@@ -168,7 +170,7 @@ class Node:
             return json_string, status_code, {"ContentType": "application/json"}
 
         @self.app.route(URL_GET_TRANSACTION, methods=["GET"])
-        def get_transaction(self):
+        def get_transaction():
             status_code = 200
             json_string = ""
 
@@ -179,6 +181,12 @@ class Node:
             except:
                 status_code = 404
             return
+        
+        @self.app.route(URL_MINE_BLOCK, methods=["POST"])
+        def mine_block():
+            miner = Miner(self.blockchain, self.file_pool, self.transaction_pool)
+            miner.mine_block()
+            return "done", 200
 
         # LONG TODO: Node saving and loading
 
@@ -191,11 +199,12 @@ class Node:
             requests.post(url=url, json=json)
 
     def start(self):
-        flask_server_process = multiprocessing.Process(
-            target=self.app.run, args=(self.ip_address, self.host_port)
-        )
-        flask_server_process.start()
-        self.running_process = flask_server_process
+        # flask_server_process = multiprocessing.Process(
+        #     target=self.app.run, args=(self.ip_address, self.host_port)
+        # )
+        self.app.run(host=self.ip_address, port=self.host_port)
+        # flask_server_process.start()
+        # self.running_process = flask_server_process
 
     def terminate(self):
         if self.running_process == None:
