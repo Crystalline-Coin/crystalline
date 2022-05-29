@@ -1,6 +1,6 @@
 import math
 
-MIDDLE_OF_64_BYTE_HASHES = 0x8000000000000000000000000000000000000000000000000000000000000000  # 5.78960446186581 * pow(10,76)
+MIDDLE_OF_96_BYTE_HASHES = 0x800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000  # 5.78960446186581 * pow(10,76)
 WANTED_AVERAGE_MINING_TIME = float  # by minute
 MAX_OF_BOOSTER = float  # number must put manually
 MAX_OF_POSSIBLE_STAKE_X_TIMEWEIGHT = float
@@ -22,7 +22,7 @@ def mining_equation(
     booster = booster_calculator(
         user_utxo, user_utxo_timeweight, miner_all_uploaded_files_size
     )
-    right_side_of_equation = MIDDLE_OF_64_BYTE_HASHES * difficulty * booster
+    right_side_of_equation = MIDDLE_OF_96_BYTE_HASHES * difficulty * booster
     if miner_founded_hash <= right_side_of_equation:
         return True
     else:
