@@ -64,7 +64,7 @@ class Node:
     ):
         if nodes_dict is None:
             nodes_dict = {}
-        
+
         if blockchain is None:
             blockchain = Blockchain()
 
@@ -172,7 +172,7 @@ class Node:
             except:
                 status_code = 400
             return json_string, status_code, {"ContentType": "application/json"}
-        
+
         @self.app.route(URL_GET_FULL_CHAIN, methods=["GET"])
         def get_full_chain():
             """
@@ -203,12 +203,12 @@ class Node:
             except:
                 status_code = 404
             return
-        
+
         @self.app.route(URL_MINE_BLOCK, methods=["POST"])
         def mine_block():
             miner = Miner(self.blockchain, self.file_pool, self.transaction_pool)
             block = miner.mine_block()
-            if (not block):
+            if not block:
                 return "mining failed, no blocks found!", 500
             self.file_pool = miner.file_pool
             self.transaction_pool = miner.transaction_pool

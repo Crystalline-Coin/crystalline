@@ -27,7 +27,7 @@ import time
 
 BLOCK_FILE_SIZE = 3 * 1024 * 1024
 BLOCK_TRANSACTION_SIZE = 1 * 1024 * 1024
-NONCE_RANGE = (1, 2 ** 20)
+NONCE_RANGE = (1, 2**20)
 
 
 class Block:
@@ -163,10 +163,10 @@ class Block:
 
         else:
             return True
-    
+
     def is_nonce_valid(self):
         return self._nonce < NONCE_RANGE[1] and self._nonce >= NONCE_RANGE[0]
-    
+
     def is_hash_below_difficulty_target(self):
         hex_hash = int(self.generate_block_hash(), 16)
         return hex_hash < self._difficulty_target

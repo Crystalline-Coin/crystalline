@@ -22,18 +22,18 @@ class Blockchain:
 
     def add_genesis_block(self):
         new_block = Block(
-                len(self.chain),
-                GENESIS_BLOCK_HASH,
-                GENESIS_BLOCK_DIFFICULTY,
-                GENESIS_BLOCK_DIFFICULTY,
-                int(time.time()),
-                [], 
-                []
-            )
+            len(self.chain),
+            GENESIS_BLOCK_HASH,
+            GENESIS_BLOCK_DIFFICULTY,
+            GENESIS_BLOCK_DIFFICULTY,
+            int(time.time()),
+            [],
+            [],
+        )
         self.chain.append(new_block)
         self.length += 1
         return new_block
-    
+
     def add_block(self, block):
         self.chain.append(block)
         self.length += 1
@@ -47,7 +47,7 @@ class Blockchain:
             GENESIS_BLOCK_DIFFICULTY,
             time.time(),
             transactions,
-            files
+            files,
         )
         self.chain.append(new_block)
         self.length += 1
@@ -117,7 +117,7 @@ class Blockchain:
         for block in self.chain:
             hash_list.append(block.generate_block_hash())
         return hash_list
-    
+
     def get_chain_hashes(self, starting_index, ending_index):
         chain = self.get_chain(starting_index, ending_index)
         hashes = {}
@@ -148,10 +148,10 @@ class Blockchain:
 
     def get_last_force_update_status(self):
         return self.last_force_update_status
-    
+
     def get_last_block_hash(self):
         return self.last_block.generate_block_hash()
-    
+
     def get_full_chain(self) -> str:
         json_dict = {}
         for i, block in enumerate(self.chain):
@@ -160,8 +160,7 @@ class Blockchain:
 
     def get_chain(self, starting_index, ending_index):
         return self.chain[starting_index:ending_index]
-    
+
     def get_difficulty_target(self):
         # TODO: COMPLETE HERE VERY IMPORTANT!
         return MIDDLE_OF_96_BYTE_HASHES
-

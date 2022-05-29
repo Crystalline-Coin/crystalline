@@ -8,6 +8,7 @@ PARAM_NAME, PARAM_CONTENT, PARAM_CREATOR, PARAM_CREATION_TXO = (
     "_creation_transaction",
 )
 
+
 class File:
     def __init__(self, content, name, creator=None, creation_transaction=None):
         self._content = content
@@ -53,7 +54,7 @@ class File:
             dict_in[PARAM_CREATOR],
             dict_in[PARAM_CREATION_TXO],
         )
-    
+
     def get_size(self):
         return len(self.to_json())
 
