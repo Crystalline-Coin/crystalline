@@ -5,11 +5,12 @@ import requests
 import json
 from crystaline.blockchain.blockchain import Blockchain
 from crystaline.file.file import File
+from crystaline.mining_handler.miner import Miner
 from crystaline.transaction.transaction import Transaction
 import multiprocessing
 
 DEFAULT_PROTOCOL = "http"
-DEFAULT_PORT = 5000
+DEFAULT_PORT = 5002
 
 URL_GET_STATUS = "/get_status"
 
@@ -37,7 +38,9 @@ URL_ADD_FILE = "/add_file"
 URL_GET_FILE_POOL = "/get_file_pool"
 URL_GET_TRANSACTION_POOL = "/get_transaction_pool"
 URL_GET_CHAIN = "/get_chain"
+URL_GET_FULL_CHAIN = "/get_full_chain"
 URL_GET_TRANSACTION = "/get_transaction"
+URL_MINE_BLOCK = "/mine_block"
 
 
 def get_peer_status(url, method):
@@ -61,6 +64,9 @@ class Node:
     ):
         if nodes_dict is None:
             nodes_dict = {}
+
+        if blockchain is None:
+            blockchain = Blockchain()
 
         self.ip_address = ip_address
         self.host_port = host_port
@@ -160,15 +166,33 @@ class Node:
             start_index = request.args.get(PARAM_START)
             end_index = request.args.get(PARAM_END)
             try:
-                json_string = self.blockchain.get_hashed_chain(
+                json_string = self.blockchain.get_chain_hashes(
                     int(start_index) - 1, int(end_index) - 1
                 )
             except:
-                status_code = 404
+                status_code = 400
+            return json_string, status_code, {"ContentType": "application/json"}
+
+        @self.app.route(URL_GET_FULL_CHAIN, methods=["GET"])
+        def get_full_chain():
+            """
+            Given a starting and ending block index, return the chain between them(including both).
+
+            start: int. Starting block index.
+            end: int. Ending block index.
+            """
+
+            status_code = 200
+            json_string = ""
+
+            try:
+                json_string = self.blockchain.get_full_chain()
+            except:
+                status_code = 400
             return json_string, status_code, {"ContentType": "application/json"}
 
         @self.app.route(URL_GET_TRANSACTION, methods=["GET"])
-        def get_transaction(self):
+        def get_transaction():
             status_code = 200
             json_string = ""
 
@@ -179,6 +203,16 @@ class Node:
             except:
                 status_code = 404
             return
+
+        @self.app.route(URL_MINE_BLOCK, methods=["POST"])
+        def mine_block():
+            miner = Miner(self.blockchain, self.file_pool, self.transaction_pool)
+            block = miner.mine_block()
+            if not block:
+                return "mining failed, no blocks found!", 500
+            self.file_pool = miner.file_pool
+            self.transaction_pool = miner.transaction_pool
+            return "done, view chain using /get_full_chain", 200
 
         # LONG TODO: Node saving and loading
 
@@ -191,11 +225,12 @@ class Node:
             requests.post(url=url, json=json)
 
     def start(self):
-        flask_server_process = multiprocessing.Process(
-            target=self.app.run, args=(self.ip_address, self.host_port)
-        )
-        flask_server_process.start()
-        self.running_process = flask_server_process
+        # flask_server_process = multiprocessing.Process(
+        #     target=self.app.run, args=(self.ip_address, self.host_port)
+        # )
+        self.app.run(host=self.ip_address, port=self.host_port)
+        # flask_server_process.start()
+        # self.running_process = flask_server_process
 
     def terminate(self):
         if self.running_process == None:

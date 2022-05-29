@@ -25,12 +25,14 @@ import time
     "_timestamp",
 )
 
+BLOCK_FILE_SIZE = 3 * 1024 * 1024
+BLOCK_TRANSACTION_SIZE = 1 * 1024 * 1024
+NONCE_RANGE = (1, 2**20)
+
 
 class Block:
     FILE_NAME_PREFIX = "cry_"
     FILE_EXTENSION = ".blk"
-    BLOCK_FILE_SIZE = 3 * 1024 * 1024
-    BLOCK_TRANSACTION_SIZE = 1 * 1024 * 1024
     STRING_FORMAT = "utf-8"
 
     def __init__(
@@ -133,8 +135,8 @@ class Block:
     def is_files_size_valid(self):
         total_size = 0
         for file in self._files:
-            total_size += len(file.content.encode(self.STRING_FORMAT))
-        if total_size >= self.BLOCK_FILE_SIZE:
+            total_size += len(file.get_size())
+        if total_size >= BLOCK_FILE_SIZE:
             return False
         else:
             return True
@@ -143,27 +145,31 @@ class Block:
         # TODO: Fix the issue with transaction.content
         total_size = 0
         for transaction in self._transactions:
-            total_size += len(transaction.content.encode(self.STRING_FORMAT))
-        if total_size >= self.BLOCK_TRANSACTION_SIZE:
+            total_size += len(transaction.get_size())
+        if total_size >= BLOCK_TRANSACTION_SIZE:
             return False
         else:
             return True
 
     def is_valid(self):
         if (
-            not self.version
-            or not self.prev_hash
-            or not self.difficulty_target
-            or not self.nonce
-            or not self.timestamp
-            # TODO: WTF IS THIS?
-            # or not self.is_file_size_valid(files_dir)
-            # or not self.is_transaction_size_valid(transactions_dir)
+            not self.is_nonce_valid()
+            or not self.is_files_size_valid()
+            or not self.is_transactions_size_valid()
+            or not self.is_hash_below_difficulty_target()
+            or not type(self.timestamp) == int
         ):
             return False
 
         else:
             return True
+
+    def is_nonce_valid(self):
+        return self._nonce < NONCE_RANGE[1] and self._nonce >= NONCE_RANGE[0]
+
+    def is_hash_below_difficulty_target(self):
+        hex_hash = int(self.generate_block_hash(), 16)
+        return hex_hash < self._difficulty_target
 
     def save(self, file_path):
         # TODO: Check filesystem

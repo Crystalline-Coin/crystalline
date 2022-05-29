@@ -6,10 +6,10 @@ from crystaline.block.block import Block
 from crystaline.fee_calculator.fee_calculator import *
 
 from crystaline.block.helper import gen_hash
+from crystaline.mining_handler.mining_handler import MIDDLE_OF_96_BYTE_HASHES
 
 GENESIS_BLOCK_DIFFICULTY = 0
-GENESIS_FIRST_BLOCK_DIFFICULTY = 0
-GENESIS_FIRST_BLOCK_HASH = "0"
+GENESIS_BLOCK_HASH = "0"
 
 
 class Blockchain:
@@ -17,28 +17,38 @@ class Blockchain:
         self.chain = []
         self.all_block_hashes = []
         self.length = 0
-        self.add_new_block(difficulty_target=0, transactions=[])
+        self.add_genesis_block()
         self.last_force_update_status = False
 
-    def add_new_block(self, difficulty_target, transactions):
-        if len(self.chain):
-            new_block = Block(
-                len(self.chain),
-                self.last_block.generate_block_hash(),
-                difficulty_target,
-                GENESIS_BLOCK_DIFFICULTY,
-                time.time(),
-                transactions,
-            )
-        else:
-            new_block = Block(
-                len(self.chain),
-                GENESIS_FIRST_BLOCK_HASH,
-                difficulty_target,
-                GENESIS_FIRST_BLOCK_DIFFICULTY,
-                time.time(),
-                transactions,
-            )
+    def add_genesis_block(self):
+        new_block = Block(
+            len(self.chain),
+            GENESIS_BLOCK_HASH,
+            GENESIS_BLOCK_DIFFICULTY,
+            GENESIS_BLOCK_DIFFICULTY,
+            int(time.time()),
+            [],
+            [],
+        )
+        self.chain.append(new_block)
+        self.length += 1
+        return new_block
+
+    def add_block(self, block):
+        self.chain.append(block)
+        self.length += 1
+        return block
+
+    def add_new_block(self, difficulty_target, transactions, files):
+        new_block = Block(
+            len(self.chain),
+            self.last_block.generate_block_hash(),
+            difficulty_target,
+            GENESIS_BLOCK_DIFFICULTY,
+            time.time(),
+            transactions,
+            files,
+        )
         self.chain.append(new_block)
         self.length += 1
         return new_block
@@ -102,14 +112,23 @@ class Blockchain:
                     return True
         return False
 
-    def get_hashed_chain(self):
+    def get_chain_hashes(self):
         hash_list = []
         for block in self.chain:
             hash_list.append(block.generate_block_hash())
         return hash_list
 
+    def get_chain_hashes(self, starting_index, ending_index):
+        chain = self.get_chain(starting_index, ending_index)
+        hashes = {}
+        index = starting_index
+        for block in chain:
+            hashes[index] = block.generate_block_hash()
+            index += 1
+        return json.dumps(hashes)
+
     def get_hash(self):
-        hash_list = self.get_hashed_chain()
+        hash_list = self.get_chain_hashes()
         hash_list_str = ""
         for hs in hash_list:
             hash_list_str += hs
@@ -130,14 +149,18 @@ class Blockchain:
     def get_last_force_update_status(self):
         return self.last_force_update_status
 
+    def get_last_block_hash(self):
+        return self.last_block.generate_block_hash()
+
+    def get_full_chain(self) -> str:
+        json_dict = {}
+        for i, block in enumerate(self.chain):
+            json_dict[i + 1] = block.to_dict()
+        return json.dumps(json_dict)
+
     def get_chain(self, starting_index, ending_index):
         return self.chain[starting_index:ending_index]
 
-    def get_hashed_chain(self, starting_index, ending_index):
-        chain = self.get_chain(starting_index, ending_index)
-        hashes = {}
-        index = starting_index
-        for block in chain:
-            hashes[index] = block.generate_block_hash()
-            index += 1
-        return json.dumps(hashes)
+    def get_difficulty_target(self):
+        # TODO: COMPLETE HERE VERY IMPORTANT!
+        return MIDDLE_OF_96_BYTE_HASHES
