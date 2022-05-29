@@ -154,9 +154,10 @@ class Block:
     def is_valid(self):
         if (
             not self.is_nonce_valid()
-            or not self.is_file_size_valid()
-            or not self.is_transaction_size_valid()
+            or not self.is_files_size_valid()
+            or not self.is_transactions_size_valid()
             or not self.is_hash_below_difficulty_target()
+            or not type(self.timestamp) == int
         ):
             return False
 
@@ -167,7 +168,8 @@ class Block:
         return self._nonce < NONCE_RANGE[1] and self._nonce >= NONCE_RANGE[0]
     
     def is_hash_below_difficulty_target(self):
-        return self.generate_block_hash() < self._difficulty_target
+        hex_hash = int(self.generate_block_hash(), 16)
+        return hex_hash < self._difficulty_target
 
     def save(self, file_path):
         # TODO: Check filesystem
