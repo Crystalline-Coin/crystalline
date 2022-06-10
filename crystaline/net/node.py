@@ -29,6 +29,8 @@ PARAM_TXOID = "txo_id"
 PARAM_NODES_DICT_PORT = "port"
 PARAM_NODES_DICT_STATUS = "status"
 
+PARAM_FILEID = "file_id"
+
 URL_ADD_NODE = "/add_node"
 URL_GET_NODES = "/get_nodes"
 URL_GET_STATUS = "/get_status"
@@ -41,7 +43,7 @@ URL_GET_CHAIN = "/get_chain"
 URL_GET_FULL_CHAIN = "/get_full_chain"
 URL_GET_TRANSACTION = "/get_transaction"
 URL_MINE_BLOCK = "/mine_block"
-
+URL_DOWNLOAD_FILE = "/download_file"
 
 def get_peer_status(url, method):
     if "POST" in method:
@@ -148,6 +150,15 @@ class Node:
                 200,
                 {"ContentType": "application/json"},
             )
+        
+        @self.app.route(URL_DOWNLOAD_FILE, methods=["GET"])
+        def download_file():
+            file_id = request.args.get(PARAM_FILEID)
+            
+            if self.blockchain.download_file(file_id):
+                return "Successfully downloaded.", 200
+            return "File not found.", 404
+            
 
         # LONG TODO: Add block
 
@@ -176,10 +187,7 @@ class Node:
         @self.app.route(URL_GET_FULL_CHAIN, methods=["GET"])
         def get_full_chain():
             """
-            Given a starting and ending block index, return the chain between them(including both).
-
-            start: int. Starting block index.
-            end: int. Ending block index.
+            Return the full chain.
             """
 
             status_code = 200
@@ -202,7 +210,7 @@ class Node:
                 json_string = transaction.to_json()
             except:
                 status_code = 404
-            return
+            return json_string, status_code, {"ContentType": "application/json"}
 
         @self.app.route(URL_MINE_BLOCK, methods=["POST"])
         def mine_block():
