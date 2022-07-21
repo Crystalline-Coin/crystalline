@@ -35,7 +35,7 @@ class Blockchain:
         return new_block
 
     def add_block(self, block):
-        if (not block.is_valid()):
+        if not block.is_valid():
             return False
         self.chain.append(block)
         self.length += 1

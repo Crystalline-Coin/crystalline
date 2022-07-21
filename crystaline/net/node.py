@@ -88,7 +88,7 @@ class Node:
                 status = value[PARAM_NODES_DICT_STATUS]
                 port = value[PARAM_NODES_DICT_PORT]
                 url = f"{ip}:{port}"
-                if (status == STATUS_RADDR_UP):
+                if status == STATUS_RADDR_UP:
                     # transmit... shit.get_json()
                     pass
 
@@ -139,15 +139,14 @@ class Node:
 
         @self.app.route(URL_ADD_TXO, methods=["POST"])
         def add_txo():
-            
-            try: 
+
+            try:
                 new_transaction = Transaction.from_json(request.get_json())
                 self.transaction_pool[new_transaction.get_hash()] = new_transaction
                 # TODO: Transmit
                 return "Successfully added.", 200
             except:
                 return "Bad request", 400
-            
 
         @self.app.route(URL_GET_FILE_POOL, methods=["GET"])
         def get_file_pool():
@@ -170,11 +169,15 @@ class Node:
         @self.app.route(URL_ADD_BLOCK, methods=["POST"])
         def add_block():
             block = Block(Block.from_json(request.get_json()))
-            if not self.validate_files(block.files) or not self.validate_transactions(block.transactions):
+            if not self.validate_files(block.files) or not self.validate_transactions(
+                block.transactions
+            ):
                 return "Block transaction or file was invalid", 400
             if not self.blockchain.add_block(block):
                 return "Block was not valid on this blockchain", 400
-            if not self.update_file_pool(block.files) or not self.update_transaction_pool(block.transactions):
+            if not self.update_file_pool(
+                block.files
+            ) or not self.update_transaction_pool(block.transactions):
                 return "Updating file/transaction pool failed. This is bad.", 400
             return (
                 "Block was added successfully.",
@@ -263,9 +266,9 @@ class Node:
             return True
         except:
             return False
-    
+
     def update_transaction_pool(self, transactions):
-        try: 
+        try:
             for transaction in transactions:
                 self.transaction_pool.pop(transaction.get_hash())
             return True
