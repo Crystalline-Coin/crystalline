@@ -5,6 +5,7 @@ import requests
 import json
 from crystaline.blockchain.blockchain import Blockchain
 from crystaline.file.file import File
+from crystaline.block.block import Block
 from crystaline.mining_handler.miner import Miner
 from crystaline.transaction.transaction import Transaction
 import threading
@@ -41,6 +42,7 @@ URL_GET_CHAIN = "/get_chain"
 URL_GET_FULL_CHAIN = "/get_full_chain"
 URL_GET_TRANSACTION = "/get_transaction"
 URL_MINE_BLOCK = "/mine_block"
+URL_ADD_BLOCK = "/add_block"
 
 
 def get_peer_status(url, method):
@@ -165,7 +167,19 @@ class Node:
                 {"ContentType": "application/json"},
             )
 
-        # LONG TODO: Add block
+        @self.app.route(URL_ADD_BLOCK, methods=["POST"])
+        def add_block():
+            block = Block(Block.from_json(request.get_json()))
+            if not self.validate_files(block.files) or not self.validate_transactions(block.transactions):
+                return "Block transaction or file was invalid", 400
+            if not self.blockchain.add_block(block):
+                return "Block was not valid on this blockchain", 400
+            if not self.update_file_pool(block.files) or not self.update_transaction_pool(block.transactions):
+                return "Updating file/transaction pool failed. This is bad.", 400
+            return (
+                "Block was added successfully.",
+                200,
+            )
 
         @self.app.route(URL_GET_CHAIN, methods=["GET"])
         def get_chain():
@@ -209,16 +223,13 @@ class Node:
 
         @self.app.route(URL_GET_TRANSACTION, methods=["GET"])
         def get_transaction():
-            status_code = 200
-            json_string = ""
-
-            txo = request.args.get(PARAM_TXOID)
             try:
+                txo = request.args.get(PARAM_TXOID)
                 transaction = self.transaction_pool[txo]
                 json_string = transaction.to_json()
+                return json_string, 200, {"ContentType": "application/json"}
             except:
-                status_code = 404
-            return
+                return "Invalid transaction id", 404
 
         @self.app.route(URL_MINE_BLOCK, methods=["POST"])
         def mine_block():
@@ -232,6 +243,34 @@ class Node:
             return "done, view chain using /get_full_chain", 200
 
         # LONG TODO: Node saving and loading
+
+    def validate_files(self, files):
+        for file in files:
+            if file not in self.file_pool:
+                return False
+        return True
+
+    def validate_transactions(self, transactions):
+        for transaction in transactions:
+            if self.transaction_pool.get(transaction.get_hash(), -1) == -1:
+                return False
+        return True
+
+    def update_file_pool(self, files):
+        try:
+            for file in files:
+                self.file_pool.remove(file)
+            return True
+        except:
+            return False
+    
+    def update_transaction_pool(self, transactions):
+        try: 
+            for transaction in transactions:
+                self.transaction_pool.pop(transaction.get_hash())
+            return True
+        except:
+            return False
 
     def transmit_data(self, url, data):
         with self.app.app_context():
