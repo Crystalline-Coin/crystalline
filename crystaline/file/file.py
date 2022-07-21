@@ -64,16 +64,14 @@ class File:
     def get_hash(self):
         return hp.gen_hash(self.to_json())
 
-    @staticmethod
-    def from_json(file_json):
-        return json.loads(
-            file_json,
-            object_hook=lambda obj: File(
-                obj[PARAM_CONTENT],
-                obj[PARAM_NAME],
-                obj[PARAM_CREATOR],
-                obj[PARAM_CREATION_TXO],
-            ),
+    @classmethod
+    def from_json(cls, file_json):
+        file_dict = json.loads(file_json)
+        return cls(
+                file_dict[PARAM_CONTENT],
+                file_dict[PARAM_NAME],
+                file_dict[PARAM_CREATOR],
+                file_dict[PARAM_CREATION_TXO]
         )
 
     def __eq__(self, other):
