@@ -109,6 +109,28 @@ class Block:
             block_dict[PARAM_FILES].append(file.to_dict())
         return block_dict
 
+    def to_json(self):
+        return json.dumps(self.to_dict())
+    
+    @classmethod
+    def from_json(cls, block_json):
+        block_dict = json.loads(block_json)
+        block_transactions = []
+        for transaction in block_dict[PARAM_TRANSACTIONS]:
+            block_transactions.append(Transaction.from_dict(transaction))
+        block_files = []
+        for file in block_dict[PARAM_FILES]:
+            block_files.append(File.from_dict(file))
+        return cls(
+            block_dict[PARAM_VERSION],
+            block_dict[PARAM_PREV_HASH],
+            block_dict[PARAM_DIFF_TARGET],
+            block_dict[PARAM_NONCE],
+            block_dict[PARAM_TIMESTAMP],
+            block_transactions,
+            block_files,
+        )
+
     def generate_block_hash(self):
         data_string = (
             str(self.version)
@@ -177,7 +199,7 @@ class Block:
             file_path,
             self.FILE_NAME_PREFIX + str(self._timestamp) + self.FILE_EXTENSION,
         )
-        json_string = json.dumps(self.to_dict())
+        json_string = self.to_json()
         with open(path, mode="w") as file:
             file.write(json_string)
         return path
@@ -201,24 +223,10 @@ class Block:
         ENDING_INDEX = -len(Block.FILE_EXTENSION)
         # FIXME: rb or r?
         with open(file_path, mode="r") as new_file:
-            block_dict = json.loads(new_file.read())
-        block_transactions = []
-        for transaction in block_dict[PARAM_TRANSACTIONS]:
-            block_transactions.append(Transaction.from_dict(transaction))
-        block_files = []
-        for file in block_dict[PARAM_FILES]:
-            block_files.append(File.from_dict(file))
+             block_json = new_file.read()
         name = Path(file_path).name
         timestamp = int(name[STARTING_INDEX:ENDING_INDEX])
-        return Block(
-            block_dict[PARAM_VERSION],
-            block_dict[PARAM_PREV_HASH],
-            block_dict[PARAM_DIFF_TARGET],
-            block_dict[PARAM_NONCE],
-            block_dict[PARAM_TIMESTAMP],
-            block_transactions,
-            block_files,
-        )
+        return Block.from_json(block_json)
 
     def __eq__(self, other):
         if isinstance(self, other.__class__):

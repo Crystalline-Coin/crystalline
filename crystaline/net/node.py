@@ -81,7 +81,7 @@ class Node:
         self.file_pool = []
         self.transaction_pool = {}
 
-        def transmit_class(self, shit, endpoint):
+        def transmit_data(self, data, endpoint):
             for ip, value in nodes_dict:
                 status = value[PARAM_NODES_DICT_STATUS]
                 port = value[PARAM_NODES_DICT_PORT]
@@ -132,8 +132,11 @@ class Node:
         @self.app.route(URL_ADD_FILE, methods=["POST"])
         def add_file():
             # TODO: Transmit
-            self.file_pool.append(File.from_json(request.get_json()))
-            return "Successfully added.", 200
+            try:
+                self.file_pool.append(File.from_json(request.get_json()))
+                return "Successfully added.", 200
+            except:
+                return "Bad Request.", 400
 
         @self.app.route(URL_ADD_TXO, methods=["POST"])
         def add_txo():
@@ -144,7 +147,7 @@ class Node:
                 # TODO: Transmit
                 return "Successfully added.", 200
             except:
-                return "Bad request", 400
+                return "Bad request.", 400
             
 
         @self.app.route(URL_GET_FILE_POOL, methods=["GET"])
