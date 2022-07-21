@@ -81,17 +81,8 @@ class Node:
         self.file_pool = []
         self.transaction_pool = {}
 
-        def transmit_data(self, data, endpoint):
-            for ip, value in nodes_dict:
-                status = value[PARAM_NODES_DICT_STATUS]
-                port = value[PARAM_NODES_DICT_PORT]
-                url = f"{ip}:{port}"
-                if (status == STATUS_RADDR_UP):
-                    # transmit... shit.get_json()
-                    pass
-
         def add_node(node_ip, node_port):
-            url = DEFAULT_PROTOCOL + "://" + node_ip + ":" + node_port + URL_GET_STATUS
+            url = Node.create_url(node_ip, node_port, URL_GET_STATUS)
             node_status = get_peer_status(url, "GET")
             self.nodes_dict[node_ip] = {
                 PARAM_NODES_DICT_STATUS: node_status,
@@ -131,23 +122,35 @@ class Node:
 
         @self.app.route(URL_ADD_FILE, methods=["POST"])
         def add_file():
-            # TODO: Transmit
+            message = "Successfully added."
+            code = 200
             try:
-                self.file_pool.append(File.from_json(request.get_json()))
-                return "Successfully added.", 200
+                new_file = File.from_json(request.get_json())
+                if new_file not in self.file_pool:
+                    self.file_pool.append(new_file)
+                    thread = threading.Thread(target=self.transmit_data, args=(new_file, URL_ADD_FILE))
+                    thread.start()                   
+                else:
+                    message, code = "File already exists.", 400
             except:
-                return "Bad Request.", 400
+                message, code = "Bad request.", 400
+            return message, code
 
         @self.app.route(URL_ADD_TXO, methods=["POST"])
         def add_txo():
-            
+            message = "Successfully added."
+            code = 200
             try: 
                 new_transaction = Transaction.from_json(request.get_json())
-                self.transaction_pool[new_transaction.get_hash()] = new_transaction
-                # TODO: Transmit
-                return "Successfully added.", 200
+                if self.transaction_pool.get(new_transaction.get_hash(), -1) == -1:
+                    self.transaction_pool[new_transaction.get_hash()] = new_transaction
+                    thread = threading.Thread(target=self.transmit_data, args=(new_transaction, URL_ADD_TXO))
+                    thread.start()
+                else:
+                    message, code = "Transaction already exists.", 400
             except:
-                return "Bad request.", 400
+                message, code = "Bad Request.", 400
+            return message, code
             
 
         @self.app.route(URL_GET_FILE_POOL, methods=["GET"])
@@ -236,13 +239,22 @@ class Node:
 
         # LONG TODO: Node saving and loading
 
-    def transmit_data(self, url, data):
-        with self.app.app_context():
-            requests.post(url=url, data=data)
-
     def transmit_json(self, url, json):
         with self.app.app_context():
             requests.post(url=url, json=json)
+
+    @staticmethod
+    def create_url(ip_address, port, endpoint):
+        return "{}://{}:{}{}".format(DEFAULT_PROTOCOL, ip_address, port, endpoint)
+
+    def transmit_data(self, data, endpoint):
+        for ip, value in self.nodes_dict:
+            status = value[PARAM_NODES_DICT_STATUS]
+            port = value[PARAM_NODES_DICT_PORT]
+            url = Node.create_url(ip, port, endpoint)
+            if (status == STATUS_RADDR_UP):
+                to_be_transmitted = data.to_json()
+                self.transmit_json(url, to_be_transmitted)
 
     def start(self):
         # flask_server_process = multiprocessing.Process(
