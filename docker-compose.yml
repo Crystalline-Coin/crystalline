@@ -3,33 +3,33 @@ services:
   crystaline_1:
     image : crystaline-docker
     ports:
-      - "5001:5000"
+      - "5001:5002"
     networks:
       - bridge1
   crystaline_2:
     image : crystaline-docker
     ports:
-      - "5002:5000"
+      - "5002:5002"
     networks:
       - bridge1
       - bridge2
   crystaline_3:
     image : crystaline-docker
     ports:
-      - "5003:5000"
+      - "5003:5002"
     networks:
       - bridge2
       - bridge3
   crystaline_4:
     image : crystaline-docker
     ports:
-      - "5004:5000"
+      - "5004:5002"
     networks:
       - bridge3
   crystaline_5:
     image : crystaline-docker
     ports:
-      - "5005:5000"
+      - "5005:5002"
     networks:
       - bridge3
       - bridge1
