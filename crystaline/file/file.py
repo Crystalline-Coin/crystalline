@@ -68,10 +68,10 @@ class File:
     def from_json(cls, file_json):
         file_dict = json.loads(file_json)
         return cls(
-                file_dict[PARAM_CONTENT],
-                file_dict[PARAM_NAME],
-                file_dict[PARAM_CREATOR],
-                file_dict[PARAM_CREATION_TXO]
+            file_dict[PARAM_CONTENT],
+            file_dict[PARAM_NAME],
+            file_dict[PARAM_CREATOR],
+            file_dict[PARAM_CREATION_TXO],
         )
 
     def __eq__(self, other):

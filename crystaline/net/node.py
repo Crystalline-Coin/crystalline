@@ -130,8 +130,10 @@ class Node:
                 new_file = File.from_json(request.get_json())
                 if new_file not in self.file_pool:
                     self.file_pool.append(new_file)
-                    thread = threading.Thread(target=self.transmit_data, args=(new_file, URL_ADD_FILE))
-                    thread.start()                   
+                    thread = threading.Thread(
+                        target=self.transmit_data, args=(new_file, URL_ADD_FILE)
+                    )
+                    thread.start()
                 else:
                     message, code = "File already exists.", 400
             except:
@@ -142,18 +144,19 @@ class Node:
         def add_txo():
             message = "Successfully added."
             code = 200
-            try: 
+            try:
                 new_transaction = Transaction.from_json(request.get_json())
                 if self.transaction_pool.get(new_transaction.get_hash(), -1) == -1:
                     self.transaction_pool[new_transaction.get_hash()] = new_transaction
-                    thread = threading.Thread(target=self.transmit_data, args=(new_transaction, URL_ADD_TXO))
+                    thread = threading.Thread(
+                        target=self.transmit_data, args=(new_transaction, URL_ADD_TXO)
+                    )
                     thread.start()
                 else:
                     message, code = "Transaction already exists.", 400
             except:
                 message, code = "Bad Request.", 400
             return message, code
-            
 
         @self.app.route(URL_GET_FILE_POOL, methods=["GET"])
         def get_file_pool():
@@ -295,7 +298,7 @@ class Node:
             status = value[PARAM_NODES_DICT_STATUS]
             port = value[PARAM_NODES_DICT_PORT]
             url = Node.create_url(ip, port, endpoint)
-            if (status == STATUS_RADDR_UP):
+            if status == STATUS_RADDR_UP:
                 to_be_transmitted = data.to_json()
                 self.transmit_json(url, to_be_transmitted)
 

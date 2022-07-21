@@ -111,7 +111,7 @@ class Block:
 
     def to_json(self):
         return json.dumps(self.to_dict())
-    
+
     @classmethod
     def from_json(cls, block_json):
         block_dict = json.loads(block_json)
@@ -223,7 +223,7 @@ class Block:
         ENDING_INDEX = -len(Block.FILE_EXTENSION)
         # FIXME: rb or r?
         with open(file_path, mode="r") as new_file:
-             block_json = new_file.read()
+            block_json = new_file.read()
         name = Path(file_path).name
         timestamp = int(name[STARTING_INDEX:ENDING_INDEX])
         return Block.from_json(block_json)
