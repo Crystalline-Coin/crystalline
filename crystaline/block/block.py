@@ -45,6 +45,7 @@ class Block:
         transactions=None,
         files=None,
     ):
+        assert version != None and prev_hash != None and difficulty_target != None and nonce != None and timestamp != None
         self._version = version
         self._prev_hash = prev_hash
         self._difficulty_target = difficulty_target
@@ -145,8 +146,8 @@ class Block:
     def upload_file(self, file_path):
         path = Path(file_path)
         with open(file_path, mode="rb") as new_file:
-            new_file = File(new_file.read(), path.name)
-            self._files.append(new_file)
+            file = File(new_file.read(), path.name)
+            self._files.append(file)
 
     def download_file(self, parent_dir, file_idx):
         file = self._files[file_idx]
@@ -157,7 +158,7 @@ class Block:
     def is_files_size_valid(self):
         total_size = 0
         for file in self._files:
-            total_size += len(file.get_size())
+            total_size += file.get_size()
         if total_size >= BLOCK_FILE_SIZE:
             return False
         else:
@@ -167,7 +168,7 @@ class Block:
         # TODO: Fix the issue with transaction.content
         total_size = 0
         for transaction in self._transactions:
-            total_size += len(transaction.get_size())
+            total_size += transaction.get_size()
         if total_size >= BLOCK_TRANSACTION_SIZE:
             return False
         else:

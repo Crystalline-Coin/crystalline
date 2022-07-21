@@ -7,5 +7,5 @@ sys.path.append(BASE_PATH)
 from net.node import Node
 
 if __name__ == "__main__":
-    node = Node("localhost")
+    node = Node("0.0.0.0")
     node.start()

@@ -29,13 +29,13 @@ def blockchain(accounts):
             outputs = [(test_accounts[i].public_address, 25)]
             transactions.append(tr(inputs, outputs))
 
-        test_blockchain.add_new_block(0, transactions)
+        test_blockchain.add_new_block(0, transactions, [])
 
     inputs = [(test_blockchain.chain[1].transactions[0].get_hash(), 0)]
     outputs = [(test_accounts[0].public_address, 25)]
     first_transaction = tr(inputs, outputs)
     first_transaction.sign(test_accounts[0].private_key)
-    test_blockchain.add_new_block(0, [first_transaction])
+    test_blockchain.add_new_block(0, [first_transaction], [])
 
     return test_blockchain, test_accounts
 
@@ -46,7 +46,7 @@ def test_add_block(blockchain):
     outputs = [(test_accounts[0].public_address, 25)]
     first_transaction = tr(inputs, outputs)
     first_transaction.sign(test_accounts[0].private_key)
-    test_blockchain.add_new_block(0, [first_transaction])
+    test_blockchain.add_new_block(0, [first_transaction], [])
 
 
 def test_validate(blockchain):

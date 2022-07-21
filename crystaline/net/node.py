@@ -9,11 +9,10 @@ from crystaline.block.block import Block
 from crystaline.mining_handler.miner import Miner
 from crystaline.transaction.transaction import Transaction
 import threading
+import multiprocessing
 
 DEFAULT_PROTOCOL = "http"
 DEFAULT_PORT = 5002
-
-URL_GET_STATUS = "/get_status"
 
 STATUS_RADDR_UP = "UP"
 STATUS_RADDR_DOWN = "DOWN"
@@ -30,6 +29,8 @@ PARAM_TXOID = "txo_id"
 PARAM_NODES_DICT_PORT = "port"
 PARAM_NODES_DICT_STATUS = "status"
 
+PARAM_FILEID = "file_id"
+
 URL_ADD_NODE = "/add_node"
 URL_GET_NODES = "/get_nodes"
 URL_GET_STATUS = "/get_status"
@@ -42,6 +43,7 @@ URL_GET_CHAIN = "/get_chain"
 URL_GET_FULL_CHAIN = "/get_full_chain"
 URL_GET_TRANSACTION = "/get_transaction"
 URL_MINE_BLOCK = "/mine_block"
+URL_DOWNLOAD_FILE = "/download_file"
 URL_ADD_BLOCK = "/add_block"
 
 
@@ -175,6 +177,15 @@ class Node:
                 200,
                 {"ContentType": "application/json"},
             )
+        
+        @self.app.route(URL_DOWNLOAD_FILE, methods=["GET"])
+        def download_file():
+            file_id = request.args.get(PARAM_FILEID)
+            
+            if self.blockchain.download_file(file_id):
+                return "Successfully downloaded.", 200
+            return "File not found.", 404
+            
 
         @self.app.route(URL_ADD_BLOCK, methods=["POST"])
         def add_block():
@@ -219,10 +230,7 @@ class Node:
         @self.app.route(URL_GET_FULL_CHAIN, methods=["GET"])
         def get_full_chain():
             """
-            Given a starting and ending block index, return the chain between them(including both).
-
-            start: int. Starting block index.
-            end: int. Ending block index.
+            Return the full chain.
             """
 
             status_code = 200
@@ -302,13 +310,16 @@ class Node:
                 to_be_transmitted = data.to_json()
                 self.transmit_json(url, to_be_transmitted)
 
-    def start(self):
-        # flask_server_process = multiprocessing.Process(
-        #     target=self.app.run, args=(self.ip_address, self.host_port)
-        # )
+    def start_test_node(self):
+        flask_server_process = multiprocessing.Process(
+            target=self.app.run, args=(self.ip_address, self.host_port)
+        )
         self.app.run(host=self.ip_address, port=self.host_port)
-        # flask_server_process.start()
-        # self.running_process = flask_server_process
+        flask_server_process.start()
+        self.running_process = flask_server_process
+
+    def start(self):
+        self.app.run(host=self.ip_address, port=self.host_port)
 
     def terminate(self):
         if self.running_process == None:

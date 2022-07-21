@@ -169,3 +169,9 @@ class Blockchain:
     def get_difficulty_target(self):
         # TODO: COMPLETE HERE VERY IMPORTANT!
         return MIDDLE_OF_96_BYTE_HASHES
+
+    def download_file(self, file_hash):
+        for block in self.chain:
+            if block.download_file(file_hash):
+                return True
+        return False

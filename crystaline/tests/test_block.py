@@ -6,7 +6,7 @@ import time
 import string
 from copy import deepcopy
 
-from crystaline.block.block import Block
+from crystaline.block.block import Block, BLOCK_FILE_SIZE
 from crystaline.block import helper
 from crystaline.transaction.transaction import Transaction
 from crystaline.file.file import File
@@ -16,8 +16,8 @@ B_VERSION, B_PREV_HASH, B_DIFF_TARGET, B_NONCE, B_FILES, B_TRANSACTIONS, = (
     "prev_hash",
     random.randint(1, 1000),
     random.randint(1, 1000),
-    [File("fcontent", "fname")],
-    [Transaction("1", "2"), Transaction("3", "4")],
+    [],
+    [],
 )
 
 TMP_FILE_NAME = "tmp_file"
@@ -47,10 +47,10 @@ def tmp_file(tmp_path):
     params=[
         {"total_size": i, "n_files": j, "exp_out": k}
         for i, j, k in [
-            (Block.BLOCK_FILE_SIZE - 8, 1, False),
-            (Block.BLOCK_FILE_SIZE - 12, 4, True),
-            (Block.BLOCK_FILE_SIZE + 8, 8, False),
-            (Block.BLOCK_FILE_SIZE - 24, 8, True),
+            (BLOCK_FILE_SIZE + 1, 1, False),
+            (BLOCK_FILE_SIZE - 400, 4, True),
+            (BLOCK_FILE_SIZE + 8, 8, False),
+            (BLOCK_FILE_SIZE - 800, 8, True),
         ]
     ]
 )
@@ -122,7 +122,6 @@ def test_upload_and_download_file(mblock: Block, tmp_file: str, tmp_path: str):
         assert mblock._files[-1] == File(fp.read(), Path(tmp_file).name)
 
 
-@pytest.mark.skip
 def test_is_files_size_valid(mblock: Block, tmp_files: list):
     files, expected_output = tmp_files
     for fp in files:
@@ -130,62 +129,9 @@ def test_is_files_size_valid(mblock: Block, tmp_files: list):
     assert mblock.is_files_size_valid() == expected_output
 
 
-@pytest.mark.skip
-def test_is_valid1(tmp_files):
-    files, is_files_size_valid = tmp_files
-    version = None if random.randint(0, 1) == 0 else B_VERSION
-    prev_hash = None if random.randint(0, 1) == 0 else B_PREV_HASH
-    difficulty_target = None if random.randint(0, 1) == 0 else B_DIFF_TARGET
-    nonce = None if random.randint(0, 1) == 0 else B_NONCE
-    block = Block(
-        version,
-        prev_hash,
-        difficulty_target,
-        nonce,
-        transactions=B_TRANSACTIONS,
-        files=[],
-    )
-
-    for fp in files:
-        block.upload_file(fp)
-
-    expected_out = (
-        is_files_size_valid
-        and (version is not None)
-        and (prev_hash is not None)
-        and (difficulty_target is not None)
-        and (nonce is not None)
-    )
-    assert block.is_valid() == expected_out
-
-
-@pytest.mark.skip
-def test_is_valid2(tmp_files):
-    files, is_files_size_valid = tmp_files
-    version = None if random.randint(0, 1) == 0 else B_VERSION
-    prev_hash = None if random.randint(0, 1) == 0 else B_PREV_HASH
-    difficulty_target = None if random.randint(0, 1) == 0 else B_DIFF_TARGET
-    nonce = None if random.randint(0, 1) == 0 else B_NONCE
-    block = Block(
-        version,
-        prev_hash,
-        difficulty_target,
-        nonce,
-        transactions=B_TRANSACTIONS,
-        files=[],
-    )
-
-    for fp in files:
-        block.upload_file(fp)
-
-    expected_out = (
-        is_files_size_valid
-        and (version is not None)
-        and (prev_hash is not None)
-        and (difficulty_target is not None)
-        and (nonce is not None)
-    )
-    assert block.is_valid() == expected_out
+def test_is_valid(tmp_files):
+    # TODO: Add test for is valid
+    pass
 
 
 def test_save_and_load_block(mblock: Block, tmp_path: str):
