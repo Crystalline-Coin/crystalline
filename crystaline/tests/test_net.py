@@ -45,7 +45,7 @@ def wait_for_url(url: str, method: str, timeout: float):
     while timeout > 0:
         if status == STATUS_RADDR_UP:
             return
-        time.sleep(timeout / 4)
+        time.sleep(timeout / 4.0)
         timeout -= 1
     raise RuntimeError("Url-wait timed out.")
 
@@ -88,7 +88,7 @@ def test_net_get_block_state_404(running_node):
     )
     req_get_block_url = Node.create_url(NODE_IP_ADDR, NODE_PORT, URL_GET_BLOCK)
 
-    res = requests.get(req_get_block_url, params={PARAM_BLOCK_INDEX: 1})
+    res = requests.get(req_get_block_url, params={PARAM_BLOCK_INDEX: 2})
 
     assert res.status_code == 404
 

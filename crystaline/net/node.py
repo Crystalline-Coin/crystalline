@@ -314,7 +314,6 @@ class Node:
         flask_server_process = multiprocessing.Process(
             target=self.app.run, args=(self.ip_address, self.host_port)
         )
-        self.app.run(host=self.ip_address, port=self.host_port)
         flask_server_process.start()
         self.running_process = flask_server_process
 
