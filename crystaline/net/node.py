@@ -9,6 +9,7 @@ from crystaline.block.block import Block
 from crystaline.mining_handler.miner import Miner
 from crystaline.transaction.transaction import Transaction
 import threading
+import multiprocessing
 
 DEFAULT_PROTOCOL = "http"
 DEFAULT_PORT = 5002
@@ -311,13 +312,16 @@ class Node:
                 to_be_transmitted = data.to_json()
                 self.transmit_json(url, to_be_transmitted)
 
-    def start(self):
-        # flask_server_process = multiprocessing.Process(
-        #     target=self.app.run, args=(self.ip_address, self.host_port)
-        # )
+    def start_test_node(self):
+        flask_server_process = multiprocessing.Process(
+            target=self.app.run, args=(self.ip_address, self.host_port)
+        )
         self.app.run(host=self.ip_address, port=self.host_port)
-        # flask_server_process.start()
-        # self.running_process = flask_server_process
+        flask_server_process.start()
+        self.running_process = flask_server_process
+
+    def start(self):
+        self.app.run(host=self.ip_address, port=self.host_port)
 
     def terminate(self):
         if self.running_process == None:
