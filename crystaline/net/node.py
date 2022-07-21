@@ -48,9 +48,9 @@ URL_ADD_BLOCK = "/add_block"
 
 
 def get_peer_status(url, method):
-    if "POST" in method:
+    if "POST" == method:
         res = requests.post(url)
-    elif "GET" in method:
+    elif "GET" == method:
         res = requests.get(url)
     else:
         raise Exception("Provided method is not consistent.")

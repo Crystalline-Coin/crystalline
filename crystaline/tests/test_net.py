@@ -28,14 +28,14 @@ def node_with_blockchain():
 
 @pytest.fixture
 def running_node(node):
-    node.start()
+    node.start_test_node()
     yield node
     node.terminate()
 
 
 @pytest.fixture
 def running_node_with_blockchain(node_with_blockchain):
-    node_with_blockchain.start()
+    node_with_blockchain.start_test_node()
     yield node_with_blockchain
     node_with_blockchain.terminate()
 
@@ -52,19 +52,12 @@ def wait_for_url(url: str, method: str, timeout: float):
 
 def test_net_add_node(running_node):
     wait_for_url(
-        url=DEFAULT_PROTOCOL
-        + "://"
-        + NODE_IP_ADDR
-        + ":"
-        + str(NODE_PORT)
-        + URL_GET_STATUS,
+        url=Node.create_url(NODE_IP_ADDR, NODE_PORT, URL_GET_STATUS),
         method="GET",
         timeout=2,
     )
 
-    req_add_node_url = (
-        DEFAULT_PROTOCOL + "://" + NODE_IP_ADDR + ":" + str(NODE_PORT) + URL_ADD_NODE
-    )
+    req_add_node_url = Node.create_url(NODE_IP_ADDR, NODE_PORT, URL_ADD_NODE)
     res = requests.post(
         req_add_node_url, params={PARAM_IP: NODE_IP_ADDR, PARAM_PORT: NODE_PORT}
     )
@@ -74,7 +67,7 @@ def test_net_add_node(running_node):
 
     time.sleep(0.5)
     res = requests.get(
-        DEFAULT_PROTOCOL + "://" + NODE_IP_ADDR + ":" + str(NODE_PORT) + URL_GET_NODES,
+        Node.create_url(NODE_IP_ADDR, NODE_PORT, URL_GET_NODES),
         params={PARAM_IP: NODE_IP_ADDR, PARAM_PORT: NODE_PORT},
     )
 
@@ -89,18 +82,11 @@ def test_net_add_node(running_node):
 
 def test_net_get_block_state_404(running_node):
     wait_for_url(
-        url=DEFAULT_PROTOCOL
-        + "://"
-        + NODE_IP_ADDR
-        + ":"
-        + str(NODE_PORT)
-        + URL_GET_STATUS,
+        url=Node.create_url(NODE_IP_ADDR, NODE_PORT, URL_GET_STATUS),
         method="GET",
         timeout=2,
     )
-    req_get_block_url = (
-        DEFAULT_PROTOCOL + "://" + NODE_IP_ADDR + ":" + str(NODE_PORT) + URL_GET_BLOCK
-    )
+    req_get_block_url = Node.create_url(NODE_IP_ADDR, NODE_PORT, URL_GET_BLOCK)
 
     res = requests.get(req_get_block_url, params={PARAM_BLOCK_INDEX: 1})
 
@@ -118,19 +104,12 @@ def test_net_get_chain_200(running_node_with_blockchain):
     )
 
     wait_for_url(
-        url=DEFAULT_PROTOCOL
-        + "://"
-        + NODE_IP_ADDR
-        + ":"
-        + str(NODE_PORT)
-        + URL_GET_STATUS,
+        url=Node.create_url(NODE_IP_ADDR, NODE_PORT, URL_GET_STATUS),
         method="GET",
         timeout=2,
     )
 
-    req_get_chain_url = (
-        DEFAULT_PROTOCOL + "://" + NODE_IP_ADDR + ":" + str(NODE_PORT) + URL_GET_CHAIN
-    )
+    req_get_chain_url = Node.create_url(NODE_IP_ADDR, NODE_PORT, URL_GET_CHAIN)
 
     res = requests.get(req_get_chain_url, params={PARAM_START: 1, PARAM_END: 2})
 
@@ -144,18 +123,11 @@ def test_net_get_chain_200(running_node_with_blockchain):
 
 def test_net_get_block_state_200(running_node_with_blockchain):
     wait_for_url(
-        url=DEFAULT_PROTOCOL
-        + "://"
-        + NODE_IP_ADDR
-        + ":"
-        + str(NODE_PORT)
-        + URL_GET_STATUS,
+        url=Node.create_url(NODE_IP_ADDR, NODE_PORT, URL_GET_STATUS),
         method="GET",
         timeout=2,
     )
-    req_get_block_url = (
-        DEFAULT_PROTOCOL + "://" + NODE_IP_ADDR + ":" + str(NODE_PORT) + URL_GET_BLOCK
-    )
+    req_get_block_url = Node.create_url(NODE_IP_ADDR, NODE_PORT, URL_GET_BLOCK)
 
     res = requests.get(req_get_block_url, params={PARAM_BLOCK_INDEX: 1})
 
@@ -165,18 +137,11 @@ def test_net_get_block_state_200(running_node_with_blockchain):
 
 def test_net_add_file_state_200(running_node_with_blockchain):
     wait_for_url(
-        url=DEFAULT_PROTOCOL
-        + "://"
-        + NODE_IP_ADDR
-        + ":"
-        + str(NODE_PORT)
-        + URL_GET_STATUS,
+        url=Node.create_url(NODE_IP_ADDR, NODE_PORT, URL_GET_STATUS),
         method="GET",
         timeout=2,
     )
-    req_add_file_url = (
-        DEFAULT_PROTOCOL + "://" + NODE_IP_ADDR + ":" + str(NODE_PORT) + URL_ADD_FILE
-    )
+    req_add_file_url = Node.create_url(NODE_IP_ADDR, NODE_PORT, URL_ADD_FILE)
     sample_file = {
         "_content": "content",
         "_name": "file_name",
@@ -196,18 +161,11 @@ def test_net_add_file_state_200(running_node_with_blockchain):
 
 def test_net_add_txo_state_200(running_node_with_blockchain):
     wait_for_url(
-        url=DEFAULT_PROTOCOL
-        + "://"
-        + NODE_IP_ADDR
-        + ":"
-        + str(NODE_PORT)
-        + URL_GET_STATUS,
+        url=Node.create_url(NODE_IP_ADDR, NODE_PORT, URL_GET_STATUS),
         method="GET",
         timeout=2,
     )
-    req_add_txo_url = (
-        DEFAULT_PROTOCOL + "://" + NODE_IP_ADDR + ":" + str(NODE_PORT) + URL_ADD_TXO
-    )
+    req_add_txo_url = Node.create_url(NODE_IP_ADDR, NODE_PORT, URL_ADD_TXO)
     sample_txo = {
         "input_address": {"1": "2"},
         "output_address": {"1": "2"},
