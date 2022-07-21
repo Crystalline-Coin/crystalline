@@ -7,7 +7,7 @@ from crystaline.blockchain.blockchain import Blockchain
 from crystaline.file.file import File
 from crystaline.mining_handler.miner import Miner
 from crystaline.transaction.transaction import Transaction
-import multiprocessing
+import threading
 
 DEFAULT_PROTOCOL = "http"
 DEFAULT_PORT = 5002
@@ -81,6 +81,15 @@ class Node:
         self.file_pool = []
         self.transaction_pool = {}
 
+        def transmit_class(self, shit, endpoint):
+            for ip, value in nodes_dict:
+                status = value[PARAM_NODES_DICT_STATUS]
+                port = value[PARAM_NODES_DICT_PORT]
+                url = f"{ip}:{port}"
+                if (status == STATUS_RADDR_UP):
+                    # transmit... shit.get_json()
+                    pass
+
         def add_node(node_ip, node_port):
             url = DEFAULT_PROTOCOL + "://" + node_ip + ":" + node_port + URL_GET_STATUS
             node_status = get_peer_status(url, "GET")
@@ -122,14 +131,21 @@ class Node:
 
         @self.app.route(URL_ADD_FILE, methods=["POST"])
         def add_file():
+            # TODO: Transmit
             self.file_pool.append(File.from_json(request.get_json()))
             return "Successfully added.", 200
 
         @self.app.route(URL_ADD_TXO, methods=["POST"])
         def add_txo():
-            new_transaction = Transaction.from_json(request.get_json())
-            self.transaction_pool[new_transaction.get_hash()] = new_transaction
-            return "Successfully added.", 200
+            
+            try: 
+                new_transaction = Transaction.from_json(request.get_json())
+                self.transaction_pool[new_transaction.get_hash()] = new_transaction
+                # TODO: Transmit
+                return "Successfully added.", 200
+            except:
+                return "Bad request", 400
+            
 
         @self.app.route(URL_GET_FILE_POOL, methods=["GET"])
         def get_file_pool():
@@ -212,6 +228,7 @@ class Node:
                 return "mining failed, no blocks found!", 500
             self.file_pool = miner.file_pool
             self.transaction_pool = miner.transaction_pool
+            # TODO: Transmit block
             return "done, view chain using /get_full_chain", 200
 
         # LONG TODO: Node saving and loading
