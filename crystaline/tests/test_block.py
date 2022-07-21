@@ -6,7 +6,7 @@ import time
 import string
 from copy import deepcopy
 
-from crystaline.block.block import Block
+from crystaline.block.block import Block, BLOCK_FILE_SIZE
 from crystaline.block import helper
 from crystaline.transaction.transaction import Transaction
 from crystaline.file.file import File
@@ -47,10 +47,10 @@ def tmp_file(tmp_path):
     params=[
         {"total_size": i, "n_files": j, "exp_out": k}
         for i, j, k in [
-            (Block.BLOCK_FILE_SIZE - 8, 1, False),
-            (Block.BLOCK_FILE_SIZE - 12, 4, True),
-            (Block.BLOCK_FILE_SIZE + 8, 8, False),
-            (Block.BLOCK_FILE_SIZE - 24, 8, True),
+            (BLOCK_FILE_SIZE - 8, 1, False),
+            (BLOCK_FILE_SIZE - 12, 4, True),
+            (BLOCK_FILE_SIZE + 8, 8, False),
+            (BLOCK_FILE_SIZE - 24, 8, True),
         ]
     ]
 )
