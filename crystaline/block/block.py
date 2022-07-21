@@ -64,19 +64,19 @@ class Block:
             self._transactions = list(transactions)
 
     @property
-    def version(self):
+    def version(self) -> str:
         return self._version
 
     @property
-    def prev_hash(self):
+    def prev_hash(self) -> str:
         return self._prev_hash
 
     @property
-    def difficulty_target(self):
+    def difficulty_target(self) -> int:
         return self._difficulty_target
 
     @property
-    def nonce(self):
+    def nonce(self) -> int:
         return self._nonce
 
     @property
@@ -84,11 +84,11 @@ class Block:
         return self._timestamp
 
     @property
-    def transactions(self):
+    def transactions(self) -> list:
         return self._transactions
 
     @property
-    def files(self):
+    def files(self) -> list:
         return self._files
 
     def to_dict(self):
