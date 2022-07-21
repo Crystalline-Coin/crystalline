@@ -78,11 +78,5 @@ class File:
 
     def __eq__(self, other):
         if isinstance(self, other.__class__):
-            return (
-                other.content == self.content
-                and other.name == self._name
-                and other.creator == self._creator
-                and other.creation_transaction == self._creation_transaction
-                and other.hash == self._hash
-            )
+            return self.hash == other.hash
         return False
