@@ -2,7 +2,7 @@ import pytest
 import json
 from copy import deepcopy
 
-from crystaline.file.file import File
+from crystaline.file.file import *
 
 F_NAME = "f_name"
 F_CONTENT = "f_content"
@@ -13,10 +13,10 @@ F_CREATION_TXO = "f_creation_txo"
 @pytest.fixture
 def file_dict():
     return {
-        File.PARAM_NAME: F_NAME,
-        File.PARAM_CONTENT: F_CONTENT,
-        File.PARAM_CREATOR: F_CREATOR,
-        File.PARAM_CREATION_TXO: F_CREATION_TXO,
+        PARAM_NAME: F_NAME,
+        PARAM_CONTENT: F_CONTENT,
+        PARAM_CREATOR: F_CREATOR,
+        PARAM_CREATION_TXO: F_CREATION_TXO,
     }
 
 
@@ -37,10 +37,10 @@ def test_file_properties(mfile: File):
 def test_file_to_json(mfile: File):
     f_dict = json.loads(mfile.to_json())
     assert (
-        f_dict[File.PARAM_NAME] == F_NAME
-        and f_dict[File.PARAM_CONTENT] == F_CONTENT
-        and f_dict[File.PARAM_CREATOR] == F_CREATOR
-        and f_dict[File.PARAM_CREATION_TXO] == F_CREATION_TXO
+        f_dict[PARAM_NAME] == F_NAME
+        and f_dict[PARAM_CONTENT] == F_CONTENT
+        and f_dict[PARAM_CREATOR] == F_CREATOR
+        and f_dict[PARAM_CREATION_TXO] == F_CREATION_TXO
     )
 
 
