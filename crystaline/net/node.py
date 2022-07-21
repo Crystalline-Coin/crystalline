@@ -14,8 +14,6 @@ import multiprocessing
 DEFAULT_PROTOCOL = "http"
 DEFAULT_PORT = 5002
 
-URL_GET_STATUS = "/get_status"
-
 STATUS_RADDR_UP = "UP"
 STATUS_RADDR_DOWN = "DOWN"
 
