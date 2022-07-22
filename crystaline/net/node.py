@@ -1,6 +1,4 @@
-import _thread
-from flask import Flask
-from flask import request, jsonify
+from flask import Flask, request
 import requests
 import json
 from crystaline.blockchain.blockchain import Blockchain
@@ -85,16 +83,6 @@ class Node:
         self.file_pool = []
         self.transaction_pool = {}
 
-        def add_node(node_ip, node_port):
-            url = Node.create_url(node_ip, node_port, URL_GET_STATUS)
-            node_status = get_peer_status(url, "GET")
-            self.nodes_dict[node_ip] = {
-                PARAM_NODES_DICT_STATUS: node_status,
-                PARAM_NODES_DICT_PORT: node_port,
-            }
-            # TODO: ?
-            pass
-
         @self.app.route(URL_GET_STATUS, methods=["GET"])
         def get_curr_status():
             return json.dumps({"UP": True}), 200, {"ContentType": "application/json"}
@@ -107,8 +95,10 @@ class Node:
         def add_node_async():
             node_ip = request.args.get(PARAM_IP)
             node_port = request.args.get(PARAM_PORT)
-
-            _thread.start_new_thread(add_node, (node_ip, node_port))
+            thread = threading.Thread(
+                target=self.add_node, args=(node_ip, node_port)
+            )
+            thread.start()
             return "Successfully added.", 200
 
         @self.app.route(URL_GET_BLOCK, methods=["GET"])
@@ -263,6 +253,15 @@ class Node:
             return "Done, view chain using /get_full_chain", 200
 
         # LONG TODO: Node saving and loading
+
+    def add_node(self, node_ip, node_port):
+        url = Node.create_url(node_ip, node_port, URL_GET_STATUS)
+        node_status = get_peer_status(url, "GET")
+        self.nodes_dict[node_ip] = {
+            PARAM_NODES_DICT_STATUS: node_status,
+            PARAM_NODES_DICT_PORT: node_port,
+        }
+        # TODO: ?
 
     def validate_files(self, files):
         for file in files:
