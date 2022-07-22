@@ -201,7 +201,6 @@ class Block:
         return hex_hash < self._difficulty_target
 
     def save(self, file_path):
-        # TODO: Check filesystem
         path = os.path.join(
             file_path,
             self.FILE_NAME_PREFIX + str(self._timestamp) + self.FILE_EXTENSION,
@@ -225,10 +224,8 @@ class Block:
 
     @staticmethod
     def load(file_path):
-        # TODO: Fix the issue with json serialization
         STARTING_INDEX = len(Block.FILE_NAME_PREFIX)
         ENDING_INDEX = -len(Block.FILE_EXTENSION)
-        # FIXME: rb or r?
         with open(file_path, mode="r") as new_file:
             block_json = new_file.read()
         name = Path(file_path).name
