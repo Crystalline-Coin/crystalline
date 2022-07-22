@@ -114,8 +114,7 @@ class Block:
         return json.dumps(self.to_dict())
 
     @classmethod
-    def from_json(cls, block_json):
-        block_dict = json.loads(block_json)
+    def from_dict(cls, block_dict):
         block_transactions = []
         for transaction in block_dict[PARAM_TRANSACTIONS]:
             block_transactions.append(Transaction.from_dict(transaction))
@@ -131,6 +130,13 @@ class Block:
             block_transactions,
             block_files,
         )
+
+
+    @classmethod
+    def from_json(cls, block_json):
+        block_dict = json.loads(block_json)
+        return cls.from_dict(block_dict)
+
 
     def generate_block_hash(self):
         data_string = (

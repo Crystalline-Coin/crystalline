@@ -67,12 +67,7 @@ class File:
     @classmethod
     def from_json(cls, file_json):
         file_dict = json.loads(file_json)
-        return cls(
-            file_dict[PARAM_CONTENT],
-            file_dict[PARAM_NAME],
-            file_dict[PARAM_CREATOR],
-            file_dict[PARAM_CREATION_TXO],
-        )
+        return cls.from_dict(file_dict)
 
     def __eq__(self, other):
         if isinstance(self, other.__class__):
