@@ -120,7 +120,6 @@ class Node:
                 block = self.blockchain.get_block(int(index) - 1)
                 json_string = json.dumps(block.to_dict())
             except:
-                print("Invalid block index")
                 status_code = 404
             return json_string, status_code, {"ContentType": "application/json"}
 
@@ -148,7 +147,7 @@ class Node:
             code = 200
             try:
                 new_transaction = Transaction.from_json(request.get_json())
-                if self.transaction_pool.get(new_transaction.get_hash(), -1) == -1:
+                if new_transaction.get_hash() not in self.transaction_pool:
                     self.transaction_pool[new_transaction.get_hash()] = new_transaction
                     thread = threading.Thread(
                         target=self.transmit_data, args=(new_transaction, URL_ADD_TXO)
@@ -257,11 +256,11 @@ class Node:
             miner = Miner(self.blockchain, self.file_pool, self.transaction_pool)
             block = miner.mine_block()
             if not block:
-                return "mining failed, no blocks found!", 500
+                return "Mining failed, no blocks found!", 500
             self.file_pool = miner.file_pool
             self.transaction_pool = miner.transaction_pool
             # TODO: Transmit block
-            return "done, view chain using /get_full_chain", 200
+            return "Done, view chain using /get_full_chain", 200
 
         # LONG TODO: Node saving and loading
 
@@ -273,7 +272,7 @@ class Node:
 
     def validate_transactions(self, transactions):
         for transaction in transactions:
-            if self.transaction_pool.get(transaction.get_hash(), -1) == -1:
+            if transaction.get_hash() not in self.transaction_pool:
                 return False
         return True
 
