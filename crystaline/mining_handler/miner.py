@@ -1,13 +1,10 @@
-from crystaline import transaction
 from crystaline.blockchain.blockchain import Blockchain
-from crystaline.file.file import File
 from crystaline.block.block import (
     BLOCK_FILE_SIZE,
     BLOCK_TRANSACTION_SIZE,
     NONCE_RANGE,
     Block,
 )
-from crystaline.transaction.transaction import Transaction
 import time
 
 

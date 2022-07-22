@@ -1,5 +1,4 @@
 import time
-from crystaline.transaction.transaction import Transaction
 from crystaline.block.block import Block
 
 import pytest
