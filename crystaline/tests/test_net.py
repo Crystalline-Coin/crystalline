@@ -167,9 +167,9 @@ def test_net_add_txo_state_200(running_node_with_blockchain):
     )
     req_add_txo_url = Node.create_url(NODE_IP_ADDR, NODE_PORT, URL_ADD_TXO)
     sample_txo = {
-        "input_address": {"1": "2"},
-        "output_address": {"1": "2"},
-        "signature": "signature",
+        "_input_address": {"1": "2"},
+        "_output_address": {"1": "2"},
+        "_signature": "signature",
     }
 
     res = requests.post(
