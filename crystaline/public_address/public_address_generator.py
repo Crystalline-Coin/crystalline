@@ -1,4 +1,4 @@
-from ecpy.curves import Curve, Point
+from ecpy.curves import Curve
 from hashlib import sha256, sha3_224
 
 

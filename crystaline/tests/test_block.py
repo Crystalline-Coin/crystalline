@@ -8,7 +8,6 @@ from copy import deepcopy
 
 from crystaline.block.block import Block, BLOCK_FILE_SIZE
 from crystaline.block import helper
-from crystaline.transaction.transaction import Transaction
 from crystaline.file.file import File
 
 B_VERSION, B_PREV_HASH, B_DIFF_TARGET, B_NONCE, B_FILES, B_TRANSACTIONS, = (

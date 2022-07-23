@@ -1,6 +1,4 @@
-import _thread
-from flask import Flask
-from flask import request, jsonify
+from flask import Flask, request
 import requests
 import json
 from crystaline.blockchain.blockchain import Blockchain
@@ -48,9 +46,9 @@ URL_ADD_BLOCK = "/add_block"
 
 
 def get_peer_status(url, method):
-    if "POST" in method:
+    if "POST" == method:
         res = requests.post(url)
-    elif "GET" in method:
+    elif "GET" == method:
         res = requests.get(url)
     else:
         raise Exception("Provided method is not consistent.")
@@ -85,16 +83,6 @@ class Node:
         self.file_pool = []
         self.transaction_pool = {}
 
-        def add_node(node_ip, node_port):
-            url = Node.create_url(node_ip, node_port, URL_GET_STATUS)
-            node_status = get_peer_status(url, "GET")
-            self.nodes_dict[node_ip] = {
-                PARAM_NODES_DICT_STATUS: node_status,
-                PARAM_NODES_DICT_PORT: node_port,
-            }
-            # TODO: ?
-            pass
-
         @self.app.route(URL_GET_STATUS, methods=["GET"])
         def get_curr_status():
             return json.dumps({"UP": True}), 200, {"ContentType": "application/json"}
@@ -107,8 +95,10 @@ class Node:
         def add_node_async():
             node_ip = request.args.get(PARAM_IP)
             node_port = request.args.get(PARAM_PORT)
-
-            _thread.start_new_thread(add_node, (node_ip, node_port))
+            thread = threading.Thread(
+                target=self.add_node, args=(node_ip, node_port)
+            )
+            thread.start()
             return "Successfully added.", 200
 
         @self.app.route(URL_GET_BLOCK, methods=["GET"])
@@ -120,7 +110,6 @@ class Node:
                 block = self.blockchain.get_block(int(index) - 1)
                 json_string = json.dumps(block.to_dict())
             except:
-                print("Invalid block index")
                 status_code = 404
             return json_string, status_code, {"ContentType": "application/json"}
 
@@ -148,7 +137,7 @@ class Node:
             code = 200
             try:
                 new_transaction = Transaction.from_json(request.get_json())
-                if self.transaction_pool.get(new_transaction.get_hash(), -1) == -1:
+                if new_transaction.get_hash() not in self.transaction_pool:
                     self.transaction_pool[new_transaction.get_hash()] = new_transaction
                     thread = threading.Thread(
                         target=self.transmit_data, args=(new_transaction, URL_ADD_TXO)
@@ -257,13 +246,22 @@ class Node:
             miner = Miner(self.blockchain, self.file_pool, self.transaction_pool)
             block = miner.mine_block()
             if not block:
-                return "mining failed, no blocks found!", 500
+                return "Mining failed, no blocks found!", 500
             self.file_pool = miner.file_pool
             self.transaction_pool = miner.transaction_pool
             # TODO: Transmit block
-            return "done, view chain using /get_full_chain", 200
+            return "Done, view chain using /get_full_chain", 200
 
         # LONG TODO: Node saving and loading
+
+    def add_node(self, node_ip, node_port):
+        url = Node.create_url(node_ip, node_port, URL_GET_STATUS)
+        node_status = get_peer_status(url, "GET")
+        self.nodes_dict[node_ip] = {
+            PARAM_NODES_DICT_STATUS: node_status,
+            PARAM_NODES_DICT_PORT: node_port,
+        }
+        # TODO: ?
 
     def validate_files(self, files):
         for file in files:
@@ -273,7 +271,7 @@ class Node:
 
     def validate_transactions(self, transactions):
         for transaction in transactions:
-            if self.transaction_pool.get(transaction.get_hash(), -1) == -1:
+            if transaction.get_hash() not in self.transaction_pool:
                 return False
         return True
 
@@ -314,7 +312,6 @@ class Node:
         flask_server_process = multiprocessing.Process(
             target=self.app.run, args=(self.ip_address, self.host_port)
         )
-        self.app.run(host=self.ip_address, port=self.host_port)
         flask_server_process.start()
         self.running_process = flask_server_process
 

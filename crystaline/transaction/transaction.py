@@ -4,6 +4,16 @@ from crystaline.transaction import signature as sg
 from crystaline.public_address.public_address_generator import PublicAddressGenerator
 
 
+(
+    PARAM_INPUT_ADDRESS,
+    PARAM_OUTPUT_ADDRESS,
+    PARAM_SIGNATURE,
+) = (
+    "_input_address",
+    "_output_address",
+    "_signature",
+)
+
 class Transaction:
     def __init__(self, _input_address=None, _output_address=None, _signature=""):
         self.input_address = _input_address
@@ -18,46 +28,28 @@ class Transaction:
         return len(self.to_json())
 
     def to_json(self):
-        transactions_json = {
-            "input_address": dict(self.input_address),
-            "output_address": dict(self.output_address),
-            "signature": str(self.signature),
-        }
-        return json.dumps(transactions_json)
+        transactions_dict = self.to_dict()
+        return json.dumps(transactions_dict)
 
     @classmethod
     def from_json(cls, transactions_json):
-        loads_transactions_json = json.loads(transactions_json)
-        input_address = [
-            (k, v) for k, v in loads_transactions_json["input_address"].items()
-        ]
-        output_address = [
-            (k, v) for k, v in loads_transactions_json["output_address"].items()
-        ]
-        signature = (
-            loads_transactions_json["signature"][2:-1]
-            .encode()
-            .decode("unicode_escape")
-            .encode("raw_unicode_escape")
-        )
-        return cls(input_address, output_address, signature)
+        transactions_dict = json.loads(transactions_json)
+        return cls.from_dict(transactions_dict)
 
     def save(self, path):
-        file = open(path, "w")
-        json_string = self.to_json()
-        file.write(json_string)
-        file.close()
+        with open(path, "w") as file:
+            json_string = self.to_json()
+            file.write(json_string)
 
     def load(self, path):
-        file = open(path, "r")
-        json_string = file.read()
-        loaded = self.from_json(json_string)
-        self.input_address, self.output_address, self.signature = (
-            loaded.input_address,
-            loaded.output_address,
-            loaded.signature,
-        )
-        file.close()
+        with open(path, "r") as file:
+            json_string = file.read()
+            loaded = self.from_json(json_string)
+            self.input_address, self.output_address, self.signature = (
+                loaded.input_address,
+                loaded.output_address,
+                loaded.signature,
+            )
 
     def get_details(self):
         input_address_str = "".join([str(x) for t in self.input_address for x in t])
@@ -68,13 +60,28 @@ class Transaction:
         return hp.gen_hash(self.get_details())
 
     def to_dict(self):
-        return self.__dict__
+        transactions_dict = {
+            PARAM_INPUT_ADDRESS: dict(self.input_address),
+            PARAM_OUTPUT_ADDRESS: dict(self.output_address),
+            PARAM_SIGNATURE: str(self.signature),
+        }
+        return transactions_dict
 
-    @staticmethod
-    def from_dict(dict):
-        return Transaction(
-            dict["input_address"], dict["output_address"], dict["signature"]
+    @classmethod
+    def from_dict(cls, transactions_dict):
+        input_address = [
+            (k, v) for k, v in transactions_dict[PARAM_INPUT_ADDRESS].items()
+        ]
+        output_address = [
+            (k, v) for k, v in transactions_dict[PARAM_OUTPUT_ADDRESS].items()
+        ]
+        signature = (
+            transactions_dict[PARAM_SIGNATURE][2:-1]
+            .encode()
+            .decode("unicode_escape")
+            .encode("raw_unicode_escape")
         )
+        return cls(input_address, output_address, signature)
 
     def is_valid(self, public_key, blockchain):
         if sg.verify_signature(self, public_key):

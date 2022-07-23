@@ -1,6 +1,3 @@
-import time
-
-
 TIME_PERIOD = 30  # time_period : t
 ALPHA = 2
 N = 1
