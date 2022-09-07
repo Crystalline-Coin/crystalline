@@ -1,6 +1,3 @@
-# crystaline
-A cryptocurrency made by some undergraduates at the University of Tehran. 
+What is Crystalline?
 
-To keep code clean, run the following before pushing to repo:
 
-    black .
