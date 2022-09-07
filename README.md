@@ -5,6 +5,6 @@ Crystalline is a cryptocurrency design which has a peer-to-peer network that sto
 Crystalline intention is similiar to filecoin, while introducing many important innovations to cryptocurrency field including new security model, new consensus and new mechanism.
 
 ### Crystalline Resources
-Source: [Source Code](https://github.com/Crystaline-Coin/crystaline),
-Documentation: [White paper]
-Help: [Email](crystalline.help@gmail.com)
+* Source: [Source Code](https://github.com/Crystaline-Coin/crystaline),
+* Documentation: [White paper]
+* Help: [Email](crystalline.help@gmail.com)
