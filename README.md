@@ -2,7 +2,7 @@
 
 ## What is Crystalline?
 
-Crystalline is a cryptocurrency designed as a peer-to-peer network to store files, with built-in economic incentives to make sure all files are stored reliably over time. Crystalline uses a redifined proof-of-Activity consensus as a security model, with a combined proof-of-Activity/proof-of-work mining system. Crystalline's intentions are similar to filecoin; however, it introduces many important innovations to the cryptocurrency field including a new security model, new consensus, and a new Activity-based mechanism.
+Crystalline is a cryptocurrency designed as a peer-to-peer network to store files, with built-in economic incentives to make sure all files are stored reliably over time. Crystalline uses a redefined proof-of-Activity consensus as a security model, with a combined proof-of-Activity/proof-of-work mining system. Crystalline's intentions are similar to filecoin; however, it introduces many important innovations to the cryptocurrency field including a new security model, new consensus, and a new Activity-based mechanism.
 This repository is purely a proof of concept and it is not to be used as a production build.
 
 ## Crystalline Resources
@@ -17,7 +17,7 @@ To run a node, first install the requirements by running:
 
     pip install -r requirements.txt
 
-Then you can run the node by navigating to the *crystalline* forlder and running:
+Then you can run the node by navigating to the *crystalline* folder and running:
 
     python3 main.py
 
