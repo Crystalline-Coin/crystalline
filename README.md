@@ -9,4 +9,8 @@ Crystalline is a cryptocurrency design that has a peer-to-peer network to stores
 * Documentation: [White paper]
 * Help: [Email](crystalline.help@gmail.com)
 
+## Getting started
+
+## Testing
+
 ## Licence
