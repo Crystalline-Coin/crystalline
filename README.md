@@ -1,4 +1,6 @@
-# Crystalline Official Development Repository
+Crystalline Official Development Repository
+<img align="right" width="70" height="70" src="docs/images/logo.png">
+===========
 
 ## What is Crystalline?
 
@@ -8,7 +10,7 @@ This repository is purely a proof of concept and it is not to be used as a produ
 ## Crystalline Resources
 
 * Source: [Source Code](https://github.com/crystalline-Coin/crystalline),
-* Documentation: [White paper](https://github.com/Crystalline-Coin/crystalline/raw/main/whitepaper/Crystalline.pdf)
+* Documentation: [White paper](https://github.com/Crystalline-Coin/crystalline/raw/main/docs/whitepaper/Crystalline.pdf)
 * Help: [Email](crystalline.help@gmail.com)
 
 ## Getting Started
