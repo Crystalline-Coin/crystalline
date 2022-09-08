@@ -1,33 +1,33 @@
 version: "3.3"  # optional since v1.27.0
 services:
-  crystaline_1:
-    image : crystaline-docker
+  crystalline_1:
+    image : crystalline-docker
     ports:
       - "5001:5002"
     networks:
       - bridge1
-  crystaline_2:
-    image : crystaline-docker
+  crystalline_2:
+    image : crystalline-docker
     ports:
       - "5002:5002"
     networks:
       - bridge1
       - bridge2
-  crystaline_3:
-    image : crystaline-docker
+  crystalline_3:
+    image : crystalline-docker
     ports:
       - "5003:5002"
     networks:
       - bridge2
       - bridge3
-  crystaline_4:
-    image : crystaline-docker
+  crystalline_4:
+    image : crystalline-docker
     ports:
       - "5004:5002"
     networks:
       - bridge3
-  crystaline_5:
-    image : crystaline-docker
+  crystalline_5:
+    image : crystalline-docker
     ports:
       - "5005:5002"
     networks:

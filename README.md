@@ -5,7 +5,7 @@ Crystalline is a cryptocurrency design that has a peer-to-peer network to stores
 
 
 ## Crystalline Resources
-* Source: [Source Code](https://github.com/Crystaline-Coin/crystaline),
+* Source: [Source Code](https://github.com/crystalline-Coin/crystalline),
 * Documentation: [White paper]
 * Help: [Email](crystalline.help@gmail.com)
 

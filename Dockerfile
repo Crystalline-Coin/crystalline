@@ -2,7 +2,7 @@
 FROM python:3.8-slim-buster
 
 # set the working directory in the container
-WORKDIR /crystaline
+WORKDIR /crystalline
 
 # copy the dependencies file to the working directory
 COPY requirements.txt .
@@ -11,7 +11,7 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # copy the content of the local src directory to the working directory
-COPY crystaline/ .
+COPY crystalline/ .
 
 EXPOSE 5002
 
