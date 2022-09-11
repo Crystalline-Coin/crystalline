@@ -25,7 +25,7 @@ Then you can run the node by navigating to the *crystalline* folder and running:
 
 ## Testing
 
-To test the code, navigate to crystalline/tests and run:
+To test the code, navigate to "crystalline/tests/" and run:
 
     pytest
 
